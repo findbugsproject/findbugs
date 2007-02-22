@@ -28,6 +28,7 @@
 	<property name="src.dir" value="src"/>
 	<property name="buildtools.dir" value="buildtools"/>
 	<property name="lib.dir" value="lib"/>
+	<property name="srcDist.dir" value="srcDist"/>
 	<property name="dist.dir" value="dist"/>
 	<property name="tools.dir" value="tools"/>
 	<!-- the binaries/classes, built by eclipse. -->
@@ -45,12 +46,13 @@
 	
 	<path id="tools.classpath">
 		<pathelement location="dom4j-full.jar"/>
-		<pathelement location="${bin.dir}"/>
+		<pathelement location="${bin.dir}/classes"/>
 	</path>
 
 	<target name="init">
 		<mkdir dir="${dist.dir}"/>
 		<mkdir dir="${bin.dir}"/>
+		<mkdir dir="${bin.dir}/classes"/>
 	</target>
 
 	<target name="clean" depends="init" description="Clean up temporary files">
@@ -66,24 +68,26 @@
 
 	<target name="classes" depends="init,fbjars" description="Compile java source files">
         <mkdir dir="${bin.dir}"/>
+        <mkdir dir="${bin.dir}/classes"/>
         <!-- Compile Java source files. -->
         <javac srcdir="${src.dir}"
-		  destdir="${bin.dir}"
+		  destdir="${bin.dir}/classes"
                 source="1.5"
                 target="jsr14"
+                deprecation="off"
                 debug="on">
             <classpath refid="plugin.classpath"/>
         </javac>
 		<!-- Compile build tools. -->
 		<javac srcdir="${buildtools.dir}"
-			destdir="${bin.dir}"
+			destdir="${bin.dir}/classes"
 			source="1.5"
 			target="jsr14"
 			debug="on">
 			<classpath refid="tools.classpath"/>
 		</javac>
 		<!-- Copy the .properties files from the source directory. -->
-		<copy todir="${bin.dir}">
+		<copy todir="${bin.dir}/classes">
 			<fileset dir="${src.dir}">
 				<include name="**/*.properties"/>
 			</fileset>
@@ -108,9 +112,25 @@
 		<property file="${bin.dir}/plugininfo.properties"/>
 	</target>
 
+        <target name="CheckOneFourCompatibility">
+   <property name="findbugs.home" value="${findbugs.dir}" />
+    <taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpath="${findbugs.dir}/lib/findbugs-ant.jar"/>
+    <findbugs home="${findbugs.home}"
+              output="text"
+                quietErrors="true"
+                      failOnError="true"
+                      warningsProperty="warningsFound"
+                          visitors="ResolveAllReferences"
+                          jvmargs="-Xmx600m" >
+                <class location="${bin.dir}/classes" />
+                </findbugs>
+        <fail if="warningsFound" message="Not compatible with Java 1.4"/>
+        </target>
+
+
 	<target name="dist" depends="clean,classes,version" description="Build a plugin distributable, including the conversion of all classes to 1.4 compatible bytecode">
 		<jar destfile="${dist.dir}/findbugs-plugin.jar">
-				<fileset dir="${bin.dir}" excludes="de/tobject/findbugs/tools/**" />
+				<fileset dir="${bin.dir}/classes" excludes="de/tobject/findbugs/tools/**" />
 		</jar>
 		<copy todir="${dist.dir}">
 			<fileset file="welcome.xml" />
@@ -143,16 +163,16 @@
        <!-- Build source distribution. -->
         <target name="srcdist" depends="clean,classes,version">
 		<property file="${bin.dir}/plugininfo.properties"/>
-                <mkdir dir="${dist.dir}/src"/>
-                <delete dir="${dist.dir}/src/eclipsePlugin-${plugin.version}"/>
+                <delete dir="${srcDist.dir}"/>
+                <mkdir  dir="${srcDist.dir}"/>
 
                 <cvs cvsRoot="wpugh@findbugs.cvs.sourceforge.net:/cvsroot/findbugs"
                         cvsRsh="ssh"
-                        dest="${dist.dir}/src"
+                        dest="${srcDist.dir}"
                         command="export -r HEAD -d eclipsePlugin-${plugin.version} eclipsePlugin"/>
 
-                <zip destfile="${dist.dir}/eclipsePlugin-${plugin.version}-source.zip" compress="true">
-                        <zipfileset dir="${dist.dir}/src" includes="eclipsePlugin-${plugin.version}/**"/>
+                <zip destfile="${srcDist.dir}/eclipsePlugin-${plugin.version}-source.zip" compress="true">
+                        <zipfileset dir="${srcDist.dir}" includes="eclipsePlugin-${plugin.version}/**"/>
                 </zip>
         </target>
 
