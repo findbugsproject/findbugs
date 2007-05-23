@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<FindBugsFilter>
+  <Match>
+    <Bug pattern="NM_CLASS_NOT_EXCEPTION,EI_EXPOSE_REP,EI_EXPOSE_REP2,MS_PKGPROTECT,MS_MUTABLE_ARRAY"/>
+  </Match>
+  <Match>
+    <Priority value="3"/>
+  </Match>
+  <Match>
+    <BugCode name="Se"/>
+    <Class name="~edu.umd.cs.findbugs.gui.*"/>
+  </Match>
+  <Match>
+    <BugCode name="Se"/>
+    <Class name="~edu.umd.cs.findbugs.gui2.*"/>
+  </Match>
+</FindBugsFilter>

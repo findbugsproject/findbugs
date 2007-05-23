@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<jnlp 
+  spec="1.0+" 
+  codebase="http://findbugs.cs.umd.edu/demo/jnlp" 
+  href="findbugs.jnlp">
+  <information> 
+    <title>FindBugs</title>
+    <vendor>University of Maryland</vendor> 
+    <homepage href="http://findbugs.sourceforge.net"/> 
+    <description>Findbugs Static Bug Finder</description> 
+    <description kind="short">A tool for finding bugs in your classes</description> 
+    <icon href="buggy-sm.png"/> 
+    <offline-allowed/> 
+  </information> 
+  <security> 
+      <all-permissions/> 
+  </security> 
+  <resources> 
+    <j2se version="1.4+" initial-heap-size="300m" max-heap-size="800m"/>
+    <jar href="findbugs.jar"/> 
+    <jar href="findbugsGUI.jar"/> 
+    <jar href="bcel.jar"/> 
+    <jar href="asm-3.0.jar"/>
+    <jar href="asm-tree-3.0.jar"/>
+    <jar href="dom4j-full.jar"/> 
+    <jar href="plugin/coreplugin.jar"/>
+    <property name="findbugs.jaws" value="true"/>
+    <property name="findbugs.noSummary" value="true"/>
+    <property name="apple.laf.useScreenMenuBar" value="true"/>
+  </resources> 
+  <application-desc main-class="edu.umd.cs.findbugs.LaunchAppropriateUI"/> 
+</jnlp> 
+
