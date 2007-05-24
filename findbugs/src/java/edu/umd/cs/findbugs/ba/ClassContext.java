@@ -251,7 +251,7 @@ public class ClassContext {
     		throws DataflowAnalysisException, CFGBuilderException {
     	try {
     		MethodDescriptor methodDescriptor =
-    			new MethodDescriptor(jclass.getClassName().replace('.', '/'), method.getName(), method.getSignature(), method.isStatic());
+    			BCELUtil.getMethodDescriptor(jclass, method);
     		return Global.getAnalysisCache().getMethodAnalysis(analysisClass, methodDescriptor);
     	} catch (DataflowAnalysisException e) {
     		throw e;
