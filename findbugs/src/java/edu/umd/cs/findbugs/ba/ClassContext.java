@@ -36,7 +36,6 @@ import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.LineNumber;
 import org.apache.bcel.classfile.LineNumberTable;
 import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.ClassGen;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.InvokeInstruction;
@@ -102,14 +101,6 @@ public class ClassContext {
 	private final JavaClass jclass;
 	private final AnalysisContext analysisContext;
 
-//	// List of all analysis factories.
-//	private List<AnalysisFactory<?>> analysisFactoryList =
-//		new LinkedList<AnalysisFactory<?>>();
-
-	private ClassGen classGen;
-	private AssignedFieldMap assignedFieldMap;
-	private AssertionMethods assertionMethods;
-
 	/* ----------------------------------------------------------------------
 	 * Public methods
 	 * ---------------------------------------------------------------------- */
@@ -122,23 +113,7 @@ public class ClassContext {
 	public ClassContext(JavaClass jclass, AnalysisContext analysisContext) {
 		this.jclass = jclass;
 		this.analysisContext = analysisContext;
-		this.classGen = null;
-		this.assignedFieldMap = null;
-		this.assertionMethods = null;
 	}
-
-//	/**
-//	 * Purge dataflow analysis results after CFG-pruning of given method.
-//	 * 
-//	 * @param method the method whose CFG has just been pruned
-//	 */
-//	void purgeAnalysisResultsAfterCFGPruning(Method method) {
-//		for (AnalysisFactory<?> factory : analysisFactoryList) {
-//			if (factory.isDataflow()) {
-//				factory.purge(method);
-//			}
-//		}
-//	}
 
 	/**
 	 * Get the JavaClass.
@@ -205,8 +180,6 @@ public class ClassContext {
 		return methodsInCallOrder;
 	}
 
-
-
 	/**
 	 * Get the AnalysisContext.
 	 */
@@ -223,73 +196,6 @@ public class ClassContext {
 		return analysisContext.getLookupFailureCallback();
 	}
 
-    private<Analysis> Analysis getMethodAnalysisNoException(Class<Analysis> analysisClass, Method method) {
-    	try {
-    		return getMethodAnalysis(analysisClass, method);
-    	} catch (CheckedAnalysisException e) {
-    		IllegalStateException ise = new IllegalStateException("should not happen");
-    		ise.initCause(e);
-    		throw ise;
-    	}
-    }
-    
-    private<Analysis> Analysis getMethodAnalysisNoDataflowAnalysisException(Class<Analysis> analysisClass, Method method)
-    		throws CFGBuilderException {
-    	try {
-    		return getMethodAnalysis(analysisClass, method);
-    	} catch (CFGBuilderException e) {
-    		throw e;
-    	} catch (CheckedAnalysisException e) {
-    		IllegalStateException ise = new IllegalStateException("should not happen");
-    		ise.initCause(e);
-    		throw ise;
-    	}
-    	
-    }
-    
-    private<Analysis> Analysis getMethodAnalysis(Class<Analysis> analysisClass, Method method)
-    		throws DataflowAnalysisException, CFGBuilderException {
-    	try {
-    		MethodDescriptor methodDescriptor =
-    			BCELUtil.getMethodDescriptor(jclass, method);
-    		return Global.getAnalysisCache().getMethodAnalysis(analysisClass, methodDescriptor);
-    	} catch (DataflowAnalysisException e) {
-    		throw e;
-    	} catch (CFGBuilderException e) {
-    		throw e;
-    	} catch (CheckedAnalysisException e) {
-    		IllegalStateException ise = new IllegalStateException("should not happen");
-    		ise.initCause(e);
-    		throw ise;
-    	}
-    }
-    
-    private<Analysis> Analysis getClassAnalysis(Class<Analysis> analysisClass) throws CheckedAnalysisException {
-    	ClassDescriptor classDescriptor = BCELUtil.getClassDescriptor(jclass);
-		return Global.getAnalysisCache().getClassAnalysis(analysisClass, classDescriptor);
-    }
-    
-    private<Analysis> Analysis getClassAnalysisNoException(Class<Analysis> analysisClass) {
-    	try {
-    		return getClassAnalysis(analysisClass);
-    	} catch (CheckedAnalysisException e) {
-    		IllegalStateException ise = new IllegalStateException("should not happen");
-    		ise.initCause(e);
-    		throw ise;
-    	}
-    }
-    
-    private<Analysis> Analysis getClassAnalysisPossibleClassNotFoundException(Class<Analysis> analysisClass)
-			throws ClassNotFoundException {
-		try {
-			return Global.getAnalysisCache().getClassAnalysis(analysisClass, BCELUtil.getClassDescriptor(jclass));
-		} catch (ResourceNotFoundException e) {
-			throw e.toClassNotFoundException();
-		} catch (CheckedAnalysisException e) {
-			throw new AnalysisException("Unexpected exception", e); 
-		}
-    }
-
 	/**
 	 * Get a MethodGen object for given method.
 	 *
@@ -301,17 +207,6 @@ public class ClassContext {
 	@CheckForNull public MethodGen getMethodGen(Method method) {
 		return getMethodAnalysisNoException(MethodGen.class, method);
 	}
-
-//	/**
-//	 * Get a "raw" CFG for given method.
-//	 * No pruning is done, although the CFG may already be pruned.
-//	 *
-//	 * @param method the method
-//	 * @return the raw CFG
-//	 */
-//	public CFG getRawCFG(Method method) throws CFGBuilderException {
-//		return cfgFactory.getRawCFG(jclass, method);
-//	}
 
 	/**
 	 * Get a CFG for given method.
@@ -325,20 +220,8 @@ public class ClassContext {
 	 * @throws CFGBuilderException if a CFG cannot be constructed for the method
 	 */
 	public CFG getCFG(Method method) throws CFGBuilderException {
-//		if (method == cachedMethod) {
-//			// System.out.println("hit on " + method.getName());
-//			return cachedCFG;
-//		}
-//		if (false && cachedMethod != null) System.out.println(cachedMethod.getName() + " -> " + method.getName());
-//		CFG cfg = cfgFactory.getRefinedCFG(jclass, method);
-//		cachedMethod = method;
-//		cachedCFG = cfg;
-//		return cfg;
 		return getMethodAnalysisNoDataflowAnalysisException(CFG.class, method);
 	}
-
-//	Method cachedMethod;
-//	CFG cachedCFG = null;
 
 	/**
 	 * Get the ConstantPoolGen used to create the MethodGens
@@ -349,7 +232,6 @@ public class ClassContext {
 	public @NonNull ConstantPoolGen getConstantPoolGen() {
 		return getClassAnalysisNoException(ConstantPoolGen.class);
 	}
-
 
 	/**
 	 * Get a UsagesRequiringNonNullValues for given method.
@@ -870,6 +752,76 @@ public class ClassContext {
 		System.out.println("}\n\n");
 	}
 
+	/* ----------------------------------------------------------------------
+	 * Helper methods for getting an analysis object from the analysis cache.
+	 * ---------------------------------------------------------------------- */
+
+    private<Analysis> Analysis getMethodAnalysisNoException(Class<Analysis> analysisClass, Method method) {
+    	try {
+    		return getMethodAnalysis(analysisClass, method);
+    	} catch (CheckedAnalysisException e) {
+    		IllegalStateException ise = new IllegalStateException("should not happen");
+    		ise.initCause(e);
+    		throw ise;
+    	}
+    }
+    
+    private<Analysis> Analysis getMethodAnalysisNoDataflowAnalysisException(Class<Analysis> analysisClass, Method method)
+    		throws CFGBuilderException {
+    	try {
+    		return getMethodAnalysis(analysisClass, method);
+    	} catch (CFGBuilderException e) {
+    		throw e;
+    	} catch (CheckedAnalysisException e) {
+    		IllegalStateException ise = new IllegalStateException("should not happen");
+    		ise.initCause(e);
+    		throw ise;
+    	}
+    	
+    }
+    
+    private<Analysis> Analysis getMethodAnalysis(Class<Analysis> analysisClass, Method method)
+    		throws DataflowAnalysisException, CFGBuilderException {
+    	try {
+    		MethodDescriptor methodDescriptor =
+    			BCELUtil.getMethodDescriptor(jclass, method);
+    		return Global.getAnalysisCache().getMethodAnalysis(analysisClass, methodDescriptor);
+    	} catch (DataflowAnalysisException e) {
+    		throw e;
+    	} catch (CFGBuilderException e) {
+    		throw e;
+    	} catch (CheckedAnalysisException e) {
+    		IllegalStateException ise = new IllegalStateException("should not happen");
+    		ise.initCause(e);
+    		throw ise;
+    	}
+    }
+    
+    private<Analysis> Analysis getClassAnalysis(Class<Analysis> analysisClass) throws CheckedAnalysisException {
+    	ClassDescriptor classDescriptor = BCELUtil.getClassDescriptor(jclass);
+		return Global.getAnalysisCache().getClassAnalysis(analysisClass, classDescriptor);
+    }
+    
+    private<Analysis> Analysis getClassAnalysisNoException(Class<Analysis> analysisClass) {
+    	try {
+    		return getClassAnalysis(analysisClass);
+    	} catch (CheckedAnalysisException e) {
+    		IllegalStateException ise = new IllegalStateException("should not happen");
+    		ise.initCause(e);
+    		throw ise;
+    	}
+    }
+    
+    private<Analysis> Analysis getClassAnalysisPossibleClassNotFoundException(Class<Analysis> analysisClass)
+			throws ClassNotFoundException {
+		try {
+			return Global.getAnalysisCache().getClassAnalysis(analysisClass, BCELUtil.getClassDescriptor(jclass));
+		} catch (ResourceNotFoundException e) {
+			throw e.toClassNotFoundException();
+		} catch (CheckedAnalysisException e) {
+			throw new AnalysisException("Unexpected exception", e); 
+		}
+    }
 }
 
 // vim:ts=3
