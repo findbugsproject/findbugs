@@ -1,6 +1,6 @@
 /*
  * FindBugs - Find Bugs in Java programs
- * Copyright (C) 2006, University of Maryland
+ * Copyright (C) 2006-2007 University of Maryland
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -21,16 +21,12 @@ package edu.umd.cs.findbugs;
 
 import java.io.FileInputStream;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
@@ -40,7 +36,6 @@ import edu.umd.cs.findbugs.ba.AnalysisCacheToAnalysisContextAdapter;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.AnalysisException;
 import edu.umd.cs.findbugs.ba.SourceInfoMap;
-import edu.umd.cs.findbugs.ba.ch.Subtypes;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.Global;
@@ -65,9 +60,7 @@ import edu.umd.cs.findbugs.util.TopologicalSort.OutEdges;
 
 /**
  * FindBugs driver class.
- * Experimental version to use the new bytecode-framework-neutral
- * codebase/classpath/classfile infrastructure.
- * Supports all features of the original FindBugs driver.
+ * Orchestrates the analysis of a project, collection of results, etc.
  * 
  * @author David Hovemeyer
  */
