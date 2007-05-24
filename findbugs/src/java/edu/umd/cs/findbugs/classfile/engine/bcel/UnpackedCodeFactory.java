@@ -11,51 +11,38 @@ import edu.umd.cs.findbugs.classfile.IAnalysisCache;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
 
 /**
+ * Analysis engine to produce UnpackedCode objects
+ * for analyzed methods.
+ * 
  * @author David Hovemeyer
  */
-public class UnpackedCodeFactory extends NoExceptionAnalysisFactory<UnpackedCode> {
-    public UnpackedCodeFactory() {
-	    super("unpacked bytecode", UnpackedCode.class);
-    }
-    
-    /* (non-Javadoc)
-     * @see edu.umd.cs.findbugs.classfile.IAnalysisEngine#analyze(edu.umd.cs.findbugs.classfile.IAnalysisCache, java.lang.Object)
-     */
-    public Object analyze(IAnalysisCache analysisCache, MethodDescriptor descriptor) throws CheckedAnalysisException {
-    	Method method = getMethod(analysisCache, descriptor);
-    	Code code = method.getCode();
-    	if (code == null)
-    		return null;
+public class UnpackedCodeFactory extends AnalysisFactory<UnpackedCode> {
+	/**
+	 * Constructor.
+	 */
+	public UnpackedCodeFactory() {
+		super("unpacked bytecode", UnpackedCode.class);
+	}
 
-    	byte[] instructionList = code.getCode();
+	/* (non-Javadoc)
+	 * @see edu.umd.cs.findbugs.classfile.IAnalysisEngine#analyze(edu.umd.cs.findbugs.classfile.IAnalysisCache, java.lang.Object)
+	 */
+	public Object analyze(IAnalysisCache analysisCache, MethodDescriptor descriptor) throws CheckedAnalysisException {
+		Method method = getMethod(analysisCache, descriptor);
+		Code code = method.getCode();
+		if (code == null)
+			return null;
 
-    	// Create callback
-    	UnpackedBytecodeCallback callback = new UnpackedBytecodeCallback(instructionList.length);
+		byte[] instructionList = code.getCode();
 
-    	// Scan the method.
-    	BytecodeScanner scanner = new BytecodeScanner();
-    	scanner.scan(instructionList, callback);
+		// Create callback
+		UnpackedBytecodeCallback callback = new UnpackedBytecodeCallback(instructionList.length);
 
-    	return callback.getUnpackedCode();
-    	
-    }
+		// Scan the method.
+		BytecodeScanner scanner = new BytecodeScanner();
+		scanner.scan(instructionList, callback);
 
-//    @Override
-//    protected UnpackedCode analyze(JavaClass jclass, Method method) {
-//    
-//    	Code code = method.getCode();
-//    	if (code == null)
-//    		return null;
-//    
-//    	byte[] instructionList = code.getCode();
-//    
-//    	// Create callback
-//    	UnpackedBytecodeCallback callback = new UnpackedBytecodeCallback(instructionList.length);
-//    
-//    	// Scan the method.
-//    	BytecodeScanner scanner = new BytecodeScanner();
-//    	scanner.scan(instructionList, callback);
-//    
-//    	return callback.getUnpackedCode();
-//    }
+		return callback.getUnpackedCode();
+
+	}
 }

@@ -16,7 +16,7 @@ import edu.umd.cs.findbugs.classfile.MethodDescriptor;
  * 
  * @author David Hovemeyer
  */
-public class CallListDataflowFactory extends DataflowAnalysisFactory<CallListDataflow> {
+public class CallListDataflowFactory extends AnalysisFactory<CallListDataflow> {
 	public CallListDataflowFactory() {
 		super("call list analysis", CallListDataflow.class);
 	}
@@ -34,20 +34,6 @@ public class CallListDataflowFactory extends DataflowAnalysisFactory<CallListDat
 		dataflow.execute();
 
 		return dataflow;
-		
+
 	}
-	
-//	@Override
-//	protected CallListDataflow analyze(JavaClass jclass, Method method) throws DataflowAnalysisException, CFGBuilderException {
-//
-//		CallListAnalysis analysis = new CallListAnalysis(
-//				getCFG(jclass, method),
-//				getDepthFirstSearch(jclass, method),
-//				getConstantPoolGen(jclass));
-//
-//		CallListDataflow dataflow = new CallListDataflow(getCFG(jclass, method), analysis);
-//		dataflow.execute();
-//
-//		return dataflow;
-//	}
 }

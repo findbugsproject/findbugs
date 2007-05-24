@@ -31,11 +31,16 @@ import edu.umd.cs.findbugs.classfile.IAnalysisCache;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
 
 /**
- * AnalysisFactor for MethodGen objects.
+ * Analysis engine to produce MethodGen objects
+ * for analyzed methods.
  * 
  * @author David Hovemeyer
+ * @author Bill Pugh
  */
-public class MethodGenFactory extends NoExceptionAnalysisFactory<MethodGen> {
+public class MethodGenFactory extends AnalysisFactory<MethodGen> {
+	/**
+	 * Constructor.
+	 */
     public MethodGenFactory() {
 	    super("MethodGen construction", MethodGen.class);
     }
@@ -69,30 +74,4 @@ public class MethodGenFactory extends NoExceptionAnalysisFactory<MethodGen> {
     		return null;
     	}
     }
-
-//    @CheckForNull
-//    @Override
-//    protected MethodGen analyze(JavaClass jclass, Method method) {
-//    	if (method.getCode() == null)
-//    		return null;
-//    	try {
-//    		AnalysisContext analysisContext = AnalysisContext.currentAnalysisContext();
-//    		
-//    		String methodName = method.getName();
-//    		if (analysisContext.getBoolProperty(AnalysisFeatures.SKIP_HUGE_METHODS)) {
-//    			int codeLength = method.getCode().getLength();
-//    			if (codeLength > 3000 
-//    					|| (methodName.equals("<clinit>") || methodName.equals("getContents")) && codeLength > 1000) {
-//    				analysisContext.getLookupFailureCallback().reportSkippedAnalysis(new JavaClassAndMethod(jclass, method).toMethodDescriptor());
-//    				return null;
-//    			}
-//    		}
-//    		
-//    		return new MethodGen(method, jclass.getClassName(), getConstantPoolGen(jclass));
-//    	} catch (Exception e) {
-//    		AnalysisContext.logError("Error constructing methodGen", e);
-//    		return null;
-//    	}
-//    
-//    }
 }

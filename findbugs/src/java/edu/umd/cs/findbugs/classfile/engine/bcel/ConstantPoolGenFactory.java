@@ -29,7 +29,9 @@ import edu.umd.cs.findbugs.classfile.IAnalysisCache;
 import edu.umd.cs.findbugs.classfile.IClassAnalysisEngine;
 
 /**
- * @author daveho
+ * Analysis engine to produce ConstantPoolGen objects for an analyzed class.
+ * 
+ * @author David Hovemeyer
  */
 public class ConstantPoolGenFactory implements IClassAnalysisEngine {
 
@@ -52,6 +54,7 @@ public class ConstantPoolGenFactory implements IClassAnalysisEngine {
 	 * @see edu.umd.cs.findbugs.classfile.IAnalysisEngine#retainAnalysisResults()
 	 */
 	public boolean retainAnalysisResults() {
+		// can be recomputed
 		return false;
 	}
 

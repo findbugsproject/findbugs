@@ -35,71 +35,55 @@ import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.IAnalysisCache;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
 
-public class TypeDataflowFactory extends DataflowAnalysisFactory<TypeDataflow> {
-    public TypeDataflowFactory() {
-	    super("type analysis", TypeDataflow.class);
-    }
-    
-    /* (non-Javadoc)
-     * @see edu.umd.cs.findbugs.classfile.IAnalysisEngine#analyze(edu.umd.cs.findbugs.classfile.IAnalysisCache, java.lang.Object)
-     */
-    public Object analyze(IAnalysisCache analysisCache, MethodDescriptor descriptor) throws CheckedAnalysisException {
-    	MethodGen methodGen = getMethodGen(analysisCache, descriptor);
-    	if (methodGen == null) {
-    		throw new MethodUnprofitableException(descriptor);
-    	}
-    	CFG cfg = getCFG(analysisCache, descriptor);
-    	DepthFirstSearch dfs = getDepthFirstSearch(analysisCache, descriptor);
-    	ExceptionSetFactory exceptionSetFactory = getExceptionSetFactory(analysisCache, descriptor);
-    	Method method = getMethod(analysisCache, descriptor);
+/**
+ * Analysis engine to produce TypeDataflow objects
+ * for analyzed methods. 
+ * 
+ * @author David Hovemeyer
+ */
+public class TypeDataflowFactory extends AnalysisFactory<TypeDataflow> {
+	/**
+	 * Constructor.
+	 */
+	public TypeDataflowFactory() {
+		super("type analysis", TypeDataflow.class);
+	}
 
-    	TypeAnalysis typeAnalysis =
-    		new TypeAnalysis(method, methodGen, cfg, dfs, AnalysisContext.currentAnalysisContext().getLookupFailureCallback(), exceptionSetFactory);
+	/* (non-Javadoc)
+	 * @see edu.umd.cs.findbugs.classfile.IAnalysisEngine#analyze(edu.umd.cs.findbugs.classfile.IAnalysisCache, java.lang.Object)
+	 */
+	public Object analyze(IAnalysisCache analysisCache, MethodDescriptor descriptor) throws CheckedAnalysisException {
+		MethodGen methodGen = getMethodGen(analysisCache, descriptor);
+		if (methodGen == null) {
+			throw new MethodUnprofitableException(descriptor);
+		}
+		CFG cfg = getCFG(analysisCache, descriptor);
+		DepthFirstSearch dfs = getDepthFirstSearch(analysisCache, descriptor);
+		ExceptionSetFactory exceptionSetFactory = getExceptionSetFactory(analysisCache, descriptor);
+		Method method = getMethod(analysisCache, descriptor);
 
-    	if (AnalysisContext.currentAnalysisContext().getBoolProperty(AnalysisFeatures.MODEL_INSTANCEOF)) {
-    		typeAnalysis.setValueNumberDataflow(getValueNumberDataflow(analysisCache, descriptor));
-    	}
+		TypeAnalysis typeAnalysis = new TypeAnalysis(
+				method,
+				methodGen,
+				cfg,
+				dfs,
+				AnalysisContext.currentAnalysisContext().getLookupFailureCallback(), exceptionSetFactory);
 
-    	// Field store type database.
-    	// If present, this can give us more accurate type information
-    	// for values loaded from fields.
-    	typeAnalysis.setFieldStoreTypeDatabase(AnalysisContext.currentAnalysisContext().getFieldStoreTypeDatabase());
+		if (AnalysisContext.currentAnalysisContext().getBoolProperty(AnalysisFeatures.MODEL_INSTANCEOF)) {
+			typeAnalysis.setValueNumberDataflow(getValueNumberDataflow(analysisCache, descriptor));
+		}
 
-    	TypeDataflow typeDataflow = new TypeDataflow(cfg, typeAnalysis);
-    	typeDataflow.execute();
-    	if (TypeAnalysis.DEBUG) {
-    		ClassContext.dumpTypeDataflow(method, cfg, typeDataflow);
-    	}
+		// Field store type database.
+		// If present, this can give us more accurate type information
+		// for values loaded from fields.
+		typeAnalysis.setFieldStoreTypeDatabase(AnalysisContext.currentAnalysisContext().getFieldStoreTypeDatabase());
 
-    	return typeDataflow;
-    }
+		TypeDataflow typeDataflow = new TypeDataflow(cfg, typeAnalysis);
+		typeDataflow.execute();
+		if (TypeAnalysis.DEBUG) {
+			ClassContext.dumpTypeDataflow(method, cfg, typeDataflow);
+		}
 
-//    @Override
-//    protected TypeDataflow analyze(JavaClass jclass, Method method) throws DataflowAnalysisException, CFGBuilderException {
-//    	MethodGen methodGen = getMethodGen(jclass, method);
-//    	if (methodGen == null) throw new MethodUnprofitableException(jclass, method);
-//    	CFG cfg = getCFG(jclass, method);
-//    	DepthFirstSearch dfs = getDepthFirstSearch(jclass, method);
-//    	ExceptionSetFactory exceptionSetFactory = getExceptionSetFactory(jclass, method);
-//    
-//    	TypeAnalysis typeAnalysis =
-//    			new TypeAnalysis(method, methodGen, cfg, dfs, AnalysisContext.currentAnalysisContext().getLookupFailureCallback(), exceptionSetFactory);
-//    
-//    	if (AnalysisContext.currentAnalysisContext().getBoolProperty(AnalysisFeatures.MODEL_INSTANCEOF)) {
-//    		typeAnalysis.setValueNumberDataflow(getValueNumberDataflow(jclass, method));
-//    	}
-//    
-//    	// Field store type database.
-//    	// If present, this can give us more accurate type information
-//    	// for values loaded from fields.
-//    	typeAnalysis.setFieldStoreTypeDatabase(AnalysisContext.currentAnalysisContext().getFieldStoreTypeDatabase());
-//    
-//    	TypeDataflow typeDataflow = new TypeDataflow(cfg, typeAnalysis);
-//    	typeDataflow.execute();
-//    	if (TypeAnalysis.DEBUG) {
-//    		ClassContext.dumpTypeDataflow(method, cfg, typeDataflow);
-//    	}
-//    
-//    	return typeDataflow;
-//    }
+		return typeDataflow;
+	}
 }

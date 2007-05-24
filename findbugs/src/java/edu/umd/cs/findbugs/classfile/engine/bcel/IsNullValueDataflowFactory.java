@@ -38,11 +38,20 @@ import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.IAnalysisCache;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
 
-public class IsNullValueDataflowFactory extends DataflowAnalysisFactory<IsNullValueDataflow> {
+/**
+ * Analysis engine to produce IsNullValueDataflow objects
+ * for an analyzed method.
+ * 
+ * @author David Hovemeyer
+ */
+public class IsNullValueDataflowFactory extends AnalysisFactory<IsNullValueDataflow> {
+	/**
+	 * Constructor.
+	 */
 	public IsNullValueDataflowFactory() {
 		super("null value analysis", IsNullValueDataflow.class);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see edu.umd.cs.findbugs.classfile.IAnalysisEngine#analyze(edu.umd.cs.findbugs.classfile.IAnalysisCache, java.lang.Object)
 	 */
@@ -81,40 +90,6 @@ public class IsNullValueDataflowFactory extends DataflowAnalysisFactory<IsNullVa
 			System.out.println("}\n");
 		}
 		return invDataflow;
-		
-	}
 
-//	@Override
-//	protected IsNullValueDataflow analyze(JavaClass jclass, Method method) throws DataflowAnalysisException, CFGBuilderException {
-//		MethodGen methodGen = getMethodGen(jclass, method);
-//		if (methodGen == null) throw new MethodUnprofitableException(jclass ,method);
-//		CFG cfg = getCFG(jclass, method);
-//		ValueNumberDataflow vnaDataflow = getValueNumberDataflow(jclass, method);
-//		DepthFirstSearch dfs = getDepthFirstSearch(jclass, method);
-//		AssertionMethods assertionMethods = getAssertionMethods(jclass);
-//
-//		IsNullValueAnalysis invAnalysis = new IsNullValueAnalysis(methodGen, cfg, vnaDataflow, dfs, assertionMethods);
-//
-//		// Set return value and parameter databases
-//
-//		invAnalysis.setClassAndMethod(new JavaClassAndMethod(jclass, method));
-//
-//		IsNullValueDataflow invDataflow = new IsNullValueDataflow(cfg, invAnalysis);
-//		invDataflow.execute();
-//		if (ClassContext.DUMP_DATAFLOW_ANALYSIS) {
-//			TreeSet<Location> tree = new TreeSet<Location>();
-//			for(Iterator<Location> locs = cfg.locationIterator(); locs.hasNext(); ) {
-//				Location loc = locs.next();
-//				tree.add(loc);
-//			}
-//			System.out.println("\n\nInv analysis for " + method.getName() + " {");
-//			for(Location loc : tree) {
-//				System.out.println("\nBefore: " + invDataflow.getFactAtLocation(loc));
-//				System.out.println("Location: " + loc);
-//				System.out.println("After: " + invDataflow.getFactAfterLocation(loc));	
-//			}
-//			System.out.println("}\n");
-//		}
-//		return invDataflow;
-//	}
+	}
 }
