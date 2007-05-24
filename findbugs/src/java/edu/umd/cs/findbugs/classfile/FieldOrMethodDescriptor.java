@@ -30,6 +30,7 @@ public abstract class FieldOrMethodDescriptor {
 	private final String signature;
 	private final boolean isStatic;
 	private ClassDescriptor cachedClassDescriptor;
+	private int cachedHashCode;
 
 	public FieldOrMethodDescriptor(String className, String name, String signature, boolean isStatic) {
 		if (className.indexOf('.') >= 0) {
@@ -102,6 +103,9 @@ public abstract class FieldOrMethodDescriptor {
 	 */
 	@Override
 	public boolean equals(Object obj) {
+		if (obj == this) {
+			return true;
+		}
 		if (obj == null || obj.getClass() != this.getClass()) {
 			return false;
 		}
@@ -117,10 +121,13 @@ public abstract class FieldOrMethodDescriptor {
 	 */
 	@Override
 	public int hashCode() {
-		return className.hashCode() * 7919
-			+ name.hashCode() * 3119  
-			+ signature.hashCode() * 131
-			+ (isStatic ? 1 : 0);
+		if (cachedHashCode == 0) {
+			cachedHashCode = className.hashCode() * 7919
+				+ name.hashCode() * 3119  
+				+ signature.hashCode() * 131
+				+ (isStatic ? 1 : 0);
+		}
+		return cachedHashCode;
 	}
 
 	/* (non-Javadoc)
