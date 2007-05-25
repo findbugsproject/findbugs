@@ -22,6 +22,7 @@ package edu.umd.cs.findbugs;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import edu.umd.cs.findbugs.classfile.IAnalysisEngineRegistrar;
 import edu.umd.cs.findbugs.plan.DetectorOrderingConstraint;
 
 /**
@@ -46,6 +47,9 @@ public class Plugin {
 	// Ordering constraints
 	private ArrayList<DetectorOrderingConstraint> interPassConstraintList;
 	private ArrayList<DetectorOrderingConstraint> intraPassConstraintList;
+	
+	// Optional: engine registrar class
+	private Class<? extends IAnalysisEngineRegistrar> engineRegistrarClass;
 
 	/**
 	 * Constructor.
@@ -255,6 +259,28 @@ public class Plugin {
 	public String getPluginId() {
 		return pluginId;
 	}
+	
+	/**
+	 * Set the analysis engine registrar class that,
+	 * when instantiated, can be used to register the plugin's
+	 * analysis engines with the analysis cache.
+	 * 
+     * @param engineRegistrarClass The engine registrar class to set.
+     */
+    public void setEngineRegistrarClass(Class<? extends IAnalysisEngineRegistrar> engineRegistrarClass) {
+	    this.engineRegistrarClass = engineRegistrarClass;
+    }
+    
+    /**
+	 * Get the analysis engine registrar class that,
+	 * when instantiated, can be used to register the plugin's
+	 * analysis engines with the analysis cache.
+	 * 
+     * @return Returns the engine registrar class.
+     */
+    public Class<? extends IAnalysisEngineRegistrar> getEngineRegistrarClass() {
+	    return engineRegistrarClass;
+    }
 
 	private interface FactoryChooser {
 		public boolean choose(DetectorFactory factory);

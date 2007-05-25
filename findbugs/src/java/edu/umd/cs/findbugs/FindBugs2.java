@@ -40,6 +40,7 @@ import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.Global;
 import edu.umd.cs.findbugs.classfile.IAnalysisCache;
+import edu.umd.cs.findbugs.classfile.IAnalysisEngineRegistrar;
 import edu.umd.cs.findbugs.classfile.IClassFactory;
 import edu.umd.cs.findbugs.classfile.IClassObserver;
 import edu.umd.cs.findbugs.classfile.IClassPath;
@@ -156,7 +157,7 @@ public class FindBugs2 implements IFindBugsEngine {
 			buildReferencedClassSet();
 
 			// Create BCEL compatibility layer
-			createAnalysisContext();
+			createAnalysisContext(appClassList, sourceInfoFileName);
 
 			// Configure the BugCollection (if we are generating one)
 			FindBugs.configureBugCollection(this);
@@ -388,20 +389,65 @@ public class FindBugs2 implements IFindBugsEngine {
 
 	/**
 	 * Create the analysis cache object.
+	 * 
+	 * @throws IOException if error occurs registering analysis engines in a plugin 
 	 */
-	private void createAnalysisCache() {
+	private void createAnalysisCache() throws IOException {
 		analysisCache = ClassFactory.instance().createAnalysisCache(classPath, bugReporter);
 
-		// TODO: this would be a good place to load "analysis plugins" which could
-		// add additional analysis engines.  Or, perhaps when we load
-		// detector plugins we should check for analysis engines.
-		// Either way, allowing plugins to add new analyses would be nice.
-		new edu.umd.cs.findbugs.classfile.engine.EngineRegistrar().registerAnalysisEngines(analysisCache);
-		new edu.umd.cs.findbugs.classfile.engine.asm.EngineRegistrar().registerAnalysisEngines(analysisCache);
-		new edu.umd.cs.findbugs.classfile.engine.bcel.EngineRegistrar().registerAnalysisEngines(analysisCache);
+		// Register the "built-in" analysis engines
+		registerBuiltInAnalysisEngines(analysisCache);
+		
+		// Register analysis engines in plugins
+		registerPluginAnalysisEngines(detectorFactoryCollection, analysisCache);
 
 		Global.setAnalysisCacheForCurrentThread(analysisCache);
 	}
+
+	/**
+	 * Register the "built-in" analysis engines with given IAnalysisCache.
+	 * 
+	 * @param analysisCache an IAnalysisCache
+     */
+    public static void registerBuiltInAnalysisEngines(IAnalysisCache analysisCache) {
+	    new edu.umd.cs.findbugs.classfile.engine.EngineRegistrar().registerAnalysisEngines(analysisCache);
+		new edu.umd.cs.findbugs.classfile.engine.asm.EngineRegistrar().registerAnalysisEngines(analysisCache);
+		new edu.umd.cs.findbugs.classfile.engine.bcel.EngineRegistrar().registerAnalysisEngines(analysisCache);
+    }
+
+	/**
+	 * Register all of the analysis engines defined in the plugins
+	 * contained in a DetectorFactoryCollection with an IAnalysisCache. 
+	 * 
+	 * @param detectorFactoryCollection a DetectorFactoryCollection
+	 * @param analysisCache             an IAnalysisCache
+     * @throws IOException
+     */
+    public static void registerPluginAnalysisEngines(
+    		DetectorFactoryCollection detectorFactoryCollection, IAnalysisCache analysisCache) throws IOException {
+	    for (Iterator<Plugin> i = detectorFactoryCollection.pluginIterator(); i.hasNext(); ) {
+			Plugin plugin = i.next();
+			
+			Class<? extends IAnalysisEngineRegistrar> engineRegistrarClass =
+				plugin.getEngineRegistrarClass();
+			if (engineRegistrarClass != null) {
+				try {
+	                IAnalysisEngineRegistrar engineRegistrar = engineRegistrarClass.newInstance();
+	                engineRegistrar.registerAnalysisEngines(analysisCache);
+                } catch (InstantiationException e) {
+                	IOException ioe = new IOException(
+                			"Could not create analysis engine registrar for plugin " + plugin.getPluginId());
+                	ioe.initCause(e);
+                	throw ioe;
+                } catch (IllegalAccessException e) {
+                	IOException ioe = new IOException(
+                			"Could not create analysis engine registrar for plugin " + plugin.getPluginId());
+                	ioe.initCause(e);
+                	throw ioe;
+                }
+			}
+		}
+    }
 
 	/**
 	 * Build the classpath from project codebases and system codebases.
@@ -520,8 +566,14 @@ public class FindBugs2 implements IFindBugsEngine {
 	/**
 	 * Create the AnalysisContext that will serve as the BCEL-compatibility
 	 * layer over the AnalysisCache.
+	 * 
+	 * @param appClassList       list of ClassDescriptors identifying application classes
+	 * @param sourceInfoFileName name of source info file (null if none)
 	 */
-	private void createAnalysisContext() throws CheckedAnalysisException, IOException {
+	public static void createAnalysisContext(
+			List<ClassDescriptor> appClassList,
+			String sourceInfoFileName)
+			throws CheckedAnalysisException, IOException {
 		AnalysisCacheToAnalysisContextAdapter analysisContext =
 			new AnalysisCacheToAnalysisContextAdapter();
 

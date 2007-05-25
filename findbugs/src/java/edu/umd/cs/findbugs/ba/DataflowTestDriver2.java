@@ -25,8 +25,12 @@ import java.util.List;
 import org.apache.bcel.classfile.Method;
 import org.apache.bcel.generic.MethodGen;
 
+import edu.umd.cs.findbugs.DetectorFactoryCollection;
+import edu.umd.cs.findbugs.FindBugs2;
+import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
+import edu.umd.cs.findbugs.classfile.Global;
 import edu.umd.cs.findbugs.classfile.IAnalysisCache;
 import edu.umd.cs.findbugs.classfile.IClassFactory;
 import edu.umd.cs.findbugs.classfile.IClassPath;
@@ -43,7 +47,8 @@ import edu.umd.cs.findbugs.classfile.impl.ClassFactory;
  * 
  * @author David Hovemeyer
  */
-public abstract class DataflowTestDriver2<FactType, AnalysisType extends AbstractDataflowAnalysis<FactType>> {
+public abstract class DataflowTestDriver2<FactType, AnalysisType extends AbstractDataflowAnalysis<FactType>>
+		extends AbstractDataflowTestDriver {
 	
 	public DataflowTestDriver2() {
 	}
@@ -55,11 +60,23 @@ public abstract class DataflowTestDriver2<FactType, AnalysisType extends Abstrac
 	public void execute(String classFileName) throws CheckedAnalysisException, IOException, InterruptedException {
 		IClassFactory factory = ClassFactory.instance();
 
+		// Create classpath and error logger
 		IClassPath classPath = factory.createClassPath();
 		IErrorLogger errorLogger = createErrorLogger();
 		
+		// Create analysis cache
 		IAnalysisCache analysisCache = factory.createAnalysisCache(classPath, errorLogger);
+		Global.setAnalysisCacheForCurrentThread(analysisCache);
+
+		// Register standard (built-in) analysis engines
+		FindBugs2.registerBuiltInAnalysisEngines(analysisCache);
 		
+		// Register analysis engines defined in plugins
+		DetectorFactoryCollection detectorFactoryCollection =
+			DetectorFactoryCollection.instance();
+		FindBugs2.registerPluginAnalysisEngines(detectorFactoryCollection, analysisCache);
+
+		// Build classpath
 		IClassPathBuilder builder = factory.createClassPathBuilder(errorLogger);
 		builder.addCodeBase(factory.createFilesystemCodeBaseLocator(classFileName), true);
 		builder.addCodeBase(factory.createFilesystemCodeBaseLocator("."), false);
@@ -70,11 +87,26 @@ public abstract class DataflowTestDriver2<FactType, AnalysisType extends Abstrac
             }
 		});
 
+		// Get list of application clases (there should only be one)
 		List<ClassDescriptor> appClassList = builder.getAppClassList();
+		
+		// Create AnalysisContext for backwards compatibility
+		FindBugs2.createAnalysisContext(appClassList, null);
+		configureAnalysisContext(AnalysisContext.currentAnalysisContext());
+		
+		// Check dataflow.method system property
+		String methodName = SystemProperties.getProperty("dataflow.method");
+		
+		// Test dataflow analysis on each application class
 		for (ClassDescriptor classDescriptor : appClassList) {
 			ClassInfo classInfo = analysisCache.getClassAnalysis(ClassInfo.class, classDescriptor);
 			
+			// Test dataflow analysis on each method
 			for (MethodDescriptor methodDescriptor : classInfo.getMethodDescriptorList()) {
+				if (methodName != null && !methodName.equals(methodDescriptor.getName())) {
+					continue;
+				}
+				
 				Method method = analysisCache.getMethodAnalysis(Method.class, methodDescriptor);
 				if (method.getCode() == null) {
 					continue;
@@ -84,14 +116,27 @@ public abstract class DataflowTestDriver2<FactType, AnalysisType extends Abstrac
 				if (methodGen == null) {
 					continue;
 				}
+
+				System.out.println("-----------------------------------------------------------------");
+				System.out.println("Method: " + SignatureConverter.convertMethodSignature(methodDescriptor));
+				System.out.println("-----------------------------------------------------------------");
 				
+				// Create and excute the dataflow analysis
 				AnalysisType analysis = createAnalysis(analysisCache, methodDescriptor);
 				CFG cfg = analysisCache.getMethodAnalysis(CFG.class, methodDescriptor);
 				Dataflow<FactType, AnalysisType> dataflow =
 					new Dataflow<FactType, AnalysisType>(cfg, analysis);
 				dataflow.execute();
 				
-				// TODO: print CFG
+				System.out.println("Dataflow finished after " + dataflow.getNumIterations());
+				
+				if (SystemProperties.getBoolean("dataflow.printcfg")) {
+					// Print control flow graph annotated with dataflow facts
+					DataflowCFGPrinter<FactType, AnalysisType> cfgPrinter =
+						new DataflowCFGPrinter<FactType, AnalysisType>(dataflow);
+					cfgPrinter.print(System.out);
+				}
+				
 			}
 		}
 	}

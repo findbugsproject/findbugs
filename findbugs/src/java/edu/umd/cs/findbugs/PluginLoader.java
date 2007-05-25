@@ -33,6 +33,7 @@ import org.dom4j.Element;
 import org.dom4j.Node;
 import org.dom4j.io.SAXReader;
 
+import edu.umd.cs.findbugs.classfile.IAnalysisEngineRegistrar;
 import edu.umd.cs.findbugs.plan.ByInterfaceDetectorFactorySelector;
 import edu.umd.cs.findbugs.plan.DetectorFactorySelector;
 import edu.umd.cs.findbugs.plan.DetectorOrderingConstraint;
@@ -343,6 +344,27 @@ public class PluginLoader extends URLClassLoader {
 				definedBugCodes.add(abbrev);
 			}
 
+		}
+		
+		// If an engine registrar is specified, make a note of its classname
+		Node node = pluginDescriptor.selectSingleNode("/FindbugsPlugin/EngineRegistrar");
+		if (node != null) {
+			String engineClassName = node.valueOf("@class");
+			if (engineClassName == null) {
+				throw new PluginException("EngineRegistrar element with missing class attribute");
+			}
+
+			try {
+	            Class<?> engineRegistrarClass = loadClass(engineClassName);
+	            if (!IAnalysisEngineRegistrar.class.isAssignableFrom(engineRegistrarClass)) {
+	            	throw new PluginException(engineRegistrarClass + " does not implement IAnalysisEngineRegistrar");
+	            }
+	            
+	            plugin.setEngineRegistrarClass((Class<? extends IAnalysisEngineRegistrar>) engineRegistrarClass);
+            } catch (ClassNotFoundException e) {
+    			throw new PluginException("Could not instantiate analysis engine registrar class: " + e, e);
+            }
+			
 		}
 
 		// Success!
