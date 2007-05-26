@@ -93,6 +93,13 @@ public class PluginLoader {
 		this.classLoader = new URLClassLoader(new URL[]{url}, parent);
 		init();
 	}
+	
+	/**
+     * @return Returns the classLoader.
+     */
+    public ClassLoader getClassLoader() {
+	    return classLoader;
+    }
 
 	/**
 	 * Get the Plugin.
@@ -159,7 +166,7 @@ public class PluginLoader {
 
 		// Create the Plugin object (but don't assign to the plugin field yet,
 		// since we're still not sure if everything will load correctly)
-		Plugin plugin = new Plugin(pluginId);
+		Plugin plugin = new Plugin(pluginId, this);
 		plugin.setEnabled(pluginEnabled);
 
 		// Set provider and website, if specified
