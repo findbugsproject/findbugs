@@ -346,6 +346,13 @@ public class AnalysisCache implements IAnalysisCache {
 		// Again, we really should be using Class.cast()
 		return (E) database;
 	}
+	
+	/* (non-Javadoc)
+	 * @see edu.umd.cs.findbugs.classfile.IAnalysisCache#eagerlyPutDatabase(java.lang.Class, java.lang.Object)
+	 */
+	public <E> void eagerlyPutDatabase(Class<E> databaseClass, E database) {
+		databaseMap.put(databaseClass, database);
+	}
 
 	/* (non-Javadoc)
 	 * @see edu.umd.cs.findbugs.classfile.IAnalysisCache#getErrorLogger()
