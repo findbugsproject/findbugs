@@ -56,13 +56,8 @@ public abstract class BasicAbstractDataflowAnalysis<Fact> implements DataflowAna
 		return resultFactMap.values().iterator();
 	}
 
-	/**
-	 * Call this to get a dataflow value as a String.
-	 * By default, we just call toString().
-	 * Subclasses may override to get different behavior.
-	 * 
-	 * @param fact a dataflow fact
-	 * @return a String representing the dataflow fact
+	/*
+	 * Default implementation - subclasses may override.
 	 */
 	public String factToString(Fact fact) {
 		return fact.toString();

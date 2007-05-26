@@ -190,6 +190,15 @@ public interface DataflowAnalysis <Fact> {
 	public int getLastUpdateTimestamp(Fact fact);
 
 	public void setLastUpdateTimestamp(Fact fact, int timestamp);
+	
+	/**
+	 * Return a String representation of given Fact.
+	 * For debugging purposes.
+	 * 
+	 * @param fact a dataflow fact
+	 * @return String representation of the fact
+	 */
+	public String factToString(Fact fact);
 }
 
 // vim:ts=4
