@@ -47,15 +47,19 @@ import edu.umd.cs.findbugs.classfile.impl.ClassFactory;
  * 
  * @author David Hovemeyer
  */
-public abstract class DataflowTestDriver2<FactType, AnalysisType extends AbstractDataflowAnalysis<FactType>>
+public abstract class DataflowTestDriver2<FactType, DataflowType extends Dataflow<FactType, AbstractDataflowAnalysis<FactType>>>
 		extends AbstractDataflowTestDriver {
 	
-	public DataflowTestDriver2() {
+	private Class<DataflowType> dataflowClass;
+
+	/**
+	 * Constructor.
+	 * 
+	 * @param dataflowClass the Dataflow class to be tested
+	 */
+	public DataflowTestDriver2(Class<DataflowType> dataflowClass) {
+		this.dataflowClass = dataflowClass;
 	}
-	
-	protected abstract AnalysisType createAnalysis(
-			IAnalysisCache analysisCache, MethodDescriptor methodDescriptor)
-			throws CheckedAnalysisException;
 	
 	public void execute(String classFileName) throws CheckedAnalysisException, IOException, InterruptedException {
 		IClassFactory factory = ClassFactory.instance();
@@ -122,24 +126,25 @@ public abstract class DataflowTestDriver2<FactType, AnalysisType extends Abstrac
 				System.out.println("-----------------------------------------------------------------");
 				
 				// Create and excute the dataflow analysis
-				AnalysisType analysis = createAnalysis(analysisCache, methodDescriptor);
-				CFG cfg = analysisCache.getMethodAnalysis(CFG.class, methodDescriptor);
-				Dataflow<FactType, AnalysisType> dataflow =
-					new Dataflow<FactType, AnalysisType>(cfg, analysis);
-				dataflow.execute();
+				DataflowType dataflow = analysisCache.getMethodAnalysis(dataflowClass, methodDescriptor);
 				
 				System.out.println("Dataflow finished after " + dataflow.getNumIterations());
 				
 				if (SystemProperties.getBoolean("dataflow.printcfg")) {
-					// Print control flow graph annotated with dataflow facts
-					DataflowCFGPrinter<FactType, AnalysisType> cfgPrinter =
-						new DataflowCFGPrinter<FactType, AnalysisType>(dataflow);
-					cfgPrinter.print(System.out);
+					printCFG(dataflow);
 				}
 				
 			}
 		}
 	}
+
+    private<AnalysisType extends AbstractDataflowAnalysis<FactType>>
+    void printCFG(Dataflow<FactType, AnalysisType> dataflow) {
+		// Print control flow graph annotated with dataflow facts
+		DataflowCFGPrinter<FactType, AnalysisType> cfgPrinter =
+			new DataflowCFGPrinter<FactType, AnalysisType>(dataflow);
+		cfgPrinter.print(System.out);
+    }
 
 	/**
 	 * Create an IErrorLogger that logs to System.err.

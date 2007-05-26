@@ -1,6 +1,6 @@
 /*
  * Bytecode Analysis Framework
- * Copyright (C) 2003,2004 University of Maryland
+ * Copyright (C) 2003-2007 University of Maryland
  * 
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -347,6 +347,32 @@ public class Dataflow <Fact, AnalysisType extends DataflowAnalysis<Fact>> {
 	 */
 	public Fact getResultFact(BasicBlock block) {
 		return analysis.getResultFact(block);
+	}
+	
+	/**
+	 * Get dataflow fact at (just before) given Location.
+	 * Note "before" is meant in the logical sense, so for backward analyses,
+	 * before means after the location in the control flow sense.
+	 * 
+	 * @param location the Location
+	 * @return the dataflow value at given Location
+	 * @throws DataflowAnalysisException
+	 */
+	public /*final*/ Fact getFactAtLocation(Location location) throws DataflowAnalysisException {
+		return analysis.getFactAtLocation(location);
+	}
+	
+	/**
+	 * Get the dataflow fact representing the point just after given Location.
+	 * Note "after" is meant in the logical sense, so for backward analyses,
+	 * after means before the location in the control flow sense.
+	 * 
+	 * @param location the Location
+	 * @return the dataflow value after given Location
+	 * @throws DataflowAnalysisException
+	 */
+	public /*final*/ Fact getFactAfterLocation(Location location) throws DataflowAnalysisException {
+		return analysis.getFactAfterLocation(location);
 	}
 
 	/**
