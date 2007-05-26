@@ -46,6 +46,7 @@ import edu.umd.cs.findbugs.classfile.IClassObserver;
 import edu.umd.cs.findbugs.classfile.IClassPath;
 import edu.umd.cs.findbugs.classfile.IClassPathBuilder;
 import edu.umd.cs.findbugs.classfile.ICodeBase;
+import edu.umd.cs.findbugs.classfile.IDatabaseFactory;
 import edu.umd.cs.findbugs.classfile.MissingClassException;
 import edu.umd.cs.findbugs.classfile.ResourceNotFoundException;
 import edu.umd.cs.findbugs.classfile.analysis.ClassInfo;
@@ -400,6 +401,9 @@ public class FindBugs2 implements IFindBugsEngine {
 		
 		// Register analysis engines in plugins
 		registerPluginAnalysisEngines(detectorFactoryCollection, analysisCache);
+
+		// Install the DetectorFactoryCollection as a database
+		analysisCache.eagerlyPutDatabase(DetectorFactoryCollection.class, detectorFactoryCollection);
 
 		Global.setAnalysisCacheForCurrentThread(analysisCache);
 	}
