@@ -140,13 +140,6 @@ public class ReturnPathTypeAnalysis extends BasicAbstractDataflowAnalysis<Return
 	}
 
 	/* (non-Javadoc)
-	 * @see edu.umd.cs.findbugs.ba.DataflowAnalysis#initResultFact(java.lang.Object)
-	 */
-	public void initResultFact(ReturnPathType result) {
-		makeFactTop(result);
-	}
-
-	/* (non-Javadoc)
 	 * @see edu.umd.cs.findbugs.ba.DataflowAnalysis#isForwards()
 	 */
 	public boolean isForwards() {

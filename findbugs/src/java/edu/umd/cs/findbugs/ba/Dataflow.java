@@ -73,16 +73,18 @@ public class Dataflow <Fact, AnalysisType extends DataflowAnalysis<Fact>> {
 		while (i.hasNext()) {
 			BasicBlock block = i.next();
 
-
-			// Initial result facts are whatever the analysis sets them to be.
 			Fact result = analysis.getResultFact(block);
-			if (block == logicalEntryBlock())
+			if (block == logicalEntryBlock()) {
 				try {
+					// Entry block: set to entry fact
 					analysis.initEntryFact(result);
 				} catch (DataflowAnalysisException e) {
-					 analysis.initResultFact(result);
+					analysis.makeFactTop(result);
 				}
-			else analysis.initResultFact(result);
+			} else {
+				// Set to top
+				analysis.makeFactTop(result);
+			}
 		}
 	}
 

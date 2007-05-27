@@ -100,14 +100,6 @@ public interface DataflowAnalysis <Fact> {
 	public void initEntryFact(Fact result) throws DataflowAnalysisException;
 
 	/**
-	 * Initialize result fact for block.
-	 * The start facts for a block are initialized as the meet of the
-	 * "logical" predecessor's result facts.  Note that a "logical predecessor"
-	 * is actually a CFG successor if the analysis is backwards.
-	 */
-	public void initResultFact(Fact result);
-
-	/**
 	 * Make given fact the top value.
 	 */
 	public void makeFactTop(Fact fact);
