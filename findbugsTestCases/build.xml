@@ -1,0 +1,99 @@
+<!--
+	FindBugs Test Cases Ant build script.
+	Based on original FindBugs Ant Script by Mike Fagan.
+	Rewritten 1/5/2005 by David Hovemeyer, 2/6/2006 by Brian Cole.
+-->
+
+<project name="findbugsTestCases" default="build">
+
+	<property file="build.properties" />
+	<property file="local.properties" />
+        <property name="jsr305.home" value="../JSR305-ri"/>
+	<property name="findbugs.home" value="../findbugs"/>
+	<property name="history.dir" value="history"/>
+	<property file="build.properties" />
+
+	<!-- 
+	        The local.properties properties file contains the location of findbugs.home 
+
+	        This value is likely to be different for each checkout of the plugin,
+	        so the local.properties file is not managed by cvs
+	        
+	-->
+	<property file="local.properties" />
+
+	<target name="build" depends="classes,runfindbugs" />
+
+	<target name="classes">
+		<mkdir dir="build/classes"/>
+		<javac  destdir="build/classes" source="1.5" debug="on">
+			<src path="src/java"/>
+			<src path="src/fakeAnnotations"/>
+			<classpath>
+				<pathelement location="build/classes"/>
+				<pathelement location="${findbugs.home}/lib/annotations.jar" />
+				<pathelement location="${jsr305.home}/build/classes"/>
+				<pathelement location="${junit.home}/junit.jar"/>
+				<pathelement location="lib/j2ee.jar"/>
+			</classpath>
+		</javac>
+	</target>
+
+   <target name="jarFile" depends ="classes">
+		<delete quiet="true">
+			<fileset dir="build/all.jar"/>
+		</delete>
+		<jar destfile="build/all.jar">
+			<fileset dir="build/classes"/>
+
+		</jar>
+	</target>
+		
+
+        <target name="clean">
+                <delete dir="build/classes"/>
+                <delete file="build/all.jar"/>
+        </target>
+
+	<taskdef name="findbugs" classname="edu.umd.cs.findbugs.anttask.FindBugsTask" classpath="${findbugs.home}/lib/findbugs-ant.jar"/>
+
+
+	<target name="runfindbugs" depends="classes">	
+		<parallel threadsPerProcessor="1">
+			<antcall target="historyNormal"/> <!--   run findbugs effort=default, then merge or copy results -->       <!-- run findbugs effort=max, then merge or copy results -->
+		</parallel>
+	</target>
+
+	<target name="runNormal" depends="classes">
+		<findbugs home="${findbugs.home}" output="xml" timestampNow="true" reportLevel="low" effort="default" outputFile="build/normal.xml">
+			<sourcePath path="${basedir}/src/java" />
+			<auxclasspath location="${junit.home}/junit.jar"/>
+			<class location="${basedir}/build/classes" />
+		</findbugs>
+	</target>
+
+	
+	<target name="historyNormal" depends="mergeNormal,copyNormal"/>
+
+	<target name="mergeNormal" depends="runNormal,existance" if="exists.normal">
+		<exec dir="." executable="${findbugs.home}/bin/computeBugHistory">
+					<arg value="-output" />
+					<arg file="${history.dir}/normal.xml" />
+					<arg file="${history.dir}/normal.xml" />
+					<arg file="build/normal.xml" />
+		</exec>
+	</target>
+
+	
+	<target name="existance">
+		<available property="exists.normal" file="${history.dir}/normal.xml"/>
+	</target>
+
+	<target name="copyNormal" depends="runNormal,existance" unless="exists.normal">
+		<copy file="build/normal.xml" todir="${history.dir}"/>
+	</target>
+
+
+</project>
+
+<!-- vim:set ts=4: -->
