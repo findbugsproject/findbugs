@@ -1,7 +1,0 @@
-#FindBugs User Preferences
-#Tue Oct 16 06:45:15 EDT 2007
-detector_threshold=2
-effort=default
-excludefilter0=findbugsExclude.xml
-filter_settings=Medium|PERFORMANCE,CORRECTNESS,I18N,MT_CORRECTNESS,BAD_PRACTICE,STYLE|false
-filter_settings_neg=MALICIOUS_CODE|
