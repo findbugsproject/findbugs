@@ -1,0 +1,55 @@
+#! /usr/bin/perl
+
+# Compare deltas for bug summaries produced by the summarizeBugs script.
+
+use FileHandle;
+use strict qw(refs vars);
+
+if (scalar(@ARGV) != 2) {
+	print "Usage: diffBugSummaries <oldfile> <newfile>\n";
+	exit 1;
+}
+
+my $oldfile = shift @ARGV;
+my $newfile = shift @ARGV;
+
+my %allKeys = ();
+my %oldResults = parseResults($oldfile);
+my %newResults = parseResults($newfile);
+my $oldTotal = 0;
+my $newTotal = 0;
+
+foreach my $key (sort keys %allKeys) {
+	my $oldBugs = $oldResults{$key};
+	my $newBugs = $newResults{$key};
+	my $delta = $newBugs - $oldBugs;
+	if ($delta != 0) {
+		$delta = "+$delta" if ($delta > 0);
+		print "\t$key:\t$delta\n";
+	}
+
+	$oldTotal += $oldBugs;
+	$newTotal += $newBugs;
+}
+print "\tTotal: old=$oldTotal, new=$newTotal\n";
+
+sub parseResults {
+	my ($file) = @_;
+
+	my %results = ();
+
+	my $fh = new FileHandle("<$file");
+	(defined $fh) || die "Couldn't open $file: $!\n";
+	while (<$fh>) {
+		if (/(\S+):\s+(\d+)/) {
+			$allKeys{$1} = 1;
+			$results{$1} = $2;
+		}
+	}
+
+	$fh->close();
+
+	return %results;
+}
+
+# vim:ts=4
