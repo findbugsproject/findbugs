@@ -121,22 +121,6 @@ public class I18N {
 	}
 
 	/**
-	 * Get a message string.
-	 * This is a format pattern for describing an entire bug instance in a single line.
-	 *
-	 * @param key which message to retrieve
-	 * 
-	 * 
-	 */
-	@Deprecated
-	public @NonNull String getMessage(String key) {
-		BugPattern bugPattern = bugPatternMap.get(key);
-		if (bugPattern == null)
-			return L10N.getLocalString("err.missing_pattern", "Error: missing bug pattern for key") + " " + key;
-		return bugPattern.getAbbrev() + ": " + bugPattern.getLongDescription();
-	}
-
-	/**
 	 * Get a short message string.
 	 * This is a concrete string (not a format pattern) which briefly describes
 	 * the type of bug, without mentioning particular a particular class/method/field.
@@ -273,11 +257,30 @@ public class I18N {
 
 		return categoryDescriptionMap.keySet(); // backed by the Map
 	}
+	
 	public Collection<BugCategory> getBugCategoryObjects() {
 		DetectorFactoryCollection.instance(); // ensure detectors loaded
 
 		return categoryDescriptionMap.values(); // backed by the Map
 	}
+	
+	public String getPriorityString(BugInstance bug) {
+		//first, get the priority
+		int value = bug.getPriority();
+		String priorityString;
+		if (value == Detector.HIGH_PRIORITY)
+			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_high", "High");
+		else if (value == Detector.NORMAL_PRIORITY)
+			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_normal", "Medium");
+		else if (value == Detector.LOW_PRIORITY)
+			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_low", "Low");
+		else if (value == Detector.EXP_PRIORITY)
+			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_experimental", "Experimental");
+		else
+			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_ignore", "Ignore"); // This probably shouldn't ever happen, but what the hell, let's be complete
+		return priorityString;
+	}	
+	
 	/**
 	 * Get the localized user designation string.
 	 * Returns the key if no user designation can be found.
@@ -323,8 +326,7 @@ public class I18N {
 	public String getUserDesignationKey(int index) {
 		List<String> keys = getUserDesignationKeys(true);
 		return keys.get(index);
-	}
-
+	}	
 
 	private static class DesignationKeyComparator implements Comparator<String>, Serializable {
 		private static final long serialVersionUID = 1L;
@@ -363,5 +365,3 @@ public class I18N {
 	}
 
 }
-
-// vim:ts=4

@@ -40,12 +40,6 @@ public class LaunchAppropriateUI {
 	public static final int TEXTUI = 0;
 	
 	/**
-	 * UI code for the old Swing GUI.
-	 * This is deprecated now.
-	 */
-	public static final int GUI1 = 1;
-	
-	/**
 	 * UI code for the new Swing GUI.
 	 */
 	public static final int GUI2 = 2;
@@ -68,7 +62,6 @@ public class LaunchAppropriateUI {
 		uiNameToCodeMap = new HashMap<String, Integer>();
 		uiNameToCodeMap.put("textui", TEXTUI);
 		uiNameToCodeMap.put("gui", GUI2);
-		uiNameToCodeMap.put("gui1", GUI1);
 		uiNameToCodeMap.put("gui2", GUI2);
 		uiNameToCodeMap.put("help", SHOW_HELP);
 		uiNameToCodeMap.put("version", SHOW_VERSION);
@@ -107,26 +100,12 @@ public class LaunchAppropriateUI {
 		} else if (launchProperty == SHOW_VERSION) {
 			Version.main(new String[]{"-release"});
 		} else {
-			String version = System.getProperty("java.version");
-
-			Class<?> launchClass = null;
-			if ("1.5".compareTo(version) <= 0) {
-				try {
-					launchClass = Class.forName("edu.umd.cs.findbugs.gui2.Driver", false,
-						LaunchAppropriateUI.class.getClassLoader());
-				} catch (ClassNotFoundException e) {
-					assert true;
-				}
-			}
-			
-			if (launchClass == null || launchProperty == GUI1) {
-				launchClass = edu.umd.cs.findbugs.gui.FindBugsFrame.class;
-			}
-
+			// XXX we should provide a better way to choose the UI 
+			Class<?> launchClass = Class.forName("edu.umd.cs.findbugs.gui2.Driver", false,
+            		LaunchAppropriateUI.class.getClassLoader());
 			Method mainMethod = launchClass.getMethod("main", args.getClass());
 			mainMethod.invoke(null, (Object) args);
 		}
-		
 	}
 	
 	/**

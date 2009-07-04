@@ -37,8 +37,6 @@ import javax.swing.JFrame;
 import javax.swing.event.HyperlinkEvent;
 
 import edu.umd.cs.findbugs.Version;
-import edu.umd.cs.findbugs.gui.ConsoleLogger;
-import edu.umd.cs.findbugs.gui.Logger;
 import edu.umd.cs.findbugs.util.LaunchBrowser;
 
 /**

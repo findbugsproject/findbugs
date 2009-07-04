@@ -133,9 +133,6 @@ import edu.umd.cs.findbugs.cloud.CloudListener;
 import edu.umd.cs.findbugs.filter.Filter;
 import edu.umd.cs.findbugs.filter.LastVersionMatcher;
 import edu.umd.cs.findbugs.filter.Matcher;
-import edu.umd.cs.findbugs.gui.ConsoleLogger;
-import edu.umd.cs.findbugs.gui.LogSync;
-import edu.umd.cs.findbugs.gui.Logger;
 import edu.umd.cs.findbugs.gui2.BugTreeModel.TreeModification;
 import edu.umd.cs.findbugs.sourceViewer.NavigableTextPane;
 import edu.umd.cs.findbugs.util.LaunchBrowser;
@@ -156,25 +153,25 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 {
 	static JButton newButton(String key, String name) {
 		JButton b = new JButton();
-		edu.umd.cs.findbugs.L10N.localiseButton(b, key, name, false);
+		edu.umd.cs.findbugs.gui2.AnnotatedString.localiseButton(b, key, name, false);
 		return b;
 	}
 	static JMenuItem newJMenuItem(String key, String string, int vkF) {
 		JMenuItem m = new JMenuItem();
-		edu.umd.cs.findbugs.L10N.localiseButton(m, key, string, false);
+		edu.umd.cs.findbugs.gui2.AnnotatedString.localiseButton(m, key, string, false);
 		m.setMnemonic(vkF);
 		return m;
 
 	}
 	static JMenuItem newJMenuItem(String key, String string) {
 		JMenuItem m = new JMenuItem();
-		edu.umd.cs.findbugs.L10N.localiseButton(m, key, string, true);
+		edu.umd.cs.findbugs.gui2.AnnotatedString.localiseButton(m, key, string, true);
 		return m;
 
 	}
 	static JMenu newJMenu(String key, String string) {
 		JMenu m = new JMenu();
-		edu.umd.cs.findbugs.L10N.localiseButton(m, key, string, true);
+		edu.umd.cs.findbugs.gui2.AnnotatedString.localiseButton(m, key, string, true);
 		return m;
 	}
 	JTree tree;

@@ -294,33 +294,14 @@ public class BugInstance implements Comparable<BugInstance>, XMLWriteableWithMes
 		//TODO: internationalize the word "Priority"
 	}
 
-	public String getPriorityTypeAbbreviation()
-	{
-		String priorityString = getPriorityAbbreviation();
-		return priorityString + " " + getCategoryAbbrev();
-	}
-
 	public String getCategoryAbbrev() {
 	    BugPattern bugPattern = getBugPattern();
 	    if (bugPattern == null) return "?";
 		return bugPattern.getCategoryAbbrev();
     }
 
-	public String getPriorityString() {
-		//first, get the priority
-		int value = this.getPriority();
-		String priorityString;
-		if (value == Detector.HIGH_PRIORITY)
-			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_high", "High");
-		else if (value == Detector.NORMAL_PRIORITY)
-			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_normal", "Medium");
-		else if (value == Detector.LOW_PRIORITY)
-			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_low", "Low");
-		else if (value == Detector.EXP_PRIORITY)
-			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_experimental", "Experimental");
-		else
-			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_ignore", "Ignore"); // This probably shouldn't ever happen, but what the hell, let's be complete
-		return priorityString;
+	public String getPriorityString() {		
+		return I18N.instance().getPriorityString(this);
 	}
 
 	public String getPriorityAbbreviation() {
@@ -1730,18 +1711,6 @@ public class BugInstance implements Comparable<BugInstance>, XMLWriteableWithMes
 			AnalysisContext.logError("Error generating bug msg ", e);
 			return bugPattern.getShortDescription() + " [Error generating customized description]";
 		}
-	}
-
-	/**
-	 * Format a string describing this bug pattern, with the priority and type at the beginning.
-	 * e.g. "(High Priority Correctness) Guaranteed null pointer dereference..."
-	 */
-	public String getMessageWithPriorityType() {
-		return "(" + this.getPriorityTypeString() + ") " + this.getMessage();
-	}
-
-	public String getMessageWithPriorityTypeAbbreviation() {
-		return this.getPriorityTypeAbbreviation() + " "+ this.getMessage();
 	}
 
 	/**
