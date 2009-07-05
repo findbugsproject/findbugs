@@ -17,6 +17,7 @@
 
 	<property file="build.properties" />
 	
+	<property name="ui.dir" value="../findbugs-gui"/>
 	<property name="jar.dir" value="lib"/>
 	<property name="plugin.dir" value="plugin"/>
 	<property name="build.dir" value="build"/>
@@ -57,7 +58,7 @@
 	<path id="findbugs.classpath">
 		<pathelement location="${jar.dir}/bcel.jar"/>
 		<pathelement location="${jar.dir}/dom4j-1.6.1.jar"/>
-		<pathelement location="${jar.dir}/AppleJavaExtensions.jar"/>
+		<pathelement location="${ui.dir}/${jar.dir}/AppleJavaExtensions.jar"/>
 		<pathelement location="${jar.dir}/junit.jar"/>
 		<pathelement location="${jar.dir}/asm-3.1.jar"/>
 		<pathelement location="${jar.dir}/asm-commons-3.1.jar"/>
@@ -120,7 +121,7 @@
 		manifest="etc/MANIFEST-findbugs-mondo.MF">
 		<zipfileset src="${jar.dir}/bcel.jar"/>
 		<zipfileset src="${jar.dir}/dom4j-1.6.1.jar"/>
-		<zipfileset src="${jar.dir}/AppleJavaExtensions.jar"/>
+		<zipfileset src="${ui.dir}/${jar.dir}/AppleJavaExtensions.jar"/>
 		<zipfileset src="${jar.dir}/junit.jar"/>
 		<zipfileset src="${jar.dir}/asm-3.1.jar"/>
 		<zipfileset src="${jar.dir}/asm-commons-3.1.jar"/>
@@ -149,12 +150,18 @@
 						debug="on">
 					<compilerarg value="-Xlint:unchecked"/>
 					<src path="${src.dir}"/>
+					<src path="${ui.dir}/src"/>
 					<src path="${src5.dir}"/>
 					<classpath refid="findbugs.classpath"/>
 				</javac>
         <native2ascii   encoding="Cp1252"
                 dest = "${classes.dir}"
                 src= "${src.dir}"
+                includes = "${pkg.base}/**/*_de.properties"
+			/>
+        <native2ascii   encoding="Cp1252"
+                dest = "${classes.dir}"
+                src= "${ui.dir}/src"
                 includes = "${pkg.base}/**/*_de.properties"
 			/>
 		<!-- Copy codebase data files. -->
@@ -164,6 +171,9 @@
 				<patternset refid="codebase.data.pats"/>
 			</fileset>
 			<fileset dir="${src5.dir}">
+				<patternset refid="codebase.data.pats"/>
+			</fileset>
+			<fileset dir="${ui.dir}/src">
 				<patternset refid="codebase.data.pats"/>
 			</fileset>
 			<fileset dir="${xslsrc.dir}">
@@ -297,7 +307,6 @@
 				<include name="**/*.properties"/>
 				<include name="**/*.db"/>
 				<include name="**/*.xsl"/>
-				<include name="${pkg.base}/sourceViewer/**/*.class"/>
 				<include name="${pkg.base}/gui2/**/*.png"/>
 				<include name="${pkg.base}/gui2/**/*.html"/>
 			</fileset>
@@ -880,7 +889,7 @@
 		<copy todir="${jnlp.dir}" file="${jar.dir}/jaxen-1.1.1.jar"/>		
 		<copy todir="${jnlp.dir}" file="${jar.dir}/jFormatString.jar"/>		
 		<copy todir="${jnlp.dir}" file="${jar.dir}/commons-lang-2.4.jar"/>		
-		<copy todir="${jnlp.dir}" file="${jar.dir}/AppleJavaExtensions.jar"/>
+		<copy todir="${jnlp.dir}" file="${ui.dir}/${jar.dir}/AppleJavaExtensions.jar"/>
 		<copy todir="${jnlp.dir}" file="${docsrc.dir}/buggy-sm.png"/>		
 		<copy todir="${jnlp.dir}">
 			<fileset refid="plugin.jars"/>
@@ -1027,7 +1036,7 @@
        <delete dir="${annotationDoc.dir}"/>
        <mkdir dir="${annotationDoc.dir}"/>
       <javadoc access="public" 
-       classpath="lib/bcel.jar:lib/junit.jar:lib/dom4j-1.6.1.jar:lib/jsr305.jar:lib/AppleJavaExtensions.jar"
+       classpath="lib/bcel.jar:lib/junit.jar:lib/dom4j-1.6.1.jar:lib/jsr305.jar:${ui.dir}/${jar.dir}/AppleJavaExtensions.jar"
         destdir="${annotationDoc.dir}" 
 	    packagenames="edu.umd.cs.findbugs.annotations"
         doctitle="FindBugs Annotation Documentation" 

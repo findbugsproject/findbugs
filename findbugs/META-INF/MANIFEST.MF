@@ -4,7 +4,6 @@ Bundle-Name: findbugs
 Bundle-SymbolicName: findbugs
 Bundle-Version: 1.0.0
 Bundle-ClassPath: findbugs.jar,
- lib/AppleJavaExtensions.jar,
  lib/bcel.jar,
  lib/dom4j-1.6.1.jar,
  lib/junit.jar,
