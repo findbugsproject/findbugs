@@ -14,7 +14,6 @@
 			<accessrule kind="nonaccessible" pattern="com/apple/**"/>
 		</accessrules>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/AppleJavaExtensions.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/bcel.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://jakarta.apache.org/bcel/apidocs/"/>
@@ -43,7 +42,7 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/commons-lang-2.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="lib/jsr305.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jsr305.jar"/>
 	<classpathentry kind="lib" path="lib/jaxen-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jFormatString.jar"/>
 	<classpathentry kind="lib" path="lib/jdepend-2.9.jar"/>

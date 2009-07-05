@@ -50,6 +50,7 @@ import javax.annotation.WillNotClose;
 
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
+import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 
 /**
  * @author William Pugh
@@ -278,8 +279,17 @@ public class Util {
     		return s1;
     	assert s2.length() == minLength;
     	return s2;
-    	
-    	
     }
-   
+
+    public static boolean matchedPrefixes(String[] classSearchStrings, @DottedClassName String className) {
+        String[] pp = classSearchStrings;
+        if (pp == null || pp.length == 0)
+            return true;
+
+        for (String p : pp)
+            if (p.length() > 0 && className.indexOf(p) >= 0)
+                return true;
+
+        return false;
+    }    
 }
