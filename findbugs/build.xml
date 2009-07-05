@@ -18,6 +18,7 @@
 	<property file="build.properties" />
 	
 	<property name="ui.dir" value="../findbugs-gui"/>
+	<property name="junittests.dir" value="../findbugs-tests"/>
 	<property name="jar.dir" value="lib"/>
 	<property name="plugin.dir" value="plugin"/>
 	<property name="build.dir" value="build"/>
@@ -31,7 +32,7 @@
 	<property name="scriptsrc.dir" value="src/scripts"/>
 	<property name="patch.dir" value="src/patches"/>
 	<property name="xslsrc.dir" value="src/xsl"/>
-	<property name="junitsrc.dir" value="src/junit"/>
+	<property name="junitsrc.dir" value="${junittests.dir}/src"/>
 	<property name="docsrc.dir" value="src/doc"/>
 	<property name="etc.dir" value="etc"/>
 	<property name="test.dir" value="test"/>
@@ -59,7 +60,7 @@
 		<pathelement location="${jar.dir}/bcel.jar"/>
 		<pathelement location="${jar.dir}/dom4j-1.6.1.jar"/>
 		<pathelement location="${ui.dir}/${jar.dir}/AppleJavaExtensions.jar"/>
-		<pathelement location="${jar.dir}/junit.jar"/>
+		<pathelement location="${junittests.dir}/${jar.dir}/junit.jar"/>
 		<pathelement location="${jar.dir}/asm-3.1.jar"/>
 		<pathelement location="${jar.dir}/asm-commons-3.1.jar"/>
 		<pathelement location="${jar.dir}/asm-tree-3.1.jar"/>
@@ -72,7 +73,7 @@
 	<path id="tools.classpath">
 		<pathelement location="${classes.dir}"/>
 		<pathelement location="${jar.dir}/findbugs.jar"/>
-		<pathelement location="${jar.dir}/jdepend-2.9.jar"/>
+		<pathelement location="${junittests.dir}/${jar.dir}/jdepend-2.9.jar"/>
 		<path refid="findbugs.classpath"/>
 	</path>
 
@@ -122,7 +123,7 @@
 		<zipfileset src="${jar.dir}/bcel.jar"/>
 		<zipfileset src="${jar.dir}/dom4j-1.6.1.jar"/>
 		<zipfileset src="${ui.dir}/${jar.dir}/AppleJavaExtensions.jar"/>
-		<zipfileset src="${jar.dir}/junit.jar"/>
+		<zipfileset src="${junittests.dir}/${jar.dir}/junit.jar"/>
 		<zipfileset src="${jar.dir}/asm-3.1.jar"/>
 		<zipfileset src="${jar.dir}/asm-commons-3.1.jar"/>
 		<zipfileset src="${jar.dir}/asm-tree-3.1.jar"/>
@@ -522,7 +523,7 @@
     		  timeout="1800000"
               outputFile="${sampleoutput.dir}/findbugs.xml" >
       <class location="${classes.dir}" />
-      <sourcePath path="src/java:src/java5:src/junit"/>
+      <sourcePath path="src/java:src/java5:${junitsrc.dir}"/>
 	  <auxClasspath refid="tools.classpath"/>
     </findbugs>
   </target>
@@ -1036,7 +1037,7 @@
        <delete dir="${annotationDoc.dir}"/>
        <mkdir dir="${annotationDoc.dir}"/>
       <javadoc access="public" 
-       classpath="lib/bcel.jar:lib/junit.jar:lib/dom4j-1.6.1.jar:lib/jsr305.jar:${ui.dir}/${jar.dir}/AppleJavaExtensions.jar"
+       classpath="lib/bcel.jar:${junittests.dir}/${jar.dir}/junit.jar:lib/dom4j-1.6.1.jar:lib/jsr305.jar:${ui.dir}/${jar.dir}/AppleJavaExtensions.jar"
         destdir="${annotationDoc.dir}" 
 	    packagenames="edu.umd.cs.findbugs.annotations"
         doctitle="FindBugs Annotation Documentation" 

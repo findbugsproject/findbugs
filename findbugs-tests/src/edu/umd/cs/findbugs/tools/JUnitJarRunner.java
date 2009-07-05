@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.umd.cs.findbugs.tools.junit;
+package edu.umd.cs.findbugs.tools;
 
 import java.io.File;
 import java.net.URL;

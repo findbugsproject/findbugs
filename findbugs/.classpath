@@ -24,7 +24,6 @@
 			<attribute name="javadoc_location" value="http://dom4j.org/apidocs/"/>
 		</attributes>
 	</classpathentry>
-	<classpathentry kind="lib" path="lib/junit.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/asm-3.1.jar" sourcepath="/asm/src">
 		<attributes>
 			<attribute name="javadoc_location" value="http://asm.objectweb.org/current/doc/javadoc/user"/>
@@ -45,6 +44,5 @@
 	<classpathentry exported="true" kind="lib" path="lib/jsr305.jar"/>
 	<classpathentry kind="lib" path="lib/jaxen-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jFormatString.jar"/>
-	<classpathentry kind="lib" path="lib/jdepend-2.9.jar"/>
 	<classpathentry kind="output" path="classesEclipse"/>
 </classpath>
