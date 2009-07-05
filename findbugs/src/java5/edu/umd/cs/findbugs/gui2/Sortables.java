@@ -46,7 +46,7 @@ import edu.umd.cs.findbugs.util.ClassName;
 public enum Sortables implements Comparator<SortableValue>
 {
 
-	FIRSTVERSION(edu.umd.cs.findbugs.L10N.getLocalString("sort.first_version", "First Version"))
+	FIRSTVERSION(edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.first_version", "First Version"))
 	{
 		@Override
 		public String getFrom(BugInstance bug)
@@ -80,7 +80,7 @@ public enum Sortables implements Comparator<SortableValue>
 		}
 	},
 
-	LASTVERSION(edu.umd.cs.findbugs.L10N.getLocalString("sort.last_version", "Last Version"))
+	LASTVERSION(edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.last_version", "Last Version"))
 	{
 		@Override
 		public String getFrom(BugInstance bug)
@@ -125,7 +125,7 @@ public enum Sortables implements Comparator<SortableValue>
 		}
 	},
 
-	PRIORITY(edu.umd.cs.findbugs.L10N.getLocalString("sort.priority", "Priority"))
+	PRIORITY(edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.priority", "Priority"))
 	{
 		@Override
 		public String getFrom(BugInstance bug)
@@ -137,14 +137,14 @@ public enum Sortables implements Comparator<SortableValue>
 		public String formatValue(String value)
 		{
 			if (value.equals(String.valueOf(Detector.HIGH_PRIORITY)))
-				return edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_high", "High");
+				return edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.priority_high", "High");
 			if (value.equals(String.valueOf(Detector.NORMAL_PRIORITY)))
-				return edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_normal", "Normal");
+				return edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.priority_normal", "Normal");
 			if (value.equals(String.valueOf(Detector.LOW_PRIORITY)))
-				return edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_low", "Low");
+				return edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.priority_low", "Low");
 			if (value.equals(String.valueOf(Detector.EXP_PRIORITY)))
-				return edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_experimental", "Experimental");
-			return edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_ignore", "Ignore"); // This probably shouldn't ever happen, but what the hell, let's be complete
+				return edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.priority_experimental", "Experimental");
+			return edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.priority_ignore", "Ignore"); // This probably shouldn't ever happen, but what the hell, let's be complete
 
 		}
 
@@ -155,7 +155,7 @@ public enum Sortables implements Comparator<SortableValue>
 			return Integer.valueOf(one.value).compareTo(Integer.valueOf(two.value));
 		}
 	},
-	CLASS(edu.umd.cs.findbugs.L10N.getLocalString("sort.class", "Class"))
+	CLASS(edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.class", "Class"))
 	{
 		@Override
 		public String getFrom(BugInstance bug)
@@ -179,7 +179,7 @@ public enum Sortables implements Comparator<SortableValue>
 			return one.value.compareTo(two.value);
 		}
 	},
-	PACKAGE(edu.umd.cs.findbugs.L10N.getLocalString("sort.package", "Package"))
+	PACKAGE(edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.package", "Package"))
 	{
 		@Override
 		public String getFrom(BugInstance bug)
@@ -195,7 +195,7 @@ public enum Sortables implements Comparator<SortableValue>
 			return value;
 		}
 	},
-	PACKAGE_PREFIX(edu.umd.cs.findbugs.L10N.getLocalString("sort.package_prefix", "Package prefix")) {
+	PACKAGE_PREFIX(edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.package_prefix", "Package prefix")) {
 		@Override
 		public String getFrom(BugInstance bug)
 		{
@@ -213,7 +213,7 @@ public enum Sortables implements Comparator<SortableValue>
 			return value + "...";
 		}
 	},
-	CATEGORY(edu.umd.cs.findbugs.L10N.getLocalString("sort.category", "Category"))
+	CATEGORY(edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.category", "Category"))
 	{
 		@Override
 		public String getFrom(BugInstance bug)
@@ -250,7 +250,7 @@ public enum Sortables implements Comparator<SortableValue>
 
 		
 	},
-	DESIGNATION(edu.umd.cs.findbugs.L10N.getLocalString("sort.designation", "Designation"))
+	DESIGNATION(edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.designation", "Designation"))
 	{
 		@Override
 		public String getFrom(BugInstance bug)
@@ -275,7 +275,7 @@ public enum Sortables implements Comparator<SortableValue>
 			return UserDesignation.getKeys();
 		}
 	},
-	BUGCODE(edu.umd.cs.findbugs.L10N.getLocalString("sort.bug_kind", "Bug Kind"))
+	BUGCODE(edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.bug_kind", "Bug Kind"))
 	{
 		@Override
 		public String getFrom(BugInstance bug)
@@ -297,7 +297,7 @@ public enum Sortables implements Comparator<SortableValue>
 			return formatValue(one.value).compareTo(formatValue(two.value));
 		}
 	},
-	TYPE(edu.umd.cs.findbugs.L10N.getLocalString("sort.bug_pattern", "Bug Pattern"))
+	TYPE(edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.bug_pattern", "Bug Pattern"))
 	{
 		@Override
 		public String getFrom(BugInstance bug)
@@ -315,7 +315,7 @@ public enum Sortables implements Comparator<SortableValue>
 	},
 	
 	
-	BUG_RANK(edu.umd.cs.findbugs.L10N.getLocalString("sort.bug_bugrank", "Bug Rank"))
+	BUG_RANK(edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.bug_bugrank", "Bug Rank"))
 	{
 		String [] values;
 		{ values = new String[40];
@@ -340,7 +340,7 @@ public enum Sortables implements Comparator<SortableValue>
 	},
 	
 	
-	PROJECT(edu.umd.cs.findbugs.L10N.getLocalString("sort.bug_project", "Project")) {
+	PROJECT(edu.umd.cs.findbugs.gui2.L10N.getLocalString("sort.bug_project", "Project")) {
 
 		@Override
         public String getFrom(BugInstance bug) {

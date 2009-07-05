@@ -85,7 +85,7 @@ public class SplitLayout implements FindBugsLayoutManager {
 		JPanel sourcePanel = new JPanel();
 		sourcePanel.setLayout(new BorderLayout());
 		sourceTitle = new JLabel();
-		sourceTitle.setText(edu.umd.cs.findbugs.L10N.getLocalString("txt.source_listing", "<source listing>"));
+		sourceTitle.setText(edu.umd.cs.findbugs.gui2.L10N.getLocalString("txt.source_listing", "<source listing>"));
 		
 		sourceTitlePanel.add(viewSource, BorderLayout.EAST);
 		sourceTitlePanel.add(sourceTitle, BorderLayout.CENTER);

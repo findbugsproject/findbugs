@@ -79,7 +79,7 @@ public class NewProjectWizard extends FBDialog
 		@Override
 		public String getDescription()
 		{
-			return edu.umd.cs.findbugs.L10N.getLocalString("file.accepted_extensions", "Class archive files (*.class, *.[jwes]ar, *.zip)");
+			return edu.umd.cs.findbugs.gui2.L10N.getLocalString("file.accepted_extensions", "Class archive files (*.class, *.[jwes]ar, *.zip)");
 		}
 	};
 
@@ -93,8 +93,8 @@ public class NewProjectWizard extends FBDialog
 	private JList sourceList = new JList();
 	private DefaultListModel sourceModel = new DefaultListModel();
 
-	private JButton finishButton = new JButton(edu.umd.cs.findbugs.L10N.getLocalString("dlg.finish_btn", "Finish"));
-	private JButton cancelButton = new JButton(edu.umd.cs.findbugs.L10N.getLocalString("dlg.cancel_btn", "Cancel"));
+	private JButton finishButton = new JButton(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.finish_btn", "Finish"));
+	private JButton cancelButton = new JButton(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.cancel_btn", "Cancel"));
 
 	private JComponent[] wizardComponents = new JComponent[3];
 	private int currentPanel;
@@ -114,9 +114,9 @@ public class NewProjectWizard extends FBDialog
 		boolean temp = false;
 
 		if(curProject == null)
-			setTitle(edu.umd.cs.findbugs.L10N.getLocalString("dlg.new_item", "New Project"));
+			setTitle(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.new_item", "New Project"));
 		else{
-			setTitle(edu.umd.cs.findbugs.L10N.getLocalString("dlg.reconfig", "Reconfigure"));
+			setTitle(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.reconfig", "Reconfigure"));
 			temp = true;
 		}
 
@@ -126,13 +126,13 @@ public class NewProjectWizard extends FBDialog
 		mainPanel.setLayout(new GridLayout(3,1));
 
 
-		wizardComponents[0] = createFilePanel(edu.umd.cs.findbugs.L10N.getLocalString("dlg.class_jars_dirs_lbl", "Class archives and directories to analyze:"), 
+		wizardComponents[0] = createFilePanel(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.class_jars_dirs_lbl", "Class archives and directories to analyze:"), 
 				analyzeList, analyzeModel, JFileChooser.FILES_AND_DIRECTORIES, directoryOrArchive, "Choose Class Archives and Directories to Analyze", false);
 
-		wizardComponents[1] = createFilePanel(edu.umd.cs.findbugs.L10N.getLocalString("dlg.aux_class_lbl", "Auxiliary class locations:"), 
+		wizardComponents[1] = createFilePanel(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.aux_class_lbl", "Auxiliary class locations:"), 
 				auxList, auxModel, JFileChooser.FILES_AND_DIRECTORIES, directoryOrArchive, "Choose Auxilliary Class Archives and Directories", false);
 
-		wizardComponents[2] = createFilePanel(edu.umd.cs.findbugs.L10N.getLocalString("dlg.source_dirs_lbl", "Source directories:"), sourceList, sourceModel, JFileChooser.FILES_AND_DIRECTORIES, null, "Choose Source Directories", true);
+		wizardComponents[2] = createFilePanel(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.source_dirs_lbl", "Source directories:"), sourceList, sourceModel, JFileChooser.FILES_AND_DIRECTORIES, null, "Choose Source Directories", true);
 
 		JPanel buttons = new JPanel();
 		buttons.setLayout(new BoxLayout(buttons, BoxLayout.X_AXIS));
@@ -163,8 +163,8 @@ public class NewProjectWizard extends FBDialog
 				 for (int i = 0; i < analyzeModel.getSize(); i++){
 					File temp = new File((String)analyzeModel.get(i));
 					if(!temp.exists() && directoryOrArchive.accept(temp)) { 
-						if (!displayWarningAndAskIfWeShouldContinue(temp.getName()+" " + edu.umd.cs.findbugs.L10N.getLocalString("dlg.invalid_txt", " is invalid."), 
-								edu.umd.cs.findbugs.L10N.getLocalString("dlg.error_ttl", "Can't locate file"))) return;
+						if (!displayWarningAndAskIfWeShouldContinue(temp.getName()+" " + edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.invalid_txt", " is invalid."), 
+								edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.error_ttl", "Can't locate file"))) return;
 
 					}
 				}
@@ -172,15 +172,15 @@ public class NewProjectWizard extends FBDialog
 				 for (int i = 0; i < sourceModel.getSize(); i++){
 					File temp = new File((String)sourceModel.get(i));
 					if(!temp.exists() && directoryOrArchive.accept(temp)) { 
-						if (!displayWarningAndAskIfWeShouldContinue(temp.getName()+" " + edu.umd.cs.findbugs.L10N.getLocalString("dlg.invalid_txt", " is invalid."), 
-								edu.umd.cs.findbugs.L10N.getLocalString("dlg.error_ttl", "Can't locate file"))) return;
+						if (!displayWarningAndAskIfWeShouldContinue(temp.getName()+" " + edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.invalid_txt", " is invalid."), 
+								edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.error_ttl", "Can't locate file"))) return;
 					}
 				}
 				for (int i = 0; i < auxModel.getSize(); i++){
 					File temp = new File((String)auxModel.get(i));
 					if(!temp.exists() && directoryOrArchive.accept(temp)) { 
-						if (!displayWarningAndAskIfWeShouldContinue(temp.getName()+" " + edu.umd.cs.findbugs.L10N.getLocalString("dlg.invalid_txt", " is invalid."), 
-								edu.umd.cs.findbugs.L10N.getLocalString("dlg.error_ttl", "Can't locate file"))) return;
+						if (!displayWarningAndAskIfWeShouldContinue(temp.getName()+" " + edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.invalid_txt", " is invalid."), 
+								edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.error_ttl", "Can't locate file"))) return;
 					}
 				}
 				Project p;
@@ -221,7 +221,7 @@ public class NewProjectWizard extends FBDialog
 					MainFrame.getInstance().setSourceFinder(new SourceFinder(p));
 					
 				}
-				else if (project == null || (projectChanged && JOptionPane.showConfirmDialog(NewProjectWizard.this, edu.umd.cs.findbugs.L10N.getLocalString("dlg.project_settings_changed_lbl", "Project settings have been changed.  Perform a new analysis with the changed files?"), edu.umd.cs.findbugs.L10N.getLocalString("dlg.redo_analysis_question_lbl", "Redo analysis?"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION))
+				else if (project == null || (projectChanged && JOptionPane.showConfirmDialog(NewProjectWizard.this, edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.project_settings_changed_lbl", "Project settings have been changed.  Perform a new analysis with the changed files?"), edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.redo_analysis_question_lbl", "Redo analysis?"), JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION))
 					new AnalyzingDialog(p,resetSettings);
 
 				if(reconfig == true)
@@ -331,12 +331,12 @@ public class NewProjectWizard extends FBDialog
 		gbc.weightx = 0;
 		gbc.weighty = 0;
 		gbc.fill = GridBagConstraints.HORIZONTAL;
-		final JButton addButton = new JButton(edu.umd.cs.findbugs.L10N.getLocalString("dlg.add_btn", "Add"));
+		final JButton addButton = new JButton(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.add_btn", "Add"));
 		myPanel.add(addButton, gbc);
 		gbc.gridx = 1;
 		gbc.gridy = 2;
 		gbc.insets = new Insets(5, 0, 0, 0);
-		final JButton removeButton = new JButton(edu.umd.cs.findbugs.L10N.getLocalString("dlg.remove_btn", "Remove"));
+		final JButton removeButton = new JButton(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.remove_btn", "Remove"));
 		myPanel.add(removeButton, gbc);
 		gbc.gridx = 1;
 		gbc.gridy = 3;
@@ -399,7 +399,7 @@ public class NewProjectWizard extends FBDialog
 					}
 					projectChanged = true;
 					// If this is the primary class directories add button, set it to enable the finish button of the main dialog
-					if (label.equals(edu.umd.cs.findbugs.L10N.getLocalString("dlg.class_jars_dirs_lbl", "Class archives and directories to analyze:")))
+					if (label.equals(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.class_jars_dirs_lbl", "Class archives and directories to analyze:")))
 						finishButton.setEnabled(true);
 				}
 			}
@@ -413,7 +413,7 @@ public class NewProjectWizard extends FBDialog
 				for (Object i : list.getSelectedValues())
 					listModel.removeElement(i);
 				//If this is the primary class directories remove button, set it to disable finish when there are no class files being analyzed
-				if (listModel.size()==0 && label.equals(edu.umd.cs.findbugs.L10N.getLocalString("dlg.class_jars_dirs_lbl", "Class archives and directories to analyze:")))
+				if (listModel.size()==0 && label.equals(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.class_jars_dirs_lbl", "Class archives and directories to analyze:")))
 					finishButton.setEnabled(false);
 			}
 		});

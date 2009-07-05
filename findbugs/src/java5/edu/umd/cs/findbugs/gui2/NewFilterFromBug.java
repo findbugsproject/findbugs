@@ -68,7 +68,7 @@ public class NewFilterFromBug extends FBDialog
 		add(center, BorderLayout.CENTER);
 
 		JPanel south = new JPanel();
-		JButton okButton = new JButton(edu.umd.cs.findbugs.L10N.getLocalString("dlg.ok_btn", "OK"));
+		JButton okButton = new JButton(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.ok_btn", "OK"));
 		okButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent evt)
@@ -90,7 +90,7 @@ public class NewFilterFromBug extends FBDialog
 				}
 			}
 		});
-		JButton cancelButton = new JButton(edu.umd.cs.findbugs.L10N.getLocalString("dlg.cancel_btn", "Cancel"));
+		JButton cancelButton = new JButton(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.cancel_btn", "Cancel"));
 		cancelButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent evt)

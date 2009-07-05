@@ -120,7 +120,7 @@ public class CommentsArea {
 
 		userCommentsText.setLineWrap(true);
 		userCommentsText
-				.setToolTipText(edu.umd.cs.findbugs.L10N.getLocalString("tooltip.enter_comments", "Enter your comments about this bug here"));
+				.setToolTipText(edu.umd.cs.findbugs.gui2.L10N.getLocalString("tooltip.enter_comments", "Enter your comments about this bug here"));
 		userCommentsText.setWrapStyleWord(true);
 		userCommentsText.setEnabled(false);
 		userCommentsText.setBackground(userCommentsTextUnenabledColor);
@@ -128,7 +128,7 @@ public class CommentsArea {
 		
 		reportText.setLineWrap(true);
 		reportText
-				.setToolTipText(edu.umd.cs.findbugs.L10N.getLocalString("tooltip.report", "Information about the bug here"));
+				.setToolTipText(edu.umd.cs.findbugs.gui2.L10N.getLocalString("tooltip.report", "Information about the bug here"));
 		reportText.setWrapStyleWord(true);
 		reportText.setEditable(false);
 		
@@ -159,7 +159,7 @@ public class CommentsArea {
 		 prevCommentsComboBox = new JComboBox();
 		prevCommentsComboBox.setEnabled(false);
 		prevCommentsComboBox
-				.setToolTipText(edu.umd.cs.findbugs.L10N.getLocalString("tooltip.reuse_comments", "Use this to reuse a previous textual comment for this bug"));
+				.setToolTipText(edu.umd.cs.findbugs.gui2.L10N.getLocalString("tooltip.reuse_comments", "Use this to reuse a previous textual comment for this bug"));
 		prevCommentsComboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (e.getStateChange() == ItemEvent.SELECTED
@@ -176,7 +176,7 @@ public class CommentsArea {
 
 		designationComboBox.setEnabled(false);
 		designationComboBox
-				.setToolTipText(edu.umd.cs.findbugs.L10N.getLocalString("tooltip.select_designation", "Select a user designation for this bug"));
+				.setToolTipText(edu.umd.cs.findbugs.gui2.L10N.getLocalString("tooltip.select_designation", "Select a user designation for this bug"));
 		designationComboBox.addItemListener(new ItemListener() {
 			public void itemStateChanged(ItemEvent e) {
 				if (frame.userInputEnabled
@@ -384,14 +384,14 @@ public class CommentsArea {
 
 	private boolean confirmAnnotation() {
 
-		String[] options = { edu.umd.cs.findbugs.L10N.getLocalString("dlg.yes_btn", "Yes"), edu.umd.cs.findbugs.L10N.getLocalString("dlg.no_btn", "No"), edu.umd.cs.findbugs.L10N.getLocalString("dlg.yes_dont_ask_btn", "Yes, and don't ask me this again")};
+		String[] options = { edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.yes_btn", "Yes"), edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.no_btn", "No"), edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.yes_dont_ask_btn", "Yes, and don't ask me this again")};
 		if (dontShowAnnotationConfirmation)
 			return true;
 		int choice = JOptionPane
 				.showOptionDialog(
 						frame,
-						edu.umd.cs.findbugs.L10N.getLocalString("dlg.changing_text_lbl", "Changing this text box will overwrite the annotations associated with all bugs in this folder and subfolders. Are you sure?"),
-						edu.umd.cs.findbugs.L10N.getLocalString("dlg.annotation_change_ttl", "Annotation Change"), JOptionPane.DEFAULT_OPTION,
+						edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.changing_text_lbl", "Changing this text box will overwrite the annotations associated with all bugs in this folder and subfolders. Are you sure?"),
+						edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.annotation_change_ttl", "Annotation Change"), JOptionPane.DEFAULT_OPTION,
 						JOptionPane.QUESTION_MESSAGE, null, options, options[0]);
 		switch (choice) {
 		case 0:

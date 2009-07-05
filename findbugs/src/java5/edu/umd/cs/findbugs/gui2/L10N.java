@@ -24,7 +24,7 @@
  * Created on March 30, 2003, 12:05 PM
  */
 
-package edu.umd.cs.findbugs;
+package edu.umd.cs.findbugs.gui2;
 
 import java.io.FileWriter;
 import java.io.IOException;
@@ -32,6 +32,8 @@ import java.io.PrintWriter;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
+
+import edu.umd.cs.findbugs.SystemProperties;
 
 
 
@@ -51,8 +53,8 @@ public class L10N {
 				e.printStackTrace();
 			}
 
-			bundle = ResourceBundle.getBundle("edu.umd.cs.findbugs.gui.bundle.findbugs");
-			bundle_en = ResourceBundle.getBundle("edu.umd.cs.findbugs.gui.bundle.findbugs", Locale.ENGLISH);
+			bundle = ResourceBundle.getBundle("edu.umd.cs.findbugs.gui2.bundle.findbugs");
+			bundle_en = ResourceBundle.getBundle("edu.umd.cs.findbugs.gui2.bundle.findbugs", Locale.ENGLISH);
 
 
 		} catch (Exception mre) {

@@ -298,8 +298,6 @@
 				<include name="**/*.db"/>
 				<include name="**/*.xsl"/>
 				<include name="${pkg.base}/sourceViewer/**/*.class"/>
-				<include name="${pkg.base}/gui/**/*.png"/>
-				<include name="${pkg.base}/gui/**/*.html"/>
 				<include name="${pkg.base}/gui2/**/*.png"/>
 				<include name="${pkg.base}/gui2/**/*.html"/>
 			</fileset>

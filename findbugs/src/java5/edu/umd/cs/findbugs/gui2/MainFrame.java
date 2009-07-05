@@ -182,7 +182,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 		return UIManager.getLookAndFeel().getClass().getName().startsWith("apple");
 	}
 
-	static final String DEFAULT_SOURCE_CODE_MSG = edu.umd.cs.findbugs.L10N.getLocalString("msg.nosource_txt", "No available source");
+	static final String DEFAULT_SOURCE_CODE_MSG = edu.umd.cs.findbugs.gui2.L10N.getLocalString("msg.nosource_txt", "No available source");
 
 	static final int COMMENTS_TAB_STRUT_SIZE = 5;
 	static final int COMMENTS_MARGIN = 5;
@@ -332,7 +332,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 		
 		if(projectChanged && !SystemProperties.getBoolean("findbugs.skipSaveChangesWarning")){
 			int value = JOptionPane.showConfirmDialog(MainFrame.this, getActionWithoutSavingMsg("closing"), 
-					edu.umd.cs.findbugs.L10N.getLocalString("msg.confirm_save_txt", "Do you want to save?"), JOptionPane.YES_NO_CANCEL_OPTION,
+					edu.umd.cs.findbugs.gui2.L10N.getLocalString("msg.confirm_save_txt", "Do you want to save?"), JOptionPane.YES_NO_CANCEL_OPTION,
 					JOptionPane.QUESTION_MESSAGE);
 
 			if(value == JOptionPane.CANCEL_OPTION || value == JOptionPane.CLOSED_OPTION)
@@ -363,10 +363,10 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
      * @return
      */
     private String getActionWithoutSavingMsg(String action) {
-    	String msg = edu.umd.cs.findbugs.L10N.getLocalString("msg.you_are_"+action+"_without_saving_txt", null);
+    	String msg = edu.umd.cs.findbugs.gui2.L10N.getLocalString("msg.you_are_"+action+"_without_saving_txt", null);
     	if (msg != null) return msg;
-	    return edu.umd.cs.findbugs.L10N.getLocalString("msg.you_are_"+action+"_txt", "You are "+action) + " " +
-	    		edu.umd.cs.findbugs.L10N.getLocalString("msg.without_saving_txt", "without saving. Do you want to save?");
+	    return edu.umd.cs.findbugs.gui2.L10N.getLocalString("msg.you_are_"+action+"_txt", "You are "+action) + " " +
+	    		edu.umd.cs.findbugs.gui2.L10N.getLocalString("msg.without_saving_txt", "without saving. Do you want to save?");
     }
 
 	/*
@@ -388,7 +388,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 
 					if (!f.exists())
 					{
-						JOptionPane.showMessageDialog(null,edu.umd.cs.findbugs.L10N.getLocalString("msg.proj_not_found", "This project can no longer be found"));
+						JOptionPane.showMessageDialog(null,edu.umd.cs.findbugs.gui2.L10N.getLocalString("msg.proj_not_found", "This project can no longer be found"));
 						GUISaveState.getInstance().fileNotFound(f);
 						return;
 					}
@@ -405,8 +405,8 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 					if (curProject != null && projectChanged)
 					{
 						int response = JOptionPane.showConfirmDialog(MainFrame.this, 
-								edu.umd.cs.findbugs.L10N.getLocalString("dlg.save_current_changes", "The current project has been changed, Save current changes?")
-								,edu.umd.cs.findbugs.L10N.getLocalString("dlg.save_changes", "Save Changes?"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+								edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.save_current_changes", "The current project has been changed, Save current changes?")
+								,edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.save_changes", "Save Changes?"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 
 						if (response == JOptionPane.YES_OPTION)
 						{
@@ -871,7 +871,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 			public void actionPerformed(ActionEvent evt){				
 				guiLayout.makeSourceVisible();
 				try{
-					int num = Integer.parseInt(JOptionPane.showInputDialog(MainFrame.this, "", edu.umd.cs.findbugs.L10N.getLocalString("dlg.go_to_line_lbl", "Go To Line") + ":", JOptionPane.QUESTION_MESSAGE));
+					int num = Integer.parseInt(JOptionPane.showInputDialog(MainFrame.this, "", edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.go_to_line_lbl", "Go To Line") + ":", JOptionPane.QUESTION_MESSAGE));
 					displayer.showLine(num);
 				}
 				catch(NumberFormatException e){}
@@ -1191,7 +1191,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 	 * This method is for when the user wants to open a file.
 	 */
 	private void importFilter() {
-		filterOpenFileChooser.setDialogTitle(edu.umd.cs.findbugs.L10N.getLocalString("dlg.importFilter_ttl",
+		filterOpenFileChooser.setDialogTitle(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.importFilter_ttl",
 		        "Import and merge filter..."));
 
 		boolean retry = true;
@@ -1240,8 +1240,8 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 		if (projectChanged)
 		{
 			int response = JOptionPane.showConfirmDialog(MainFrame.this, 
-					edu.umd.cs.findbugs.L10N.getLocalString("dlg.save_current_changes", "The current project has been changed, Save current changes?")
-					,edu.umd.cs.findbugs.L10N.getLocalString("dlg.save_changes", "Save Changes?"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+					edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.save_current_changes", "The current project has been changed, Save current changes?")
+					,edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.save_changes", "Save Changes?"), JOptionPane.YES_NO_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 
 			if (response == JOptionPane.YES_OPTION)
 			{
@@ -1280,7 +1280,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 				
 				if (!xmlFile.exists())
 				{
-					JOptionPane.showMessageDialog(saveOpenFileChooser, edu.umd.cs.findbugs.L10N.getLocalString("dlg.no_xml_data_lbl", "This directory does not contain saved bug XML data, please choose a different directory."));
+					JOptionPane.showMessageDialog(saveOpenFileChooser, edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.no_xml_data_lbl", "This directory does not contain saved bug XML data, please choose a different directory."));
 					loading=true;
 					continue tryAgain;
 				}
@@ -1289,7 +1289,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 				break;
 			case XML_ANALYSIS:
 				if(!f.getName().endsWith(".xml")){
-					JOptionPane.showMessageDialog(saveOpenFileChooser, edu.umd.cs.findbugs.L10N.getLocalString("dlg.not_xml_data_lbl", "This is not a saved bug XML data file."));
+					JOptionPane.showMessageDialog(saveOpenFileChooser, edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.not_xml_data_lbl", "This is not a saved bug XML data file."));
 					loading=true;
 					continue tryAgain;
 				}
@@ -1353,11 +1353,11 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 	private boolean exportFilter() {
 		if (getProject().getSuppressionFilter() == null)
 		{
-			JOptionPane.showMessageDialog(MainFrame.this,edu.umd.cs.findbugs.L10N.getLocalString("dlg.no_filter", "There is no filter"));
+			JOptionPane.showMessageDialog(MainFrame.this,edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.no_filter", "There is no filter"));
 			return false;
 		}
 		
-		filterOpenFileChooser.setDialogTitle(edu.umd.cs.findbugs.L10N.getLocalString("dlg.exportFilter_ttl", "Export filter..."));
+		filterOpenFileChooser.setDialogTitle(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.exportFilter_ttl", "Export filter..."));
 
 		boolean retry = true;
 		boolean alreadyExists = true;
@@ -1375,8 +1375,8 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 			alreadyExists = f.exists();
 			if(alreadyExists){
 				int response = JOptionPane.showConfirmDialog(filterOpenFileChooser, 
-							edu.umd.cs.findbugs.L10N.getLocalString("dlg.file_exists_lbl", "This file already exists.\nReplace it?"),
-							edu.umd.cs.findbugs.L10N.getLocalString("dlg.warning_ttl", "Warning!"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+							edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.file_exists_lbl", "This file already exists.\nReplace it?"),
+							edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.warning_ttl", "Warning!"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 				
 				if(response == JOptionPane.OK_OPTION)
 					retry = false;
@@ -1391,7 +1391,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 			try {
 			suppressionFilter.writeEnabledMatchersAsXML(new FileOutputStream(f));
 			} catch (IOException e) {
-				JOptionPane.showMessageDialog(MainFrame.this, edu.umd.cs.findbugs.L10N.getLocalString("dlg.saving_error_lbl", "An error occurred in saving."));
+				JOptionPane.showMessageDialog(MainFrame.this, edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.saving_error_lbl", "An error occurred in saving."));
 				return false;
 			}
 		}
@@ -1404,11 +1404,11 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 		saveComments(currentSelectedBugLeaf, currentSelectedBugAspects);
 
 		
-		saveOpenFileChooser.setDialogTitle(edu.umd.cs.findbugs.L10N.getLocalString("dlg.saveas_ttl", "Save as..."));
+		saveOpenFileChooser.setDialogTitle(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.saveas_ttl", "Save as..."));
 
 		if (curProject==null)
 		{
-			JOptionPane.showMessageDialog(MainFrame.this,edu.umd.cs.findbugs.L10N.getLocalString("dlg.no_proj_save_lbl", "There is no project to save"));
+			JOptionPane.showMessageDialog(MainFrame.this,edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.no_proj_save_lbl", "There is no project to save"));
 			return false;
 		}
 
@@ -1451,23 +1451,23 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 				switch(fileType){
 				case XML_ANALYSIS:
 					response = JOptionPane.showConfirmDialog(saveOpenFileChooser, 
-							edu.umd.cs.findbugs.L10N.getLocalString("dlg.analysis_exists_lbl", "This analysis already exists.\nReplace it?"),
-							edu.umd.cs.findbugs.L10N.getLocalString("dlg.warning_ttl", "Warning!"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+							edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.analysis_exists_lbl", "This analysis already exists.\nReplace it?"),
+							edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.warning_ttl", "Warning!"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 					break;
 				case PROJECT:
 					response = JOptionPane.showConfirmDialog(saveOpenFileChooser, 
-							edu.umd.cs.findbugs.L10N.getLocalString("dlg.proj_already_exists_lbl", "This project already exists.\nDo you want to replace it?"),
-							edu.umd.cs.findbugs.L10N.getLocalString("dlg.warning_ttl", "Warning!"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+							edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.proj_already_exists_lbl", "This project already exists.\nDo you want to replace it?"),
+							edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.warning_ttl", "Warning!"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 					break;
 				case FBP_FILE:
 					response = JOptionPane.showConfirmDialog(saveOpenFileChooser, 
-							edu.umd.cs.findbugs.L10N.getLocalString("FB Project File already exists", "This FB project file already exists.\nDo you want to replace it?"),
-							edu.umd.cs.findbugs.L10N.getLocalString("dlg.warning_ttl", "Warning!"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+							edu.umd.cs.findbugs.gui2.L10N.getLocalString("FB Project File already exists", "This FB project file already exists.\nDo you want to replace it?"),
+							edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.warning_ttl", "Warning!"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 					break;
 				case FBA_FILE:
 					response = JOptionPane.showConfirmDialog(saveOpenFileChooser, 
-							edu.umd.cs.findbugs.L10N.getLocalString("FB Analysis File already exists", "This FB analysis file already exists.\nDo you want to replace it?"),
-							edu.umd.cs.findbugs.L10N.getLocalString("dlg.warning_ttl", "Warning!"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
+							edu.umd.cs.findbugs.gui2.L10N.getLocalString("FB Analysis File already exists", "This FB analysis file already exists.\nDo you want to replace it?"),
+							edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.warning_ttl", "Warning!"), JOptionPane.OK_CANCEL_OPTION, JOptionPane.WARNING_MESSAGE);
 					break;
 				}
 				
@@ -1499,7 +1499,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 			
 			if (successful != SaveReturn.SAVE_SUCCESSFUL)
 			{
-				JOptionPane.showMessageDialog(MainFrame.this, edu.umd.cs.findbugs.L10N.getLocalString("dlg.saving_error_lbl", "An error occurred in saving."));
+				JOptionPane.showMessageDialog(MainFrame.this, edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.saving_error_lbl", "An error occurred in saving."));
 				return false;
 			}
 		}
@@ -1585,7 +1585,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 
 
 		if(result != SaveReturn.SAVE_SUCCESSFUL){
-			JOptionPane.showMessageDialog(MainFrame.this, edu.umd.cs.findbugs.L10N.getLocalString(
+			JOptionPane.showMessageDialog(MainFrame.this, edu.umd.cs.findbugs.gui2.L10N.getLocalString(
 					"dlg.saving_error_lbl", "An error occurred in saving."));
 		}
 	}
@@ -1709,7 +1709,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
     	});
     	sorter = GUISaveState.getInstance().getStarterTable();
     	tableheader.setColumnModel(sorter);
-    	tableheader.setToolTipText(edu.umd.cs.findbugs.L10N.getLocalString("tooltip.reorder_message", "Drag to reorder tree folder and sort order"));
+    	tableheader.setToolTipText(edu.umd.cs.findbugs.gui2.L10N.getLocalString("tooltip.reorder_message", "Drag to reorder tree folder and sort order"));
     
     	tree = new JTree();
     	treeUI = (BasicTreeUI) tree.getUI();
@@ -1979,9 +1979,9 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 		int countFilteredBugs = BugSet.countFilteredBugs();
 		String msg = "";
 		if (countFilteredBugs == 1) {
-	         msg = "  1 " + edu.umd.cs.findbugs.L10N.getLocalString("statusbar.bug_hidden", "bug hidden by filters");
+	         msg = "  1 " + edu.umd.cs.findbugs.gui2.L10N.getLocalString("statusbar.bug_hidden", "bug hidden by filters");
 	    } else 	if (countFilteredBugs > 1) {
-	        msg = "  " + countFilteredBugs + " " + edu.umd.cs.findbugs.L10N.getLocalString("statusbar.bugs_hidden", "bugs hidden by filters");
+	        msg = "  " + countFilteredBugs + " " + edu.umd.cs.findbugs.gui2.L10N.getLocalString("statusbar.bugs_hidden", "bugs hidden by filters");
         }
 		if (bugCollection != null) {
 			Cloud plugin = bugCollection.getCloud();
@@ -2107,7 +2107,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 		JPanel summaryTopOuter = new JPanel(new BorderLayout());
 		summaryTopOuter.add(summaryTopPanel, BorderLayout.NORTH);
 
-		summaryHtmlArea.setToolTipText(edu.umd.cs.findbugs.L10N.getLocalString("tooltip.longer_description", "This gives a longer description of the detected bug pattern"));
+		summaryHtmlArea.setToolTipText(edu.umd.cs.findbugs.gui2.L10N.getLocalString("tooltip.longer_description", "This gives a longer description of the detected bug pattern"));
 		summaryHtmlArea.setContentType("text/html");
 		summaryHtmlArea.setEditable(false);
 		summaryHtmlArea.addHyperlinkListener(new javax.swing.event.HyperlinkListener() {
@@ -2157,10 +2157,10 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 		label.setForeground(Color.BLACK);
 		ClassAnnotation primaryClass = bug.getPrimaryClass();
 
-		String sourceCodeLabel = edu.umd.cs.findbugs.L10N.getLocalString("summary.source_code", "source code.");
-		String summaryLine = edu.umd.cs.findbugs.L10N.getLocalString("summary.line", "Line");
-		String summaryLines = edu.umd.cs.findbugs.L10N.getLocalString("summary.lines", "Lines");
-		String clickToGoToText = edu.umd.cs.findbugs.L10N.getLocalString("tooltip.click_to_go_to", "Click to go to");
+		String sourceCodeLabel = edu.umd.cs.findbugs.gui2.L10N.getLocalString("summary.source_code", "source code.");
+		String summaryLine = edu.umd.cs.findbugs.gui2.L10N.getLocalString("summary.line", "Line");
+		String summaryLines = edu.umd.cs.findbugs.gui2.L10N.getLocalString("summary.lines", "Lines");
+		String clickToGoToText = edu.umd.cs.findbugs.gui2.L10N.getLocalString("tooltip.click_to_go_to", "Click to go to");
 		if (value instanceof SourceLineAnnotation) {
 			final SourceLineAnnotation note = (SourceLineAnnotation) value;
 			if (sourceCodeExist(note)) {
@@ -2308,7 +2308,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 				try {
 					loadFromURL = SystemProperties.rewriteURLAccordingToProperties(loadFromURL);
 					URL url = new URL(loadFromURL);
-					BugTreeModel.pleaseWait(edu.umd.cs.findbugs.L10N.getLocalString("msg.loading_bugs_over_network_txt", "Loading bugs over network..."));
+					BugTreeModel.pleaseWait(edu.umd.cs.findbugs.gui2.L10N.getLocalString("msg.loading_bugs_over_network_txt", "Loading bugs over network..."));
 					loadAnalysis(url);
 				} catch (MalformedURLException e1) {
 					JOptionPane.showMessageDialog(MainFrame.this, "Error loading "  + loadFromURL);
@@ -2606,7 +2606,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 	static class CutAction extends TextAction {
 
 		public CutAction() {
-			super(edu.umd.cs.findbugs.L10N.getLocalString("txt.cut", "Cut"));
+			super(edu.umd.cs.findbugs.gui2.L10N.getLocalString("txt.cut", "Cut"));
 		}
 
 		public void actionPerformed( ActionEvent evt ) {
@@ -2622,7 +2622,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 	static class CopyAction extends TextAction {
 
 		public CopyAction() {
-			super(edu.umd.cs.findbugs.L10N.getLocalString("txt.copy", "Copy"));
+			super(edu.umd.cs.findbugs.gui2.L10N.getLocalString("txt.copy", "Copy"));
 		}
 
 		public void actionPerformed( ActionEvent evt ) {
@@ -2638,7 +2638,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 	static class PasteAction extends TextAction {
 
 		public PasteAction() {
-			super(edu.umd.cs.findbugs.L10N.getLocalString("txt.paste", "Paste"));
+			super(edu.umd.cs.findbugs.gui2.L10N.getLocalString("txt.paste", "Paste"));
 		}
 
 		public void actionPerformed( ActionEvent evt ) {
@@ -2950,7 +2950,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 
 		if (!fasFile.exists())
 		{
-			JOptionPane.showMessageDialog(MainFrame.this, edu.umd.cs.findbugs.L10N.getLocalString(
+			JOptionPane.showMessageDialog(MainFrame.this, edu.umd.cs.findbugs.gui2.L10N.getLocalString(
 					"dlg.filter_settings_not_found_lbl", "Filter settings not found, using default settings."));
 
 			ProjectSettings.newInstance();
@@ -3028,7 +3028,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 
 	void warnUserOfFilters()
 	{
-		JOptionPane.showMessageDialog(MainFrame.this, edu.umd.cs.findbugs.L10N.getLocalString("dlg.everything_is_filtered",
+		JOptionPane.showMessageDialog(MainFrame.this, edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.everything_is_filtered",
 				"All bugs in this project appear to be filtered out.  \nYou may wish to check your filter settings in the preferences menu."),
 				"Warning",JOptionPane.WARNING_MESSAGE);
 	}

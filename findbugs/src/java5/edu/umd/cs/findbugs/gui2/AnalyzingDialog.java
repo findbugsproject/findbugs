@@ -102,7 +102,7 @@ public final class AnalyzingDialog extends FBDialog implements FindBugsProgress
 		statusLabel = new JLabel(" ");
 		progressBar = new JProgressBar();
 		progressBar.setStringPainted(true);
-		cancelButton = new JButton(edu.umd.cs.findbugs.L10N.getLocalString("dlg.cancel_btn", "Cancel"));
+		cancelButton = new JButton(edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.cancel_btn", "Cancel"));
 		cancelButton.addActionListener(new ActionListener()
 		{
 			public void actionPerformed(ActionEvent evt)
@@ -196,12 +196,12 @@ public final class AnalyzingDialog extends FBDialog implements FindBugsProgress
 
 	public void finishPerClassAnalysis()
 	{
-		updateStage(edu.umd.cs.findbugs.L10N.getLocalString("progress.finishing_analysis", "Finishing analysis..."));
+		updateStage(edu.umd.cs.findbugs.gui2.L10N.getLocalString("progress.finishing_analysis", "Finishing analysis..."));
 	}
 
 	public void reportNumberOfArchives(int numArchives)
 	{
-		updateStage(edu.umd.cs.findbugs.L10N.getLocalString("progress.scanning_archives", "Scanning archives..."));
+		updateStage(edu.umd.cs.findbugs.gui2.L10N.getLocalString("progress.scanning_archives", "Scanning archives..."));
 		updateCount(0, numArchives);
 	}
 
@@ -209,7 +209,7 @@ public final class AnalyzingDialog extends FBDialog implements FindBugsProgress
 	public void startAnalysis(int numClasses)
 	{
 		pass++;
-		String localString = edu.umd.cs.findbugs.L10N.getLocalString("progress.analyzing_classes", "Analyzing classes...");
+		String localString = edu.umd.cs.findbugs.gui2.L10N.getLocalString("progress.analyzing_classes", "Analyzing classes...");
 		updateStage(localString + ", pass " + pass + "/" + classesPerPass.length);
 		updateCount(0, numClasses);
 	}

@@ -38,7 +38,7 @@ public class DeadBugFilter extends FilterMatcher {
 	@Override
 	public String toString()
 	{
-		return edu.umd.cs.findbugs.L10N.getLocalString("pref.dead_bugs", "Dead Bugs");
+		return edu.umd.cs.findbugs.gui2.L10N.getLocalString("pref.dead_bugs", "Dead Bugs");
 	}
 
 	@Override

@@ -61,7 +61,7 @@ public class BugAspects implements Iterable<BugAspects.SortableValue>
 	public String toString()
 	{
 		if (lst.isEmpty())
-			return edu.umd.cs.findbugs.L10N.getLocalString("tree.bugs", "Bugs") + " (" + count + ")";
+			return edu.umd.cs.findbugs.gui2.L10N.getLocalString("tree.bugs", "Bugs") + " (" + count + ")";
 		else	
 		{
 			if (count==-1)

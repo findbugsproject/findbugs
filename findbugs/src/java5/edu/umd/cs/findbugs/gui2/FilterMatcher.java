@@ -115,10 +115,10 @@ public class FilterMatcher implements Matcher, Serializable, Comparable<FilterMa
 	{
 		switch(mode)
 		{
-		case FILTER_EXACTLY: return filterBy.toString() + " " + edu.umd.cs.findbugs.L10N.getLocalString("dlg.is", "is") + " " + edu.umd.cs.findbugs.L10N.getLocalString("mode.equal_to", "equal to") + " " + filterBy.formatValue(value);
-		case FILTER_AT_OR_AFTER: return filterBy.toString() + " " + edu.umd.cs.findbugs.L10N.getLocalString("dlg.is", "is") + " " + edu.umd.cs.findbugs.L10N.getLocalString("mode.at_or_after", "at or after") + " " + filterBy.formatValue(value);
-		case FILTER_AT_OR_BEFORE: return filterBy.toString() + " " + edu.umd.cs.findbugs.L10N.getLocalString("dlg.is", "is") + " " + edu.umd.cs.findbugs.L10N.getLocalString("mode.at_or_before", "at or before") + " " + filterBy.formatValue(value);
-		case FILTER_ALL_BUT: return filterBy.toString() + " " + edu.umd.cs.findbugs.L10N.getLocalString("dlg.is", "is") + " " + edu.umd.cs.findbugs.L10N.getLocalString("mode.not_equal_to", "not equal to") + " " + filterBy.formatValue(value);
+		case FILTER_EXACTLY: return filterBy.toString() + " " + edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.is", "is") + " " + edu.umd.cs.findbugs.gui2.L10N.getLocalString("mode.equal_to", "equal to") + " " + filterBy.formatValue(value);
+		case FILTER_AT_OR_AFTER: return filterBy.toString() + " " + edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.is", "is") + " " + edu.umd.cs.findbugs.gui2.L10N.getLocalString("mode.at_or_after", "at or after") + " " + filterBy.formatValue(value);
+		case FILTER_AT_OR_BEFORE: return filterBy.toString() + " " + edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.is", "is") + " " + edu.umd.cs.findbugs.gui2.L10N.getLocalString("mode.at_or_before", "at or before") + " " + filterBy.formatValue(value);
+		case FILTER_ALL_BUT: return filterBy.toString() + " " + edu.umd.cs.findbugs.gui2.L10N.getLocalString("dlg.is", "is") + " " + edu.umd.cs.findbugs.gui2.L10N.getLocalString("mode.not_equal_to", "not equal to") + " " + filterBy.formatValue(value);
 		default: throw new RuntimeException();
 		}
 	}

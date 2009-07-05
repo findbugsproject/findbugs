@@ -33,7 +33,6 @@ import javax.swing.AbstractButton;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 
-import edu.umd.cs.findbugs.L10N;
 import edu.umd.cs.findbugs.SystemProperties;
 
 /**
