@@ -24,9 +24,9 @@ import java.util.regex.Pattern;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugRanker;
+import edu.umd.cs.findbugs.UserDesignation;
 import edu.umd.cs.findbugs.cloud.Cloud;
 import edu.umd.cs.findbugs.cloud.DBCloud;
-import edu.umd.cs.findbugs.cloud.UserDesignation;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 
 /**

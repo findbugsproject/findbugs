@@ -43,6 +43,7 @@ import de.tobject.findbugs.reporter.MarkerUtil;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugPattern;
 import edu.umd.cs.findbugs.I18N;
+import edu.umd.cs.findbugs.UserDesignation;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 
 /**
@@ -89,8 +90,8 @@ public class UserAnnotationsView extends AbstractFindbugsView {
 				| SWT.READ_ONLY);
 		designationComboBox.setToolTipText("User-specified bug designation");
 		designationComboBox.setLayoutData(new GridData());
-		for (String s : I18N.instance().getUserDesignationKeys(true)) {
-			designationComboBox.add(I18N.instance().getUserDesignation(s));
+		for (UserDesignation u : UserDesignation.values()) {
+			designationComboBox.add(UserDesignation.getLocalisedName(u));
 		}
 		designationComboBox.addSelectionListener(new SelectionListener() {
 			public void widgetSelected(SelectionEvent e) {
@@ -159,7 +160,7 @@ public class UserAnnotationsView extends AbstractFindbugsView {
 		if (theBug == null) {
 			return;
 		}
-		int comboIndex = theBug.getUserDesignationKeyIndex();
+		int comboIndex = UserDesignation.getUserDesignation(theBug.getUserDesignationKey()).ordinal();
 		if (comboIndex == -1) {
 			FindbugsPlugin.getDefault()
 					.logError("Cannot find user designation");

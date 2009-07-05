@@ -22,8 +22,8 @@ package edu.umd.cs.findbugs.userAnnotations.ri;
 import edu.umd.cs.findbugs.BugCollection;
 import edu.umd.cs.findbugs.BugDesignation;
 import edu.umd.cs.findbugs.BugInstance;
-import edu.umd.cs.findbugs.I18N;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.UserDesignation;
 import edu.umd.cs.findbugs.userAnnotations.UserAnnotationPlugin;
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -106,8 +106,8 @@ public class XMLFileUserAnnotationPlugin implements UserAnnotationPlugin {
 				String designationKey = safeGetAttribute(entry, "designation");
 				String annotationText = safeGetText(entry);
 				
-				if (!I18N.instance().getUserDesignationKeys().contains(designationKey)) {
-					designationKey = "UNCLASSIFIED";
+				if (UserDesignation.getUserDesignation(designationKey) == UserDesignation.UNCLASSIFIED) {
+					designationKey = UserDesignation.UNCLASSIFIED.name();
 				}
 				
 				BugInstance bugInstance = instanceHashToBugInstanceMap.get(instanceHash);

@@ -23,8 +23,6 @@ import java.sql.Timestamp;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
-
 import edu.umd.cs.findbugs.AppVersion;
 import edu.umd.cs.findbugs.BugCollection;
 import edu.umd.cs.findbugs.BugInstance;
@@ -33,6 +31,7 @@ import edu.umd.cs.findbugs.BugRanker;
 import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.I18N;
 import edu.umd.cs.findbugs.ProjectPackagePrefixes;
+import edu.umd.cs.findbugs.UserDesignation;
 import edu.umd.cs.findbugs.gui2.BugAspects.SortableValue;
 import edu.umd.cs.findbugs.util.ClassName;
 
@@ -273,8 +272,7 @@ public enum Sortables implements Comparator<SortableValue>
 		@Override
 		public String[] getAllSorted()
 		{//FIXME I think we always want user to see all possible designations, not just the ones he has set in his project, Agreement?  -Dan
-			List<String> sortedDesignations=I18N.instance().getUserDesignationKeys(true);
-			return sortedDesignations.toArray(new String[sortedDesignations.size()]);
+			return UserDesignation.getKeys();
 		}
 	},
 	BUGCODE(edu.umd.cs.findbugs.L10N.getLocalString("sort.bug_kind", "Bug Kind"))

@@ -47,7 +47,7 @@ import javax.swing.tree.TreePath;
 
 import edu.umd.cs.findbugs.BugCollection;
 import edu.umd.cs.findbugs.BugInstance;
-import edu.umd.cs.findbugs.I18N;
+import edu.umd.cs.findbugs.UserDesignation;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.cloud.Cloud;
 import edu.umd.cs.findbugs.cloud.Cloud.BugFilingStatus;
@@ -205,7 +205,7 @@ public class CommentsArea {
 
 		designationKeys.add("");
 		designationComboBox.addItem("");
-		for (String s : I18N.instance().getUserDesignationKeys(true)) {
+		for (String s : UserDesignation.getKeys()) {
 			designationKeys.add(s);
 			designationComboBox.addItem(Sortables.DESIGNATION.formatValue(s));
 		}

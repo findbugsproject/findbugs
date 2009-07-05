@@ -61,6 +61,7 @@ public class L10N {
 
 
 	private L10N() {
+		// do not call me
 	}
 
 	private static String lookup(ResourceBundle b, String key) {

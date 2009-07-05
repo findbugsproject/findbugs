@@ -44,10 +44,10 @@ import edu.umd.cs.findbugs.DetectorFactoryCollection;
 import edu.umd.cs.findbugs.ExcludingHashesBugReporter;
 import edu.umd.cs.findbugs.I18N;
 import edu.umd.cs.findbugs.PackageStats;
-import edu.umd.cs.findbugs.Plugin;
 import edu.umd.cs.findbugs.Project;
 import edu.umd.cs.findbugs.SortedBugCollection;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.UserDesignation;
 import edu.umd.cs.findbugs.PackageStats.ClassStats;
 import edu.umd.cs.findbugs.config.CommandLine;
 import edu.umd.cs.findbugs.filter.FilterException;
@@ -333,7 +333,7 @@ public class Filter {
 	    	I18N i18n = I18N.instance();
 			
 		    for(String x : argument.split("[,|]")) {
-				for (String designationKey : i18n.getUserDesignationKeys()) {
+				for (String designationKey : UserDesignation.getKeys()) {
 					if (designationKey.equals(x) 
 							|| i18n.getUserDesignation(designationKey).equals(x)) {
 						this.designationKey.add(designationKey);

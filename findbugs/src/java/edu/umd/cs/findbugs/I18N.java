@@ -1,17 +1,17 @@
 /*
  * FindBugs - Find bugs in Java programs
  * Copyright (C) 2003,2004 University of Maryland
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -19,15 +19,10 @@
 
 package edu.umd.cs.findbugs;
 
-import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Locale;
 import java.util.MissingResourceException;
 import java.util.ResourceBundle;
@@ -43,25 +38,19 @@ import edu.umd.cs.findbugs.annotations.NonNull;
  */
 public class I18N {
 	private static final boolean DEBUG = SystemProperties.getBoolean("i18n.debug");
-	/** a Comparator to compare user designation keys */
-	public static final Comparator<String> designationKeyComparator = new DesignationKeyComparator();
 	public static final Locale defaultLocale = Locale.getDefault();
-	private final ResourceBundle annotationDescriptionBundle;
-	private final ResourceBundle englishAnnotationDescriptionBundle; //used if local one can't be found
+
 	//private final ResourceBundle bugCategoryDescriptionBundle;
 	private final HashMap<String, BugCategory> categoryDescriptionMap;
-	private final ResourceBundle userDesignationBundle;
 	private final HashMap<String, BugPattern> bugPatternMap;
 	private final HashMap<String, BugCode> bugCodeMap;
+	private FailSafeResourceBundle bundle;
 
 	private I18N() {
-		annotationDescriptionBundle = ResourceBundle.getBundle("edu.umd.cs.findbugs.FindBugsAnnotationDescriptions", defaultLocale);
-		englishAnnotationDescriptionBundle = ResourceBundle.getBundle("edu.umd.cs.findbugs.FindBugsAnnotationDescriptions", Locale.ENGLISH);
-		//bugCategoryDescriptionBundle = ResourceBundle.getBundle("edu.umd.cs.findbugs.BugCategoryDescriptions");
 		categoryDescriptionMap = new HashMap<String, BugCategory>();
-		userDesignationBundle = ResourceBundle.getBundle("edu.umd.cs.findbugs.UserDesignations", defaultLocale);
 		bugPatternMap = new HashMap<String, BugPattern>();
 		bugCodeMap = new HashMap<String, BugCode>();
+		bundle = new FailSafeResourceBundle(I18N.class.getName(), Locale.ENGLISH);
 	}
 
 	private static final I18N theInstance = new I18N();
@@ -101,13 +90,13 @@ public class I18N {
 
 		return bugPatternMap.values().iterator();
 	}
-	
+
 	/**
 	 * Get an Iterator over all registered bug codes.
 	 */
 	public Iterator<BugCode> bugCodeIterator() {
 		DetectorFactoryCollection.instance(); // ensure detectors loaded
-		
+
 		return bugCodeMap.values().iterator();
 	}
 
@@ -130,13 +119,14 @@ public class I18N {
 	public @NonNull String getShortMessage(String key) {
 		BugPattern bugPattern = bugPatternMap.get(key);
 		if (bugPattern == null)
-			return L10N.getLocalString("err.missing_pattern", "Error: missing bug pattern for key") + " " + key;
+			return bundle.getString("err.missing_pattern") + " " + key;
 		return bugPattern.getAbbrev() + ": " + bugPattern.getShortDescription();
 	}
+	
 	public @NonNull String getShortMessageWithoutCode(String key) {
 		BugPattern bugPattern = bugPatternMap.get(key);
 		if (bugPattern == null)
-			return L10N.getLocalString("err.missing_pattern", "Error: missing bug pattern for key") + " " + key;
+			return bundle.getString("err.missing_pattern") + " " + key;
 		return  bugPattern.getShortDescription();
 	}
 
@@ -148,7 +138,7 @@ public class I18N {
 	public @NonNull String getDetailHTML(String key) {
 		BugPattern bugPattern = bugPatternMap.get(key);
 		if (bugPattern == null)
-			return L10N.getLocalString("err.missing_pattern", "Error: missing bug pattern for key") + " " + key;
+			return bundle.getString("err.missing_pattern") + " " + key;
 		return bugPattern.getDetailHTML();
 	}
 
@@ -161,19 +151,7 @@ public class I18N {
 	 * @param key the annotation description to retrieve
 	 */
 	public String getAnnotationDescription(String key) {
-		try{
-			return annotationDescriptionBundle.getString(key);
-		}
-		catch(MissingResourceException mre){
-			if(DEBUG)
-				return "TRANSLATE(key=" + key + ") (param={0}}";
-			else try {
-				return englishAnnotationDescriptionBundle.getString(key);
-			} catch(MissingResourceException mre2){
-					return key;
-				}
-
-		}
+		return bundle.getString(key);
 	}
 
 	/**
@@ -205,7 +183,7 @@ public class I18N {
 	public @NonNull String getBugTypeDescription(String shortBugType) {
 		BugCode bugCode = bugCodeMap.get(shortBugType);
 		if (bugCode == null)
-			return L10N.getLocalString("err.missing_code", "Error: missing bug code for key") + " " + shortBugType;
+			return bundle.getString("err.missing_code") + " " + shortBugType;
 		return bugCode.getDescription();
 	}
 
@@ -257,30 +235,30 @@ public class I18N {
 
 		return categoryDescriptionMap.keySet(); // backed by the Map
 	}
-	
+
 	public Collection<BugCategory> getBugCategoryObjects() {
 		DetectorFactoryCollection.instance(); // ensure detectors loaded
 
 		return categoryDescriptionMap.values(); // backed by the Map
 	}
-	
+
 	public String getPriorityString(BugInstance bug) {
 		//first, get the priority
 		int value = bug.getPriority();
 		String priorityString;
 		if (value == Detector.HIGH_PRIORITY)
-			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_high", "High");
+			priorityString = bundle.getString("sort.priority_high");
 		else if (value == Detector.NORMAL_PRIORITY)
-			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_normal", "Medium");
+			priorityString = bundle.getString("sort.priority_normal");
 		else if (value == Detector.LOW_PRIORITY)
-			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_low", "Low");
+			priorityString = bundle.getString("sort.priority_low");
 		else if (value == Detector.EXP_PRIORITY)
-			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_experimental", "Experimental");
+			priorityString = bundle.getString("sort.priority_experimental");
 		else
-			priorityString = edu.umd.cs.findbugs.L10N.getLocalString("sort.priority_ignore", "Ignore"); // This probably shouldn't ever happen, but what the hell, let's be complete
+			priorityString = bundle.getString("sort.priority_ignore"); // This probably shouldn't ever happen, but what the hell, let's be complete
 		return priorityString;
-	}	
-	
+	}
+
 	/**
 	 * Get the localized user designation string.
 	 * Returns the key if no user designation can be found.
@@ -289,79 +267,46 @@ public class I18N {
 	 * @return the localized designation string
 	 */
 	public String getUserDesignation(String key) {
-		return userDesignationBundle.getString(key);
+		return bundle.getString(key);
 	}
 
-	/**
-	 * Get a List containing all known user designation keys keys.
-	 * E.g., "MOSTLY_HARMLESS", "MUST_FIX", "NOT_A_BUG", etc.
-	 *
-	 * @return List of user designation keys
-	 */
-	public List<String> getUserDesignationKeys() {
-		List<String> result = new LinkedList<String>();
-		for (Enumeration<String> e = userDesignationBundle.getKeys(); e.hasMoreElements(); ) {
-			String key = e.nextElement();
-			result.add(key);
-		}
-		return result;
-	}
+	public static class FailSafeResourceBundle  {
 
-	/**
-	 * Get a List containing all known user designation keys keys.
-	 * E.g., "MOSTLY_HARMLESS", "MUST_FIX", "NOT_A_BUG", etc.
-	 * 
-	 * If <code>sort == true</code> then it will attempt to sort
-	 * the List as appropriate to show the user.
-	 *
-	 * @return List of user designation keys
-	 */
-	public List<String> getUserDesignationKeys(boolean sort) {
-		List<String> result = getUserDesignationKeys();
-		if (sort) 
-			Collections.sort(result, designationKeyComparator);
-		return result;
-	}
-	
-	public String getUserDesignationKey(int index) {
-		List<String> keys = getUserDesignationKeys(true);
-		return keys.get(index);
-	}	
+        private ResourceBundle local;
+		private final ResourceBundle defaultBundle;
 
-	private static class DesignationKeyComparator implements Comparator<String>, Serializable {
-		private static final long serialVersionUID = 1L;
-		/** Returns a negative integer, zero, or a positive integer as the
-		 * left key is less than, equal to, or greater than the right key. */
-		public int compare(String lKey, String rKey) {
-			int lCat = categoryOf(lKey);
-			int catDiff = lCat - categoryOf(rKey);
-			if (catDiff != 0 || lCat != 0) return catDiff;
-			// if we get this far we have two unrecognized strings
-			return lKey.compareTo(rKey);
-		}
-		private static int categoryOf(String key) {
-			if (key == null) return -30;
-			if (key.length() <= 0) return -29;
-			switch (key.charAt(0)) {
-				case 'U': if ("UNCLASSIFIED".equals(key)) return 20;
-						  break;
-				case 'I': if ("I_WILL_FIX".equals(key)) return 12;
-				  			break;
-		
-				case 'B': if ("BAD_ANALYSIS".equals(key)) return 15;
-						  break;
-				case 'N': if ("NEEDS_STUDY".equals(key)) return -22;
-						  if ("NOT_A_BUG".equals(key)) return -15;
-						  break;
-				case 'O': if ("OBSOLETE_CODE".equals(key)) return 30;
-				  		break;
-				case 'M': if ("MOSTLY_HARMLESS".equals(key)) return -10;
-						  if ("MUST_FIX".equals(key)) return 10;
-						  break;
-				case 'S': if ("SHOULD_FIX".equals(key)) return 5;
+		public FailSafeResourceBundle(String baseName, Locale defaultLocale) {
+			defaultBundle = ResourceBundle.getBundle(baseName, defaultLocale);
+			try {
+				local = ResourceBundle.getBundle(baseName);
+			} catch (MissingResourceException e) {
+				local = defaultBundle;
 			}
-			return 0; // between MOSTLY_HARMLESS and SHOULD_FIX
+        }
+
+        public Enumeration<String> getKeys() {
+	        return local.getKeys();
+        }
+
+		public String getString(String key) {			
+			return getString(key, key);
+		}
+		
+		public String getString(String key, String defaultValue) {
+			String value;
+			try {
+				value = local.getString(key);
+			} catch (MissingResourceException e) {
+				if(DEBUG){
+					return "TRANSLATE(key=" + key + ") (param={0}}";
+				}
+				try {
+					value = defaultBundle.getString(key);
+				} catch (MissingResourceException e2) {
+					value = defaultValue;
+				}
+			}
+			return value;
 		}
 	}
-
 }

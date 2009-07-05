@@ -40,6 +40,7 @@ import edu.umd.cs.findbugs.BugPattern;
 import edu.umd.cs.findbugs.BugRanker;
 import edu.umd.cs.findbugs.I18N;
 import edu.umd.cs.findbugs.PluginLoader;
+import edu.umd.cs.findbugs.UserDesignation;
 import edu.umd.cs.findbugs.util.FractionalMultiset;
 import edu.umd.cs.findbugs.util.MergeMap;
 import edu.umd.cs.findbugs.util.Multiset;

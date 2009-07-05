@@ -567,10 +567,6 @@ public class BugInstance implements Comparable<BugInstance>, XMLWriteableWithMes
 		if (userDesignation == null) return Long.MAX_VALUE;
 		return userDesignation.getTimestamp();
 	}
-	
-	@NonNull public int getUserDesignationKeyIndex() {
-		return I18N.instance().getUserDesignationKeys().indexOf(getUserDesignationKey());
-	}
 
 	/**
 	 * @param key
@@ -592,7 +588,7 @@ public class BugInstance implements Comparable<BugInstance>, XMLWriteableWithMes
 	 */
 	public void setUserDesignationKeyIndex(int index, @CheckForNull BugCollection bugCollection) {
 		setUserDesignationKey(
-				I18N.instance().getUserDesignationKey(index), bugCollection);
+				UserDesignation.getUserDesignation(index).name(), bugCollection);
 		}
 
 	/**

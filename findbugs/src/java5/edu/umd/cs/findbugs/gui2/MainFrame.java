@@ -123,7 +123,7 @@ import edu.umd.cs.findbugs.ProjectPackagePrefixes;
 import edu.umd.cs.findbugs.SortedBugCollection;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
-import edu.umd.cs.findbugs.ProjectPackagePrefixes.PrefixFilter;
+import edu.umd.cs.findbugs.UserDesignation;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
@@ -602,7 +602,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 
 		int i = 0;
 		int keyEvents [] = {KeyEvent.VK_1, KeyEvent.VK_2, KeyEvent.VK_3, KeyEvent.VK_4, KeyEvent.VK_5, KeyEvent.VK_6, KeyEvent.VK_7, KeyEvent.VK_8, KeyEvent.VK_9};
-		for(String key :  I18N.instance().getUserDesignationKeys(true)) {
+		for(String key : UserDesignation.getKeys()) {
 			String name = I18N.instance().getUserDesignation(key);
 			comments.addDesignationItem(changeDesignationMenu, name, keyEvents[i++]);
 		}
@@ -695,7 +695,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 
 		int i = 0;
 		int keyEvents [] = {KeyEvent.VK_1, KeyEvent.VK_2, KeyEvent.VK_3, KeyEvent.VK_4, KeyEvent.VK_5, KeyEvent.VK_6, KeyEvent.VK_7, KeyEvent.VK_8, KeyEvent.VK_9};
-		for(String key :  I18N.instance().getUserDesignationKeys(true)) {
+		for(String key : UserDesignation.getKeys()) {
 			String name = I18N.instance().getUserDesignation(key);
 			addDesignationItem(changeDesignationMenu, name, keyEvents[i++]);
 		}
@@ -915,7 +915,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback
 		JMenu designationMenu = newJMenu("menu.designation", "Designation");
 		int i = 0;
 		int keyEvents [] = {KeyEvent.VK_1, KeyEvent.VK_2, KeyEvent.VK_3, KeyEvent.VK_4, KeyEvent.VK_5, KeyEvent.VK_6, KeyEvent.VK_7, KeyEvent.VK_8, KeyEvent.VK_9};
-		for(String key :  I18N.instance().getUserDesignationKeys(true)) {
+		for(String key : UserDesignation.getKeys()) {
 			String name = I18N.instance().getUserDesignation(key);
 			addDesignationItem(designationMenu, name, keyEvents[i++]);
 		}
