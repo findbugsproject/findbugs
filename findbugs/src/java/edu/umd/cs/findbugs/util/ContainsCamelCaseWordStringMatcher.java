@@ -19,7 +19,6 @@
 
 package edu.umd.cs.findbugs.util;
 
-import edu.umd.cs.findbugs.ml.SplitCamelCaseIdentifier;
 import java.util.Collection;
 import java.util.Locale;
 
