@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="classcycle">
+	<section name="properties">
+		<item value="true" key="mergerInnerClasses"/>
+		<section name="reflection_pattern">
+			<list key="list">
+			</list>
+		</section>
+		<section name="exclude">
+			<list key="list">
+			</list>
+		</section>
+		<section name="include">
+			<item value="true" key="output"/>
+			<list key="list">
+			</list>
+		</section>
+	</section>
+</section>

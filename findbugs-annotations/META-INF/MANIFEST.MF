@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Findbugs annotations
+Bundle-SymbolicName: findbugs-annotations
+Bundle-Version: 1.3.9.qualifier
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
