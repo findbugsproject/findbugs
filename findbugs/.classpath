@@ -4,7 +4,6 @@
 	<classpathentry excluding="**/CVS/*" kind="src" path="src/antTask"/>
 	<classpathentry excluding="**/CVS/*|edu/umd/cs/findbugs/tools/patcomp/**/*" kind="src" path="src/tools"/>
 	<classpathentry kind="src" path="etc"/>
-	<classpathentry kind="src" path="src/java5"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5">
 		<accessrules>
 			<accessrule kind="accessible" pattern="com/sun/management/*"/>
@@ -40,7 +39,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="lib/commons-lang-2.4.jar"/>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry exported="true" kind="lib" path="lib/jsr305.jar"/>
 	<classpathentry kind="lib" path="lib/jaxen-1.1.1.jar"/>
 	<classpathentry kind="lib" path="lib/jFormatString.jar"/>
 	<classpathentry kind="output" path="classesEclipse"/>

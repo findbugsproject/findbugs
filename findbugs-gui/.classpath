@@ -4,5 +4,6 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/J2SE-1.5"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/findbugs"/>
 	<classpathentry kind="lib" path="lib/AppleJavaExtensions.jar"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/findbugs-annotations"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

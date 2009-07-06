@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<project basedir="." default="build" name="findbugs-gui">
+
+    <property environment="env"/>
+    <property name="findbugs.location" value="../findbugs"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.5"/>
+    <property name="source" value="1.5"/>
+	<property name="classes.dir" value="build/classes"/>
+
+    <path id="findbugs.classpath">
+        <pathelement location="${findbugs.location}/lib/findbugs.jar"/>
+        <pathelement location="${findbugs.location}/lib/bcel.jar"/>
+        <pathelement location="${findbugs.location}/lib/dom4j-1.6.1.jar"/>
+        <pathelement location="${findbugs.location}/lib/junit.jar"/>
+        <pathelement location="${findbugs.location}/lib/asm-3.1.jar"/>
+        <pathelement location="${findbugs.location}/lib/asm-tree-3.1.jar"/>
+        <pathelement location="${findbugs.location}/lib/asm-commons-3.1.jar"/>
+        <pathelement location="${findbugs.location}/lib/commons-lang-2.4.jar"/>
+        <pathelement location="${findbugs.location}/lib/jsr305.jar"/>
+        <pathelement location="${findbugs.location}/lib/jaxen-1.1.1.jar"/>
+        <pathelement location="${findbugs.location}/lib/jFormatString.jar"/>
+        <pathelement location="${findbugs.location}/lib/jdepend-2.9.jar"/>
+    </path>
+
+    <path id="findbugs-gui.classpath">
+        <pathelement location="${classes.dir}"/>
+        <path refid="findbugs.classpath"/>
+        <pathelement location="lib/AppleJavaExtensions.jar"/>
+    </path>
+
+    <target name="init">
+        <mkdir dir="${classes.dir}"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+
+    <target name="clean">
+        <delete dir="${classes.dir}"/>
+    </target>
+
+    <target depends="clean" name="cleanall">
+        <ant antfile="${findbugs.location}/build.xml" dir="${findbugs.location}" inheritAll="false" target="clean"/>
+    </target>
+
+    <target depends="build-subprojects,build-project" name="build"/>
+
+    <target name="build-subprojects">
+        <ant antfile="${findbugs.location}/build.xml" dir="${findbugs.location}" inheritAll="false" target="build"/>
+    </target>
+
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="${classes.dir}" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="findbugs-gui.classpath"/>
+        </javac>
+    </target>
+
+	<target name="Driver">
+        <java classname="edu.umd.cs.findbugs.gui2.Driver" failonerror="true" fork="yes">
+            <jvmarg line="-Xmx500m"/>
+            <classpath refid="findbugs-gui.classpath"/>
+        </java>
+    </target>
+</project>

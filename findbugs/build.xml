@@ -19,6 +19,7 @@
 	
 	<property name="ui.dir" value="../findbugs-gui"/>
 	<property name="junittests.dir" value="../findbugs-tests"/>
+	<property name="annotations.dir" value="../findbugs-annotations"/>
 	<property name="jar.dir" value="lib"/>
 	<property name="plugin.dir" value="plugin"/>
 	<property name="build.dir" value="build"/>
@@ -26,7 +27,6 @@
 	<property name="junitclasses.dir" value="build/junitclasses"/>
 	<property name="scripts.dir" value="bin"/>
 	<property name="src.dir" value="src/java"/>
-	<property name="src5.dir" value="src/java5"/>
 	<property name="toolsrc.dir" value="src/tools"/>
 	<property name="anttasksrc.dir" value="src/antTask"/>
 	<property name="scriptsrc.dir" value="src/scripts"/>
@@ -54,7 +54,7 @@
 	<property name="scripts.stamp" value="${build.dir}/scripts.stamp"/>
 	<property name="allClassFiles.jar" value="${build.dir}/allClassFiles.jar"/>
 	<property name="doc.props.file" value="${etc.dir}/doc.properties"/>
-	<property name="version.props.file" value="${build.dir}/classes/edu/umd/cs/findbugs/version.properties"/>
+	<property name="version.props.file" value="${build.dir}/classes/${pkg.base}/version.properties"/>
 	
 	<path id="findbugs.classpath">
 		<pathelement location="${jar.dir}/bcel.jar"/>
@@ -65,7 +65,7 @@
 		<pathelement location="${jar.dir}/asm-commons-3.1.jar"/>
 		<pathelement location="${jar.dir}/asm-tree-3.1.jar"/>
 		<pathelement location="${jar.dir}/jaxen-1.1.1.jar"/>		
-		<pathelement location="${jar.dir}/jsr305.jar"/>
+		<pathelement location="${annotations.dir}/${jar.dir}/jsr305.jar"/>
 		<pathelement location="${jar.dir}/jFormatString.jar"/>
 		<pathelement location="${jar.dir}/commons-lang-2.4.jar"/>
 	</path>
@@ -106,7 +106,23 @@
 		<include name="**/*.pdf"/>
 	</patternset>
 
-        <fileset id="plugin.jars" dir="${plugin.dir}" includes="*.jar"/>
+	<patternset id="annotations.bin.pats">
+        <include name="**/${pkg.base}/Priorities.class"/>
+        <include name="**/annotations/*.class"/>
+	</patternset>
+	
+	<patternset id="no.annotations.bin.pats">
+        <exclude name="**/${pkg.base}/Priorities.class"/>
+        <exclude name="**/annotations/*.class"/>
+	</patternset>
+	
+	<patternset id="annotations.src.pats">
+        <include name="**/${pkg.base}/Priorities.java"/>
+        <include name="**/annotations/*.java"/>
+	</patternset>
+	
+    <fileset id="plugin.jars" dir="${plugin.dir}" includes="*.jar"/>
+	
 	<property name="prop.plugin.jars" refid="plugin.jars"/>
 
 
@@ -128,7 +144,7 @@
 		<zipfileset src="${jar.dir}/asm-commons-3.1.jar"/>
 		<zipfileset src="${jar.dir}/asm-tree-3.1.jar"/>
 		<zipfileset src="${jar.dir}/jaxen-1.1.1.jar"/>		
-		<zipfileset src="${jar.dir}/jsr305.jar"/>
+		<zipfileset src="${annotations.dir}/${jar.dir}/jsr305.jar"/>
 		<zipfileset src="${jar.dir}/jFormatString.jar"/>
 		<zipfileset src="${jar.dir}/commons-lang-2.4.jar"/>
 		<zipfileset src="${jar.dir}/findbugs.jar"/>
@@ -152,7 +168,7 @@
 					<compilerarg value="-Xlint:unchecked"/>
 					<src path="${src.dir}"/>
 					<src path="${ui.dir}/src"/>
-					<src path="${src5.dir}"/>
+					<src path="${annotations.dir}"/>
 					<classpath refid="findbugs.classpath"/>
 				</javac>
         <native2ascii   encoding="Cp1252"
@@ -171,7 +187,7 @@
 			<fileset dir="${src.dir}">
 				<patternset refid="codebase.data.pats"/>
 			</fileset>
-			<fileset dir="${src5.dir}">
+			<fileset dir="${annotations.dir}">
 				<patternset refid="codebase.data.pats"/>
 			</fileset>
 			<fileset dir="${ui.dir}/src">
@@ -260,19 +276,15 @@
 			<!-- Compiled classes, properties files. -->
 			<fileset dir="${classes.dir}">
 				<exclude name="${pkg.base}/tools/**"/>
-				<exclude name="${pkg.base}/tools/**"/>
 				<exclude name="${pkg.base}/antTask/**"/>
-				<!-- Exclude JUnit tests. -->
-<!--
-				<exclude name="**/*Test.class"/> 
--->
+				<!-- Exclude annotations, already present in annotations.jar -->
+				<patternset refid="no.annotations.bin.pats"/>
 				<include name="**/*.class"/>
 				<include name="**/*.properties"/>
 				<include name="**/*.db"/>
 				<include name="**/*.xsl"/>
 				<include name="**/*.png"/>
 				<include name="**/*.html"/>
-
 			</fileset>
 			<fileset dir="${etc.dir}">
 				<include name="*.xsd"/>
@@ -282,13 +294,13 @@
 			</fileset>
 		</jar>
 		
-		<!-- Annotations jar file. -->
-		<jar destfile="${annotations.jar}">
+		<!-- Annotations jar file, now packaged as as OSGI bundle with manifest -->
+		<jar destfile="${annotations.jar}" manifest="${annotations.dir}/META-INF/MANIFEST.MF">
 			<fileset dir="${classes.dir}">
-				<include name="**/annotations/*.class"/>
+				<patternset refid="annotations.bin.pats" />
 			</fileset>
-			<fileset dir="${src.dir}">
-				<include name="**/annotations/*.java"/>
+			<fileset dir="${annotations.dir}/src">
+				<patternset refid="annotations.src.pats"/>
 			</fileset>
 		</jar>
 	</target>
@@ -301,7 +313,6 @@
 	<target name="fulljar" depends="classes,validate,version">
 		<jar destfile="${jar.dir}/findbugs-full-${release.number}.jar" manifest="etc/MANIFEST-findbugs-full.MF">
 			<fileset dir="${classes.dir}">
-				<exclude name="${pkg.base}/tools/**"/>
 				<exclude name="${pkg.base}/tools/**"/>
 				<exclude name="${pkg.base}/antTask/**"/>
 				<include name="**/*.class"/>
@@ -329,7 +340,7 @@
 			
 			<zipfileset src="${jar.dir}/dom4j-1.6.1.jar" excludes="META-INF/**"/>
 			<zipfileset src="${jar.dir}/jaxen-1.1.1.jar" excludes="META-INF/**"/>
-			<zipfileset src="${jar.dir}/jsr305.jar" excludes="META-INF/**"/>
+			<zipfileset src="${annotations.dir}/${jar.dir}/jsr305.jar" excludes="META-INF/**"/>
 			<zipfileset src="${jar.dir}/jFormatString.jar" excludes="META-INF/**"/>
 			<zipfileset src="${jar.dir}/commons-lang-2.4.jar" excludes="META-INF/**"/>
 		</jar>
@@ -798,7 +809,7 @@
 		docoutput.dir - the directory containing the generated HTML/XML/XSL files
 						(must be a child of the project root directory)
 	-->
-	<target name="generatemanual">
+	<target name="generatemanual" unless="doNotGenerateDoc">
 		<echo>Generating HTML version of manual</echo>
 		<echo>Running saxon: ${saxon.home}/saxon.jar</echo>
 		<java fork="true" dir="${docoutput.dir}" failonerror="true" classname="com.icl.saxon.StyleSheet" >
@@ -882,7 +893,7 @@
 	<target name="jnlp" depends="jars">
 		<copy todir="${jnlp.dir}" file="${engine.jar}"/>
 		<copy todir="${jnlp.dir}" file="${jar.dir}/bcel.jar"/>
-		<copy todir="${jnlp.dir}" file="${jar.dir}/jsr305.jar"/>
+		<copy todir="${jnlp.dir}" file="${annotations.dir}/${jar.dir}/jsr305.jar"/>
 		<copy todir="${jnlp.dir}" file="${jar.dir}/asm-3.1.jar"/>
 		<copy todir="${jnlp.dir}" file="${jar.dir}/asm-commons-3.1.jar"/>
 		<copy todir="${jnlp.dir}" file="${jar.dir}/asm-tree-3.1.jar"/>
@@ -931,6 +942,8 @@
 			<include name="src/xsl/*.xsl"/> <!-- Bug #1187977 -->
 		</patternset>
 		
+		<copy file="${annotations.dir}/${jar.dir}/jsr305.jar" todir="${jar.dir}" failonerror="true"/>
+		
 		<patternset id="bindist.jar.pats">
 			<include name="lib/*.jar"/>
 			<include name="plugin/*.jar"/>
@@ -948,6 +961,7 @@
 			<exclude name="bin/*.bat"/>
 		</patternset>
 
+		
 		<zip destfile="${build.dir}/findbugs-${release.number}.zip" compress="true">
 			<zipfileset prefix="findbugs-${release.number}" dir=".">
 				<patternset refid="bindist.miscfile.pats"/>
@@ -980,21 +994,21 @@
 			</tarfileset>
 		</tar>
 
+		<delete file="${jar.dir}/jsr305.jar"/>
+		
 	</target>
 
 	<!-- Build source distribution. -->
-	<target name="srcdist" depends="docs" description="Source distribution">
+	<target name="srcdist" description="Source distribution" unless="doNotExportSrc">
 		<mkdir dir="${build.dir}/src"/>
 		<delete dir="${build.dir}/src/findbugs-${release.number}"/>
 		<taskdef resource="svntask.properties" classpathref="svn.classpath"/>
-
-                <svn username="guest" password="" javahl="false">
-                    <!-- Use 'export' rather than 'checkout' to exclude the .svn stuff -->
-                    <export srcUrl="http://findbugs.googlecode.com/svn/trunk/findbugs"
-                            revision="HEAD"
-                            destPath="${build.dir}/src/findbugs-${release.number}"/>
-                </svn>
-
+            <svn username="guest" password="" javahl="false">
+                <!-- Use 'export' rather than 'checkout' to exclude the .svn stuff -->
+                <export srcUrl="http://findbugs.googlecode.com/svn/trunk/findbugs"
+                        revision="HEAD"
+                        destPath="${build.dir}/src/findbugs-${release.number}"/>
+            </svn>
 		<zip destfile="${build.dir}/findbugs-${release.number}-source.zip" compress="true">
 			<zipfileset dir="${build.dir}/src" includes="findbugs-${release.number}/**"/>
 			<zipfileset prefix="findbugs-${release.number}/doc" dir="${doc.dir}">
@@ -1016,7 +1030,7 @@
 		<delete file="${anttask.jar}" failonerror="false"/>
 	</target>
 
-    <target name="apiJavadoc" depends="version">
+    <target name="apiJavadoc" depends="version" unless="doNotGenerateDoc">
        <delete dir="${apiDoc.dir}"/>
        <mkdir dir="${apiDoc.dir}"/>
       <javadoc access="protected" 
@@ -1028,8 +1042,9 @@
         Windowtitle="FindBugs ${release.number} API"
         bottom="&lt;font size='-1'&gt;&lt;a href='http://findbugs.sourceforge.net/' target='_parent'&gt;FindBugs&lt;/a&gt;&amp;trade; is licenced under the LGPL. Copyright &amp;copy; 2006 University of Maryland.&lt;/font&gt;"
 	    nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar= "false" notree="false" 
-        sourcepath="src/java:src/java5" splitindex="true" use="true" version="true">
-	<classpath refid="findbugs.classpath"/>
+        sourcepath="src/java:${annotations.dir}/src" splitindex="true" use="true" version="true">
+        <classpath refid="findbugs.classpath"/>
+        <classpath path="${annotations.jar}"/>
 	</javadoc>
 		</target>
 
@@ -1037,12 +1052,12 @@
        <delete dir="${annotationDoc.dir}"/>
        <mkdir dir="${annotationDoc.dir}"/>
       <javadoc access="public" 
-       classpath="lib/bcel.jar:${junittests.dir}/${jar.dir}/junit.jar:lib/dom4j-1.6.1.jar:lib/jsr305.jar:${ui.dir}/${jar.dir}/AppleJavaExtensions.jar"
+       classpath="${annotations.dir}/${jar.dir}/jsr305.jar"
         destdir="${annotationDoc.dir}" 
-	    packagenames="edu.umd.cs.findbugs.annotations"
+	    packagenames="*"
         doctitle="FindBugs Annotation Documentation" 
 	    nodeprecated="false" nodeprecatedlist="false" noindex="false" nonavbar= "false" notree="false" 
-        sourcepath="src/java5" splitindex="true" use="true" version="true"/>
+        sourcepath="${annotations.dir}/src" splitindex="true" use="true" version="true"/>
 		</target>
 
 	<!-- Download, patch, and build a modified BCEL 5.2.  Install resulting bcel.jar in lib. -->
@@ -1065,7 +1080,7 @@
 		and must have its classes built.
 	-->
 	<target name="jsr305.jar">
-		<jar destfile="${jar.dir}/jsr305.jar">
+		<jar destfile="${annotations.dir}/${jar.dir}/jsr305.jar">
 			<fileset dir="${jsr305.dir}/build/classes">
 				<include name="**/*.class"/>
 			</fileset>

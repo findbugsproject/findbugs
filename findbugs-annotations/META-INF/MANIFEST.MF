@@ -2,5 +2,14 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Findbugs annotations
 Bundle-SymbolicName: findbugs-annotations
-Bundle-Version: 1.3.9.qualifier
+Bundle-Version: 1.3.9
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: edu.umd.cs.findbugs,
+ edu.umd.cs.findbugs.annotations,
+ edu.umd.cs.findbugs.internalAnnotations;uses:="javax.annotation.meta",
+ javax.annotation;uses:="javax.annotation.meta",
+ javax.annotation.concurrent,
+ javax.annotation.meta,
+ net.jcip.annotations
+Bundle-ClassPath: .,
+ lib/jsr305.jar
