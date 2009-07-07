@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<psf version="2.0">
+<provider id="org.tigris.subversion.subclipse.core.svnnature">
+<project reference="0.9.3,https://findbugs.googlecode.com/svn/branches/2.0_gui_rework/findbugs,findbugs"/>
+<project reference="0.9.3,https://findbugs.googlecode.com/svn/branches/2.0_gui_rework/findbugs-annotations,findbugs-annotations"/>
+<project reference="0.9.3,https://findbugs.googlecode.com/svn/branches/2.0_gui_rework/findbugs-ant,findbugs-ant"/>
+<project reference="0.9.3,https://findbugs.googlecode.com/svn/branches/2.0_gui_rework/findbugs-gui,findbugs-gui"/>
+<project reference="0.9.3,https://findbugs.googlecode.com/svn/branches/2.0_gui_rework/findbugs-tests,findbugs-tests"/>
+<project reference="0.9.3,https://findbugs.googlecode.com/svn/branches/2.0_gui_rework/eclipsePlugin,findBugsEclipsePlugin"/>
+<project reference="0.9.3,https://findbugs.googlecode.com/svn/branches/2.0_gui_rework/eclipsePlugin-test,findBugsEclipsePlugin-test"/>
+</provider>
+</psf>
