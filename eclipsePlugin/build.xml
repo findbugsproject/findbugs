@@ -35,6 +35,7 @@
 	<property file="build.properties" />
 
 	<property name="fbeclipse.dir" value="."/>
+	<property name="annotations.dir" value="../findbugs-annotations"/>
 
 	<property name="src.dir" value="src"/>
 	<property name="dist.dir" value="dist"/>
@@ -317,6 +318,7 @@
 		</unzip>
 		<copy todir="${lib.dir}" preservelastmodified="true">
 			<fileset dir="${findbugs.dir}/lib" includes="${jars.required}"/>
+			<fileset dir="${annotations.dir}/lib" includes="jsr305.jar"/>
 		</copy>
 	</target>
 
