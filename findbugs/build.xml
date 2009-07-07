@@ -28,7 +28,7 @@
 	<property name="scripts.dir" value="bin"/>
 	<property name="src.dir" value="src/java"/>
 	<property name="toolsrc.dir" value="src/tools"/>
-	<property name="anttasksrc.dir" value="src/antTask"/>
+	<property name="anttasksrc.dir" value="../findbugs-ant/src"/>
 	<property name="scriptsrc.dir" value="src/scripts"/>
 	<property name="patch.dir" value="src/patches"/>
 	<property name="xslsrc.dir" value="src/xsl"/>
@@ -276,7 +276,7 @@
 			<!-- Compiled classes, properties files. -->
 			<fileset dir="${classes.dir}">
 				<exclude name="${pkg.base}/tools/**"/>
-				<exclude name="${pkg.base}/antTask/**"/>
+				<exclude name="${pkg.base}/anttask/**"/>
 				<!-- Exclude annotations, already present in annotations.jar -->
 				<patternset refid="no.annotations.bin.pats"/>
 				<include name="**/*.class"/>
@@ -314,7 +314,7 @@
 		<jar destfile="${jar.dir}/findbugs-full-${release.number}.jar" manifest="etc/MANIFEST-findbugs-full.MF">
 			<fileset dir="${classes.dir}">
 				<exclude name="${pkg.base}/tools/**"/>
-				<exclude name="${pkg.base}/antTask/**"/>
+				<exclude name="${pkg.base}/anttask/**"/>
 				<include name="**/*.class"/>
 				<include name="**/*.properties"/>
 				<include name="**/*.db"/>
@@ -403,7 +403,7 @@
 	
 	<!-- Ant task jar file. -->
 	<target name="anttask" depends="classes">
-		<jar destfile="${anttask.jar}">
+		<jar destfile="${anttask.jar}" manifest="${anttasksrc.dir}/../META-INF/MANIFEST.MF">
 			<fileset dir="${classes.dir}">
 				<include name="${pkg.base}/anttask/**"/>
 			</fileset>

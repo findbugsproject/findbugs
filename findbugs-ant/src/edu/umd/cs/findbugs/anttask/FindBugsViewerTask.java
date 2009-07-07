@@ -1,17 +1,17 @@
 /*
  * FindBugs - Find bugs in Java programs
  * Copyright (C) 2006 University of Maryland
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307, USA
@@ -32,7 +32,7 @@ import edu.umd.cs.findbugs.ExitCodes;
 
 /**
  * FindBugsViewerTask.java -- Ant Task to launch the FindBugsFrame
- * 
+ *
  * To use, create a new task that refrences the ant task
  * (such as "findbugs-viewer"). Then call this task while
  * passing in parameters to modify it's behaviour. It
@@ -95,12 +95,13 @@ public class FindBugsViewerTask extends Task {
 
 	/** Creates a new instance of FindBugsViewerTask */
 	public FindBugsViewerTask() {
+	    super();
 	}
 
 	/**
 	 * Sets the file that contains the XML output of a findbugs report.
 	 *
-	 * @param bugReport XML output from a findbugs session
+	 * @param loadbugs XML output from a findbugs session
 	 */
 	public void setLoadbugs(File loadbugs) 	{
 		this.loadbugs = loadbugs;
@@ -215,7 +216,7 @@ public class FindBugsViewerTask extends Task {
 		findbugsEngine.setFork(true);
 
 		if (timeout > 0) {
-			findbugsEngine.setTimeout(timeout);
+			findbugsEngine.setTimeout(Long.valueOf(timeout));
 		}
 
 
@@ -228,15 +229,17 @@ public class FindBugsViewerTask extends Task {
 			// Use findbugs.home to locate findbugs.jar and the standard
 			// plugins.  This is the usual means of initialization.
 			File findbugsLib = new File(homeDir, "lib");
-			
+
 			File findbugsLibFindBugs = new File(findbugsLib, "findbugs.jar");
 			File findBugsFindBugs =  new File(homeDir, "findbugs.jar");
 			//log("executing using home dir [" + homeDir + "]");
-			if (findbugsLibFindBugs.exists())
-				findbugsEngine.setClasspath(new Path(getProject(), findbugsLibFindBugs.getPath()));
-			else if (findBugsFindBugs.exists())
-				findbugsEngine.setClasspath(new Path(getProject(), findBugsFindBugs.getPath()));
-			else throw new IllegalArgumentException("Can't find findbugs.jar in " + homeDir);
+			if (findbugsLibFindBugs.exists()) {
+                findbugsEngine.setClasspath(new Path(getProject(), findbugsLibFindBugs.getPath()));
+            } else if (findBugsFindBugs.exists()) {
+                findbugsEngine.setClasspath(new Path(getProject(), findBugsFindBugs.getPath()));
+            } else {
+                throw new IllegalArgumentException("Can't find findbugs.jar in " + homeDir);
+            }
 
 			findbugsEngine.setClassname("edu.umd.cs.findbugs.LaunchAppropriateUI");
 			findbugsEngine.createJvmarg().setValue("-Dfindbugs.home=" + homeDir.getPath());

@@ -1,17 +1,17 @@
 /*
  * FindBugs - Find Bugs in Java programs
  * Copyright (C) 2003-2007 University of Maryland
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -33,7 +33,7 @@ import org.apache.tools.ant.types.Reference;
 /**
  * Abstract base class for Ant tasks that run programs
  * (main() methods) in findbugs.jar or findbugsGUI.jar.
- * 
+ *
  * @author David Hovemeyer
  */
 public abstract class AbstractFindBugsTask extends Task {
@@ -47,9 +47,6 @@ public abstract class AbstractFindBugsTask extends Task {
 		private String name;
 		private String value;
 
-		public SystemProperty() {
-		}
-
 		public void setName(String name) { this.name = name; }
 		public void setValue(String value) { this.value = value; }
 
@@ -57,7 +54,7 @@ public abstract class AbstractFindBugsTask extends Task {
 		public String getValue() { return value; }
 	}
 
-	private String mainClass;
+	private final String mainClass;
 	private boolean debug = false;
 	private File homeDir = null;
 	private String jvm = "";
@@ -65,22 +62,22 @@ public abstract class AbstractFindBugsTask extends Task {
 	private long timeout = DEFAULT_TIMEOUT;
 	private boolean failOnError = false;
 	private String errorProperty = null;
-	private List<SystemProperty> systemPropertyList = new ArrayList<SystemProperty>();
+	private final List<SystemProperty> systemPropertyList = new ArrayList<SystemProperty>();
 	private Path classpath = null;
 	private Path pluginList = null;
 
 	private Java findbugsEngine = null;
 
 	public String execResultProperty =
-		"edu.umd.cs.findbugs.anttask.AbstractFindBugsTask" + "." + 
+		"edu.umd.cs.findbugs.anttask.AbstractFindBugsTask" + "." +
 			RESULT_PROPERTY_SUFFIX;
-	
+
 	/**
 	 * Constructor.
 	 */
 	protected AbstractFindBugsTask(String mainClass) {
 		this.mainClass = mainClass;
-		this.execResultProperty = mainClass + 
+		this.execResultProperty = mainClass +
 			"." + RESULT_PROPERTY_SUFFIX;
 	}
 
@@ -97,7 +94,7 @@ public abstract class AbstractFindBugsTask extends Task {
 	public void setDebug(boolean flag) {
 		this.debug = flag;
 	}
-	
+
 	/**
 	 * Get the debug flag.
 	 */
@@ -113,7 +110,7 @@ public abstract class AbstractFindBugsTask extends Task {
 	}
 
 	/**
-	 *  Set the command used to start the VM 
+	 *  Set the command used to start the VM
 	 */
 	public void setJvm(String jvm) {
 		this.jvm = jvm;
@@ -250,11 +247,12 @@ public abstract class AbstractFindBugsTask extends Task {
 		}
 
 		for (SystemProperty systemProperty : systemPropertyList) {
-			if (systemProperty.getName() == null || systemProperty.getValue() == null)
-				throw new BuildException("systemProperty elements must have name and value attributes");
+			if (systemProperty.getName() == null || systemProperty.getValue() == null) {
+                throw new BuildException("systemProperty elements must have name and value attributes");
+            }
 		}
 	}
-	
+
 	/**
 	 * Create the FindBugs engine (the Java process that will run
 	 * whatever FindBugs-related program this task is
@@ -265,14 +263,15 @@ public abstract class AbstractFindBugsTask extends Task {
 		findbugsEngine.setProject( getProject() );
 		findbugsEngine.setTaskName( getTaskName() );
 		findbugsEngine.setFork( true );
-		if (jvm.length()>0)
-			findbugsEngine.setJvm( jvm );
-		findbugsEngine.setTimeout( timeout  );
+		if (jvm.length()>0) {
+            findbugsEngine.setJvm( jvm );
+        }
+		findbugsEngine.setTimeout(Long.valueOf(timeout));
 
 		if ( debug ) {
 			jvmargs = jvmargs + " -Dfindbugs.debug=true";
 		}
-		findbugsEngine.createJvmarg().setLine( jvmargs ); 
+		findbugsEngine.createJvmarg().setLine( jvmargs );
 
 		// Add JVM arguments for system properties
 		for (SystemProperty systemProperty : systemPropertyList) {
@@ -287,11 +286,13 @@ public abstract class AbstractFindBugsTask extends Task {
 			File findbugsLibFindBugs = new File(findbugsLib, "findbugs.jar");
 			File findBugsFindBugs =  new File(homeDir, "findbugs.jar");
 			//log("executing using home dir [" + homeDir + "]");
-			if (findbugsLibFindBugs.exists())
-				findbugsEngine.setClasspath(new Path(getProject(), findbugsLibFindBugs.getPath()));
-			else if (findBugsFindBugs.exists())
-				findbugsEngine.setClasspath(new Path(getProject(), findBugsFindBugs.getPath()));
-			else throw new IllegalArgumentException("Can't find findbugs.jar in " + homeDir);
+			if (findbugsLibFindBugs.exists()) {
+                findbugsEngine.setClasspath(new Path(getProject(), findbugsLibFindBugs.getPath()));
+            } else if (findBugsFindBugs.exists()) {
+                findbugsEngine.setClasspath(new Path(getProject(), findBugsFindBugs.getPath()));
+            } else {
+                throw new IllegalArgumentException("Can't find findbugs.jar in " + homeDir);
+            }
 			findbugsEngine.createJvmarg().setValue("-Dfindbugs.home=" + homeDir.getPath());
 		} else {
 			// Use an explicitly specified classpath and list of plugin Jars
@@ -329,7 +330,7 @@ public abstract class AbstractFindBugsTask extends Task {
 	 * @since Ant 1.5
 	 */
 	private void execFindbugs() throws BuildException {
-		
+
 		System.out.println("Executing findbugs from ant task");
 		createFindbugsEngine();
 		configureFindbugsEngine();
@@ -337,7 +338,7 @@ public abstract class AbstractFindBugsTask extends Task {
 		beforeExecuteJavaProcess();
 
 		if (getDebug()) {
-			log(getFindbugsEngine().getCommandLine().describeCommand());    
+			log(getFindbugsEngine().getCommandLine().describeCommand());
 		}
 
 		/*
@@ -348,12 +349,12 @@ public abstract class AbstractFindBugsTask extends Task {
 		 * each execution if we want to get the exit code)
 		 */
 		String execReturnCodeIdentifier = execResultProperty + "." +
-			UUID.randomUUID().toString(); 
+			UUID.randomUUID().toString();
 		getFindbugsEngine().setResultProperty(execReturnCodeIdentifier);
 
 		/*
 		 * if the execution fails, we'll report it ourself -- prevent the
-		 * underlying Ant Java object from throwing an exception 
+		 * underlying Ant Java object from throwing an exception
 		 */
 		getFindbugsEngine().setFailonerror(false);
 		try {
@@ -368,10 +369,10 @@ public abstract class AbstractFindBugsTask extends Task {
 
 		afterExecuteJavaProcess(rc);
 	}
-	
+
 	protected abstract void configureFindbugsEngine();
-	
+
 	protected abstract void beforeExecuteJavaProcess();
-	
+
 	protected abstract void afterExecuteJavaProcess(int rc);
 }

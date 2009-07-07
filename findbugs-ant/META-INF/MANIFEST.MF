@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Findbugs ant task
+Bundle-SymbolicName: findbugs-ant
+Bundle-Version: 1.3.9
+Export-Package: edu.umd.cs.findbugs.anttask
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.apache.ant;bundle-version="1.7.0",
+ findbugs,
+ findbugs-annotations

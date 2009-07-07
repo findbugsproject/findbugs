@@ -77,7 +77,7 @@ import edu.umd.cs.findbugs.ExitCodes;
  * <li>class              (class, jar, zip or directory containing classes to analyze)
  * <li>classpath          (classpath for running FindBugs)
  * <li>conserveSpace      (boolean - default false)</li>
- * <li>debug              (boolean default false) 
+ * <li>debug              (boolean default false)
  * <li>effort             (enum min|default|max)</li>
  * <li>excludeFilter      (filter filename)
  * <li>failOnError        (boolean - default false)
@@ -105,9 +105,9 @@ import edu.umd.cs.findbugs.ExitCodes;
  * <li>workHard           (boolean default false)
  * </ul>
  * Of these arguments, the <b>home</b> is required.
- * <b>projectFile</b> is required if nested &lt;class&gt; or 
- * &lt;auxAnalyzepath&gt elements are not specified. the 
- * &lt;class&gt; tag defines the location of either a 
+ * <b>projectFile</b> is required if nested &lt;class&gt; or
+ * &lt;auxAnalyzepath&gt elements are not specified. the
+ * &lt;class&gt; tag defines the location of either a
  * class, jar file, zip file, or directory containing classes.
  * <p>
  *
@@ -136,7 +136,7 @@ public class FindBugsTask extends AbstractFindBugsTask {
 	private File projectFile ;
 	private File baselineBugs ;
 	private boolean applySuppression;
-	
+
 	private File excludeFile ;
 	private File includeFile ;
 	private Path auxClasspath ;
@@ -149,7 +149,7 @@ public class FindBugsTask extends AbstractFindBugsTask {
 	private String omitVisitors ;
 	private String outputFileName ;
 	private String stylesheet ;
-	private List<ClassLocation> classLocations = new ArrayList<ClassLocation>();
+	private final List<ClassLocation> classLocations = new ArrayList<ClassLocation>();
 	private String onlyAnalyze ;
 	private boolean noClassOk ;
 
@@ -178,18 +178,18 @@ public class FindBugsTask extends AbstractFindBugsTask {
 
 	/**
 	 * Set the workHard flag.
-	 * 
+	 *
 	 * @param workHard true if we want findbugs to run with workHard option enabled
 	 */
 	public void setWorkHard(boolean workHard){
-		this.workHard = workHard;   
+		this.workHard = workHard;
 	}
-	
+
 	/**
 	 * Set the noClassOk flag.
-	 * 
+	 *
 	 * @param noClassOk true if we should generate no-error output if no
-	 *        classfiles are specified 
+	 *        classfiles are specified
 	 */
 	public void setNoClassOk(boolean noClassOk) {
 		this.noClassOk = noClassOk;
@@ -197,7 +197,7 @@ public class FindBugsTask extends AbstractFindBugsTask {
 
 	/**
 	 * Set the relaxed flag.
-	 * 
+	 *
 	 * @param relaxed true if we want findbugs to run with relaxed option enabled
 	 */
 	public void setRelaxed(boolean relaxed) {
@@ -206,7 +206,7 @@ public class FindBugsTask extends AbstractFindBugsTask {
 
 	/**
 	 * Set the adjustExperimental flag
-	 * 
+	 *
 	 * @param adjustExperimental true if we want experimental bug patterns to have lower priority
 	 */
 	public void setAdjustExperimental(boolean adjustExperimental){
@@ -214,20 +214,20 @@ public class FindBugsTask extends AbstractFindBugsTask {
 	}
 
 	/**
-	 * Set the specific visitors to use 
+	 * Set the specific visitors to use
 	 */
 	public void setVisitors(String commaSeperatedString) {
 		this.visitors = commaSeperatedString;
 	}
 	/**
-	 * Set the specific visitors to use 
+	 * Set the specific visitors to use
 	 */
 	public void setChooseVisitors(String commaSeperatedString) {
 		this.chooseVisitors = commaSeperatedString;
 	}
 
 	/**
-	 * Set the specific visitors to use 
+	 * Set the specific visitors to use
 	 */
 	public void setOmitVisitors(String commaSeperatedString) {
 		this.omitVisitors = commaSeperatedString;
@@ -248,7 +248,7 @@ public class FindBugsTask extends AbstractFindBugsTask {
 	}
 
 	/**
-	 * Set the report level 
+	 * Set the report level
 	 */
 	public void setReportLevel(String level) {
 		this.reportLevel = level;
@@ -287,11 +287,11 @@ public class FindBugsTask extends AbstractFindBugsTask {
 	 */
 	public void setWarningsProperty(String name) {
 		this.warningsProperty = name;
-	}    
+	}
 
 	/**
 	 * Set effort level.
-	 * 
+	 *
 	 * @param effort the effort level
 	 */
 	public void setEffort(String effort) {
@@ -300,7 +300,7 @@ public class FindBugsTask extends AbstractFindBugsTask {
 
 	/**
 	 * Set project name
-	 * 
+	 *
 	 * @param projectName the project name
 	 */
 	public void setProjectName(String projectName) {
@@ -315,26 +315,26 @@ public class FindBugsTask extends AbstractFindBugsTask {
 	}
 
 	/**
-	 * Set the exclude filter file 
+	 * Set the exclude filter file
 	 */
 	public void setExcludeFilter(File filterFile) {
 		this.excludeFile = filterFile;
 	}
 
 	/**
-	 * Set the exclude filter file 
+	 * Set the exclude filter file
 	 */
 	public void setIncludeFilter(File filterFile) {
 		this.includeFile = filterFile;
 	}
 	/**
-	 * Set the exclude filter file 
+	 * Set the exclude filter file
 	 */
 	public void setBaselineBugs(File baselineBugs) {
 		this.baselineBugs = baselineBugs;
 	}
 	/**
-	 * Set the project file 
+	 * Set the project file
 	 */
 	public void setProjectFile(File projectFile) {
 		this.projectFile = projectFile;
@@ -463,8 +463,9 @@ public class FindBugsTask extends AbstractFindBugsTask {
 	 * Set name of output file.
 	 */
 	public void setOutputFile(String outputFileName) {
-		if (outputFileName != null && outputFileName.length() > 0)
-			this.outputFileName = outputFileName;
+		if (outputFileName != null && outputFileName.length() > 0) {
+            this.outputFileName = outputFileName;
+        }
 	}
 
 	/**
@@ -480,7 +481,7 @@ public class FindBugsTask extends AbstractFindBugsTask {
 	@Override
     protected void checkParameters() {
 		super.checkParameters();
-		
+
 		if ( projectFile == null && classLocations.size() == 0 && auxAnalyzepath == null) {
 			throw new BuildException( "either projectfile, <class/> or <auxAnalyzepath/> child " +
 									  "elements must be defined for task <"
@@ -488,26 +489,26 @@ public class FindBugsTask extends AbstractFindBugsTask {
 									  getLocation() );
 		}
 
-		if ( outputFormat != null  && 
-			!( outputFormat.trim().equalsIgnoreCase("xml" ) || 
-			   outputFormat.trim().equalsIgnoreCase("xml:withMessages" ) || 
-			   outputFormat.trim().equalsIgnoreCase("html" ) || 
+		if ( outputFormat != null  &&
+			!( outputFormat.trim().equalsIgnoreCase("xml" ) ||
+			   outputFormat.trim().equalsIgnoreCase("xml:withMessages" ) ||
+			   outputFormat.trim().equalsIgnoreCase("html" ) ||
 			   outputFormat.trim().equalsIgnoreCase("text" ) ||
 			   outputFormat.trim().equalsIgnoreCase("xdocs" ) ||
-			   outputFormat.trim().equalsIgnoreCase("emacs") ) ) { 
+			   outputFormat.trim().equalsIgnoreCase("emacs") ) ) {
 			throw new BuildException( "output attribute must be either " +
 										"'text', 'xml', 'html', 'xdocs' or 'emacs' for task <"
 										+ getTaskName() + "/>",
 									  getLocation() );
 		}
 
-		if ( reportLevel != null  && 
-			!( reportLevel.trim().equalsIgnoreCase("experimental" ) || 
-			   reportLevel.trim().equalsIgnoreCase("low" ) || 
+		if ( reportLevel != null  &&
+			!( reportLevel.trim().equalsIgnoreCase("experimental" ) ||
+			   reportLevel.trim().equalsIgnoreCase("low" ) ||
 			   reportLevel.trim().equalsIgnoreCase("medium" ) ||
-			   reportLevel.trim().equalsIgnoreCase("high" ) ) ) { 
+			   reportLevel.trim().equalsIgnoreCase("high" ) ) ) {
 			throw new BuildException( "reportlevel attribute must be either " +
-										"'experimental' or 'low' or 'medium' or 'high' for task <" + 
+										"'experimental' or 'low' or 'medium' or 'high' for task <" +
 										getTaskName() + "/>",
 									  getLocation() );
 		}
@@ -523,7 +524,7 @@ public class FindBugsTask extends AbstractFindBugsTask {
 			throw new BuildException("effort attribute must be one of 'min', 'default', or 'max'");
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see edu.umd.cs.findbugs.anttask.AbstractFindBugsTask#beforeExecuteJavaProcess()
 	 */
@@ -531,7 +532,7 @@ public class FindBugsTask extends AbstractFindBugsTask {
 	protected void beforeExecuteJavaProcess() {
 		log("Running FindBugs...");
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see edu.umd.cs.findbugs.anttask.AbstractFindBugsTask#afterExecuteJavaProcess(int)
 	 */
@@ -572,8 +573,12 @@ public class FindBugsTask extends AbstractFindBugsTask {
 			addArg("-effort:" + effort);
 		}
 
-		if ( sorted ) addArg("-sortByClass");
-		if ( timestampNow ) addArg("-timestampNow");
+		if ( sorted ) {
+            addArg("-sortByClass");
+        }
+		if ( timestampNow ) {
+            addArg("-timestampNow");
+        }
 
 		if ( outputFormat != null && !outputFormat.trim().equalsIgnoreCase("text") ) {
 			outputFormat = outputFormat.trim();
@@ -592,8 +597,12 @@ public class FindBugsTask extends AbstractFindBugsTask {
 			}
 			addArg(outputArg);
 		}
-		if ( quietErrors ) addArg("-quiet");
-		if ( reportLevel != null ) addArg("-" + reportLevel.trim().toLowerCase());
+		if ( quietErrors ) {
+            addArg("-quiet");
+        }
+		if ( reportLevel != null ) {
+            addArg("-" + reportLevel.trim().toLowerCase());
+        }
 		if ( projectFile != null ) {
 			addArg("-project");
 			addArg(projectFile.getPath());
@@ -601,7 +610,7 @@ public class FindBugsTask extends AbstractFindBugsTask {
 		if ( applySuppression ) {
 			addArg("-applySuppression");
 		}
-	
+
 		if ( baselineBugs != null) {
 			addArg("-excludeBugs");
 			addArg(baselineBugs.getPath());
@@ -633,7 +642,7 @@ public class FindBugsTask extends AbstractFindBugsTask {
 				// If it throws an exception, we know it
 				// has an invalid path entry, so we complain
 				// and tolerate it.
-				String unreadReference = auxClasspath.toString();
+				/*String unreadReference = */auxClasspath.toString();
 				addArg("-auxclasspath");
 				addArg(auxClasspath.toString());
 			}
@@ -663,7 +672,7 @@ public class FindBugsTask extends AbstractFindBugsTask {
 		addArg("-exitcode");
 		for (ClassLocation classLocation : classLocations) {
 			addArg(classLocation.toString());
-		} 
+		}
 
 		if (auxAnalyzepath != null) {
 			String[] result = auxAnalyzepath.toString().split(java.io.File.pathSeparator);
@@ -671,7 +680,7 @@ public class FindBugsTask extends AbstractFindBugsTask {
 				addArg(result[x]);
 			}
 		}
-    } 
+    }
 }
 
 // vim:ts=4
