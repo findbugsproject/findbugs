@@ -4,6 +4,7 @@
 
     <property environment="env"/>
     <property name="findbugs.location" value="../findbugs"/>
+	<property name="findbugs-annotations.location" value="../findbugs-annotations"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.5"/>
     <property name="source" value="1.5"/>
@@ -28,6 +29,7 @@
         <pathelement location="${classes.dir}"/>
         <path refid="findbugs.classpath"/>
         <pathelement location="lib/AppleJavaExtensions.jar"/>
+    	<pathelement location="${findbugs-annotations.location}/lib/jsr305.jar"/>
     </path>
 
     <target name="init">

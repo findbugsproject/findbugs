@@ -5,5 +5,6 @@
 	<classpathentry combineaccessrules="false" kind="src" path="/findbugs"/>
 	<classpathentry kind="lib" path="lib/AppleJavaExtensions.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/findbugs-annotations"/>
+	<classpathentry kind="lib" path="/findbugs-annotations/lib/jsr305.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
