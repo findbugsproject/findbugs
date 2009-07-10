@@ -1,0 +1,30 @@
+For developers contributing to the ant tasks:
+
+Please make sure, that you do not reference any classes from FindBugs project directly,
+which may lead to run-time dependency to the findbugs.jar.
+
+Current state is, that all the FB ant tasks (except the UnionBugs) can run with only
+findbugs-ant.jar being on the ant classpath. Hovewer, because UnionBugs has a runtime
+dependency to the UnionResults, it requires additionally findbugs.jar being on the ant classpath.
+
+The current dependencies to FindBugs are:
+
+edu.umd.cs.findbugs.ExitCodes (compiler just uses some constants and do not add any runtime dependency)
+edu.umd.cs.findbugs.FindBugs2 (reflection)
+edu.umd.cs.findbugs.PrintingBugReporter (reflection)
+edu.umd.cs.findbugs.LaunchAppropriateUI (reflection)
+edu.umd.cs.findbugs.workflow.Update (reflection)
+edu.umd.cs.findbugs.workflow.Filter (reflection)
+edu.umd.cs.findbugs.workflow.MineBugHistory (reflection)
+edu.umd.cs.findbugs.workflow.SetBugDatabaseInfo(reflection)
+edu.umd.cs.findbugs.workflow.UnionResults (hard reference in the class file)
+
+See:
+ http://development.lombardi.com/?p=484
+ https://sourceforge.net/tracker/?func=detail&aid=2819461&group_id=96405&atid=614693
+
+TODO:
+
+We should either add findbugs.jar to the standart dependencies or remove all the reflection
+based code. Doing both is a mess.
+

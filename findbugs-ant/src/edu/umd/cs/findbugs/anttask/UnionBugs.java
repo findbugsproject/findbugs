@@ -35,22 +35,31 @@ import org.apache.tools.ant.types.FileSet;
 import edu.umd.cs.findbugs.workflow.UnionResults;
 
 /**
- * An ant task that is wraps the behavior of the UnionResults
- * executable into an ant task.
+ * An ant task that is wraps the behavior of the UnionResults executable into an ant task.
+ * <p>
+ * <b>Note!</b>
+ * <p>
+ * Unlike all other FindBugs ant tasks, this task does not specify a "home" attribute like the other
+ * FindBugs tasks, but instead calls FindBugs directly through Java code. As a result it only works
+ * if FindBugs is in your ant classpath.
+ * <p>
+ * For more details see <a href="http://development.lombardi.com/?p=484">this blog entry</a>
+ * and <a href="https://sourceforge.net/tracker/?func=detail&aid=2819461&group_id=96405&atid=614693">bug 2819461</a>.
  *
- * <taskdef name="UnionBugs" classname="edu.umd.cs.findbugs.anttask.UnionBugs" classpath="...">
+ * <pre>
+ * &lt;taskdef name=&quot;UnionBugs&quot; classname=&quot;edu.umd.cs.findbugs.anttask.UnionBugs&quot; classpath=&quot;...&quot;&gt;
  *
- *  <UnionBugs to="${basedir}/findbugs.xml" >
- * 	  <fileset dir="plugins">
- * 	  	   	<include name="*_findbugs_partial.xml" />
- * 	  </fileset>
- *	</UnionBugs>
+ * &lt;UnionBugs to=&quot;${basedir}/findbugs.xml&quot; &gt;
+ *    &lt;fileset dir=&quot;plugins&quot;&gt;
+ *        &lt;include name=&quot;*_findbugs_partial.xml&quot; /&gt;
+ *    &lt;/fileset&gt;
+ * &lt;/UnionBugs&gt;
+ * </pre>
+ * <p>
  *
  * @author Peter Franza <a href="mailto:pfranza@gmail.com">pfranza@gmail.com</a>
  * @version 1.0
- *
  * @ant.task category="utility"
- *
  */
 public class UnionBugs extends Task {
 
