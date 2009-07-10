@@ -24,6 +24,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.channels.FileChannel;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,8 +32,6 @@ import java.util.List;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
 import org.apache.tools.ant.types.FileSet;
-
-import edu.umd.cs.findbugs.workflow.UnionResults;
 
 /**
  * An ant task that is wraps the behavior of the UnionResults executable into an ant task.
@@ -111,8 +110,11 @@ public class UnionBugs extends Task {
 			if(fileList.isEmpty()) {
 				return;
 			}
-
-			UnionResults.main(createCommandArgumentsArray(fileList));
+			String[] args = createCommandArgumentsArray(fileList);
+            Class<?> unionResults = Class.forName("edu.umd.cs.findbugs.workflow.UnionResults",
+                    false, UnionBugs.class.getClassLoader());
+            Method mainMethod = unionResults.getMethod("main", args.getClass());
+            mainMethod.invoke(null, (Object) args);
 		} catch (Exception e) {
 			throw new BuildException(e);
 		}
