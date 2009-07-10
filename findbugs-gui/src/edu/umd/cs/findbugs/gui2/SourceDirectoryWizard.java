@@ -30,13 +30,13 @@ import javax.swing.DefaultListModel;
 import javax.swing.JFileChooser;
 import javax.swing.JList;
 
-import edu.umd.cs.findbugs.DiscoverSourceDirectories;
 import edu.umd.cs.findbugs.Project;
 import edu.umd.cs.findbugs.ba.ClassNotFoundExceptionParser;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.IErrorLogger;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
+import edu.umd.cs.findbugs.workflow.DiscoverSourceDirectories;
 
 /**
  * Wizard dialog to automatically find and configure

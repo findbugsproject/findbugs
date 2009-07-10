@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston MA 02111-1307, USA
  */
 
-package edu.umd.cs.findbugs.util;
+package edu.umd.cs.findbugs.gui2.www;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;

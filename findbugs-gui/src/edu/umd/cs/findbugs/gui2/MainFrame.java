@@ -129,8 +129,8 @@ import edu.umd.cs.findbugs.filter.Filter;
 import edu.umd.cs.findbugs.filter.LastVersionMatcher;
 import edu.umd.cs.findbugs.filter.Matcher;
 import edu.umd.cs.findbugs.gui2.BugTreeModel.TreeModification;
+import edu.umd.cs.findbugs.gui2.www.LaunchBrowser;
 import edu.umd.cs.findbugs.sourceViewer.NavigableTextPane;
-import edu.umd.cs.findbugs.util.LaunchBrowser;
 import edu.umd.cs.findbugs.util.Multiset;
 
 @SuppressWarnings("serial")

@@ -33,7 +33,7 @@ import javax.swing.JFrame;
 import javax.swing.event.HyperlinkEvent;
 
 import edu.umd.cs.findbugs.Version;
-import edu.umd.cs.findbugs.util.LaunchBrowser;
+import edu.umd.cs.findbugs.gui2.www.LaunchBrowser;
 
 /**
  * The Help:About dialog.

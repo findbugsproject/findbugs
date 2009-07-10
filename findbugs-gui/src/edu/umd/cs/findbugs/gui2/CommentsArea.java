@@ -49,7 +49,7 @@ import edu.umd.cs.findbugs.UserDesignation;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.cloud.Cloud;
 import edu.umd.cs.findbugs.cloud.Cloud.BugFilingStatus;
-import edu.umd.cs.findbugs.util.LaunchBrowser;
+import edu.umd.cs.findbugs.gui2.www.LaunchBrowser;
 
 /**
  * @author pugh
