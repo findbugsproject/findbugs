@@ -20,7 +20,6 @@
 	<property name="ui.dir" value="../findbugs-gui"/>
 	<property name="junittests.dir" value="../findbugs-tests"/>
 	<property name="annotations.dir" value="../findbugs-annotations"/>
-	<property name="tools.dir" value="../findbugs-tools"/>
 	<property name="workflow.dir" value="../findbugs-workflow"/>
 	
 	<property name="jar.dir" value="lib"/>
@@ -237,17 +236,6 @@
 				target="1.5"
 				deprecation="off"
 				debug="on">
-			<classpath refid="tools.classpath"/>
-		</javac>
-		<!-- Compile tools. -->
-		<echo level="info" message="compiling tools"/>
-		<javac srcdir="${tools.dir}/src"
-				destdir="${classes.dir}"
-				source="1.5"
-				target="1.5"
-				debug="on"
-				deprecation="off"
-				excludes="${pkg.base}/tools/patcomp/**">
 			<classpath refid="tools.classpath"/>
 		</javac>
 		<!-- Compile Ant task. -->
