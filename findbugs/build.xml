@@ -20,6 +20,8 @@
 	<property name="ui.dir" value="../findbugs-gui"/>
 	<property name="junittests.dir" value="../findbugs-tests"/>
 	<property name="annotations.dir" value="../findbugs-annotations"/>
+	<property name="tools.dir" value="../findbugs-tools"/>
+	
 	<property name="jar.dir" value="lib"/>
 	<property name="plugin.dir" value="plugin"/>
 	
@@ -33,7 +35,6 @@
 	<property name="junitclasses.dir" value="build/junitclasses"/>
 	<property name="scripts.dir" value="bin"/>
 	<property name="src.dir" value="src/java"/>
-	<property name="toolsrc.dir" value="src/tools"/>
 	<property name="anttasksrc.dir" value="../findbugs-ant/src"/>
 	<property name="scriptsrc.dir" value="src/scripts"/>
 	<property name="patch.dir" value="src/patches"/>
@@ -238,7 +239,7 @@
 		</javac>
 		<!-- Compile tools. -->
 		<echo level="info" message="compiling tools"/>
-		<javac srcdir="${toolsrc.dir}"
+		<javac srcdir="${tools.dir}/src"
 				destdir="${classes.dir}"
 				source="1.5"
 				target="1.5"
