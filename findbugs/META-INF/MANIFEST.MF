@@ -18,7 +18,6 @@ Export-Package: edu.umd.cs.findbugs,
  edu.umd.cs.findbugs.config,
  edu.umd.cs.findbugs.log,
  edu.umd.cs.findbugs.util,
- edu.umd.cs.findbugs.workflow,
  edu.umd.cs.findbugs.xml,
  org.dom4j
 Require-Bundle: findbugs-annotations;visibility:=reexport

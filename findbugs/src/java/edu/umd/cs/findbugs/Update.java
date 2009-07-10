@@ -15,12 +15,11 @@
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
-package edu.umd.cs.findbugs.workflow;
+package edu.umd.cs.findbugs;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Comparator;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
@@ -30,18 +29,6 @@ import java.util.TreeMap;
 
 import org.dom4j.DocumentException;
 
-import edu.umd.cs.findbugs.AppVersion;
-import edu.umd.cs.findbugs.BugCollection;
-import edu.umd.cs.findbugs.BugDesignation;
-import edu.umd.cs.findbugs.BugInstance;
-import edu.umd.cs.findbugs.BugRanker;
-import edu.umd.cs.findbugs.ClassAnnotation;
-import edu.umd.cs.findbugs.DetectorFactoryCollection;
-import edu.umd.cs.findbugs.PackageStats;
-import edu.umd.cs.findbugs.Project;
-import edu.umd.cs.findbugs.SortedBugCollection;
-import edu.umd.cs.findbugs.SystemProperties;
-import edu.umd.cs.findbugs.VersionInsensitiveBugComparator;
 import edu.umd.cs.findbugs.PackageStats.ClassStats;
 import edu.umd.cs.findbugs.config.CommandLine;
 import edu.umd.cs.findbugs.model.MovedClassMap;

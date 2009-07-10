@@ -7,6 +7,7 @@
 <project reference="0.9.3,https://findbugs.googlecode.com/svn/branches/2.0_gui_rework/findbugs-gui,findbugs-gui"/>
 <project reference="0.9.3,https://findbugs.googlecode.com/svn/branches/2.0_gui_rework/findbugs-tests,findbugs-tests"/>
 <project reference="0.9.3,https://findbugs.googlecode.com/svn/branches/2.0_gui_rework/findbugs-tools,findbugs-tools"/>
+<project reference="0.9.3,https://findbugs.googlecode.com/svn/branches/2.0_gui_rework/findbugs-workflow,findbugs-workflow"/>
 <project reference="0.9.3,https://findbugs.googlecode.com/svn/branches/2.0_gui_rework/eclipsePlugin,findBugsEclipsePlugin"/>
 <project reference="0.9.3,https://findbugs.googlecode.com/svn/branches/2.0_gui_rework/eclipsePlugin-test,findBugsEclipsePlugin-test"/>
 </provider>

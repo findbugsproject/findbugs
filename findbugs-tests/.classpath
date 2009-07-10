@@ -7,5 +7,6 @@
 	<classpathentry kind="lib" path="lib/jdepend-2.9.jar"/>
 	<classpathentry kind="lib" path="lib/junit.jar"/>
 	<classpathentry combineaccessrules="false" kind="src" path="/findbugs-annotations"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/findbugs-workflow"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

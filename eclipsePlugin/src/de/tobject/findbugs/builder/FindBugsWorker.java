@@ -54,8 +54,8 @@ import edu.umd.cs.findbugs.FindBugs2;
 import edu.umd.cs.findbugs.IFindBugsEngine;
 import edu.umd.cs.findbugs.Project;
 import edu.umd.cs.findbugs.SortedBugCollection;
+import edu.umd.cs.findbugs.Update;
 import edu.umd.cs.findbugs.config.UserPreferences;
-import edu.umd.cs.findbugs.workflow.Update;
 
 /**
  * Execute FindBugs on a collection of Java resources in a project.

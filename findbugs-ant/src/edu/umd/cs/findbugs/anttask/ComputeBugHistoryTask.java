@@ -1,17 +1,17 @@
 /*
  * FindBugs - Find Bugs in Java programs
  * Copyright (C) 2003-2007 University of Maryland
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -27,11 +27,11 @@ import org.apache.tools.ant.BuildException;
 
 /**
  * Ant task to create/update a bug history database.
- * 
+ *
  * @author David Hovemeyer
  */
 public class ComputeBugHistoryTask extends AbstractFindBugsTask {
-	
+
 	private File outputFile;
 	private boolean overrideRevisionNames;
 	private boolean noPackageMoves;
@@ -39,47 +39,47 @@ public class ComputeBugHistoryTask extends AbstractFindBugsTask {
 	private boolean precisePriorityMatch;
 	private boolean quiet;
 	private boolean withMessages;
-	private List<DataFile> dataFileList;
-	
+	private final List<DataFile> dataFileList;
+
 	public ComputeBugHistoryTask() {
-		super("edu.umd.cs.findbugs.workflow.Update");
+		super("edu.umd.cs.findbugs.Update");
 		dataFileList = new LinkedList<DataFile>();
-		
+
 		setFailOnError(true);
 	}
-	
+
 	public void setOutput(File arg) {
 		this.outputFile = arg;
 	}
-	
+
 	public void setOverrideRevisionNames(boolean arg) {
 		this.overrideRevisionNames = arg;
 	}
-	
+
 	public void setNoPackageMoves(boolean arg) {
 		this.noPackageMoves = arg;
 	}
-	
+
 	public void setPreciseMatch(boolean arg) {
 		this.preciseMatch = arg;
 	}
-	
+
 	public void setPrecisePriorityMatch(boolean arg) {
 		this.precisePriorityMatch = arg;
 	}
-	
+
 	public void setQuiet(boolean arg) {
 		this.quiet = arg;
 	}
-	
+
 	public void setWithMessages(boolean arg) {
 		this.withMessages = arg;
 	}
-	
+
 	/**
 	 * Called to create DataFile objects in response to nested
 	 * &lt;DataFile&gt; elements.
-	 * 
+	 *
 	 * @return new DataFile object specifying the location of an input data file
 	 */
 	public DataFile createDataFile() {
@@ -87,14 +87,14 @@ public class ComputeBugHistoryTask extends AbstractFindBugsTask {
 		dataFileList.add(dataFile);
 		return dataFile;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see edu.umd.cs.findbugs.anttask.AbstractFindBugsTask#checkParameters()
 	 */
 	@Override
 	protected void checkParameters() {
 		super.checkParameters();
-		
+
 		if (outputFile == null) {
 			throw new BuildException("outputFile attribute must be set", getLocation());
 		}
@@ -125,7 +125,7 @@ public class ComputeBugHistoryTask extends AbstractFindBugsTask {
 		if (withMessages) {
 			addArg("-withMessages");
 		}
-		
+
 		for (DataFile dataFile : dataFileList) {
 			addArg(dataFile.getName());
 		}
