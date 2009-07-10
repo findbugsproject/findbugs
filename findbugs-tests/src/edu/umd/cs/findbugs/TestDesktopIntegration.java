@@ -42,7 +42,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 
-import edu.umd.cs.findbugs.util.LaunchBrowser;
+import edu.umd.cs.findbugs.gui2.www.LaunchBrowser;
 
 /**
  * @author pugh
