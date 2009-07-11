@@ -24,11 +24,11 @@ import java.util.Collection;
 import org.apache.bcel.generic.ReferenceType;
 
 import edu.umd.cs.findbugs.ba.XMethod;
+import edu.umd.cs.findbugs.ba.ch.SubtypeTypeMatcher;
+import edu.umd.cs.findbugs.ba.ch.TypeMatcher;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
 import edu.umd.cs.findbugs.util.ExactStringMatcher;
 import edu.umd.cs.findbugs.util.StringMatcher;
-import edu.umd.cs.findbugs.util.SubtypeTypeMatcher;
-import edu.umd.cs.findbugs.util.TypeMatcher;
 
 /**
  * An ObligationPolicyDatabaseEntry which creates or deletes

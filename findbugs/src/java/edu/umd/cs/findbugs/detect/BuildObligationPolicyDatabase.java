@@ -42,6 +42,7 @@ import edu.umd.cs.findbugs.annotations.DischargesObligation;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.ba.XMethod;
+import edu.umd.cs.findbugs.ba.ch.SubtypeTypeMatcher;
 import edu.umd.cs.findbugs.ba.ch.Subtypes2;
 import edu.umd.cs.findbugs.ba.interproc.MethodPropertyDatabase;
 import edu.umd.cs.findbugs.ba.interproc.PropertyDatabaseFormatException;
@@ -60,7 +61,6 @@ import edu.umd.cs.findbugs.classfile.MethodDescriptor;
 import edu.umd.cs.findbugs.util.ExactStringMatcher;
 import edu.umd.cs.findbugs.util.RegexStringMatcher;
 import edu.umd.cs.findbugs.util.SplitCamelCaseIdentifier;
-import edu.umd.cs.findbugs.util.SubtypeTypeMatcher;
 
 /**
  * Build the ObligationPolicyDatabase used by ObligationAnalysis.
