@@ -47,7 +47,7 @@ import edu.umd.cs.findbugs.gui2.www.LaunchBrowser;
 /**
  * @author pugh
  */
-public class TestDesktopIntegration extends JPanel {
+public class DesktopIntegrationCheck extends JPanel {
 	
 	private static String [] propertyNames = { "java.version",
 		"java.vendor",
@@ -95,7 +95,7 @@ public class TestDesktopIntegration extends JPanel {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// Add content to the window.
-		frame.add(new TestDesktopIntegration());
+		frame.add(new DesktopIntegrationCheck());
 
 		// Display the window.
 		frame.pack();
@@ -143,7 +143,7 @@ public class TestDesktopIntegration extends JPanel {
 	static final boolean SHOW_CONSOLE = false;
 	static final boolean SHOW_FILE_CHOOSER = false;
 
-	public TestDesktopIntegration() {
+	public DesktopIntegrationCheck() {
 		setLayout(new BorderLayout());
 		JPanel top = new JPanel();
 		top.setLayout(new FlowLayout());
@@ -228,7 +228,7 @@ public class TestDesktopIntegration extends JPanel {
 
 				public void actionPerformed(ActionEvent e) {
 					final JFileChooser fc = new JFileChooser();
-					int retvel = fc.showOpenDialog(TestDesktopIntegration.this);
+					int retvel = fc.showOpenDialog(DesktopIntegrationCheck.this);
 					if (retvel == JFileChooser.APPROVE_OPTION) {
 						File file = fc.getSelectedFile();
 						try {

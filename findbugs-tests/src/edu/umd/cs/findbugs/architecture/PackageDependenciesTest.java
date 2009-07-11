@@ -48,12 +48,10 @@ public class PackageDependenciesTest extends TestCase {
 		assertPackageConstraint("edu.umd.cs.findbugs.util", expectedNotEfferent);
 		assertPackageConstraint("edu.umd.cs.findbugs.visitclass", expectedNotEfferent);
 		assertPackageConstraint("edu.umd.cs.findbugs.xml", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.userAnnotations", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.userAnnotations.ri", expectedNotEfferent);
 	}
 
-	public void testAnnotDependencies() {
-		String expectedNotEfferent = "edu.umd.cs.findbugs.userAnnotations.ri";
+	public void testCloudDependencies() {
+		String expectedNotEfferent = "edu.umd.cs.findbugs.cloud";
 		// TODO refactor code to made core independent from annotation plugin implementation
 //		assertPackageConstraint("edu.umd.cs.findbugs", expectedNotEfferent);
 		assertPackageConstraint("edu.umd.cs.findbugs.asm", expectedNotEfferent);
