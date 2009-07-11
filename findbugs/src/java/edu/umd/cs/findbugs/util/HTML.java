@@ -24,21 +24,14 @@ import java.io.Reader;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.io.Writer;
-
-import javax.swing.text.AbstractDocument;
+ 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.EditorKit;
 import javax.swing.text.Element;
-import javax.swing.text.ElementIterator;
-import javax.swing.text.StyledDocument;
 import javax.swing.text.html.HTMLDocument;
 import javax.swing.text.html.HTMLEditorKit;
 import javax.swing.text.html.HTMLWriter;
-import javax.swing.text.html.MinimalHTMLWriter;
-
-import edu.umd.cs.findbugs.BugPattern;
-import edu.umd.cs.findbugs.I18N;
 
 public class HTML {
 
@@ -72,7 +65,7 @@ public class HTML {
 			} else if (name.equals("p")) {
 				
 			}
-		};
+		}
 
 		@Override
 		protected void writeEmbeddedTags(AttributeSet attr) throws IOException {
@@ -100,17 +93,17 @@ public class HTML {
 
 		@Override
 		protected void incrIndent() {
-		};
+		}
 
 		@Override
 		protected void decrIndent() {
-		};
+		}
 
 		@Override
 		protected void emptyTag(Element elem) throws IOException, BadLocationException {
 			if (elem.getName().equals("content"))
 				super.emptyTag(elem);
-		};
+		}
 
 		@Override
 		protected void text(Element elem) throws IOException, BadLocationException {
@@ -134,7 +127,7 @@ public class HTML {
 	}
 
 	private HTML() {
-	};
+	}
 
 	public static void convertHtmlToText(Reader reader, Writer writer) throws IOException, BadLocationException {
 
@@ -155,13 +148,4 @@ public class HTML {
 		return writer.toString();
 	}
 	
-	public static void main(String args[]) throws Exception {
-		
-		BugPattern p = I18N.instance().lookupBugPattern("IC_SUPERCLASS_USES_SUBCLASS_DURING_INITIALIZATION");
-		System.out.println(p.getDetailText());
-		
-		System.out.println("---");
-		System.out.println(p.getDetailPlainText());
-	}
-
 }

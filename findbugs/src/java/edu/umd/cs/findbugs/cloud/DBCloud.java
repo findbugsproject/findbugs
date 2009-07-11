@@ -66,6 +66,7 @@ import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugCollection;
 import edu.umd.cs.findbugs.BugDesignation;
 import edu.umd.cs.findbugs.BugInstance;
+import edu.umd.cs.findbugs.BugPattern;
 import edu.umd.cs.findbugs.BugRanker;
 import edu.umd.cs.findbugs.ClassAnnotation;
 import edu.umd.cs.findbugs.FindBugs;
@@ -83,6 +84,7 @@ import edu.umd.cs.findbugs.Version;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.SourceFile;
 import edu.umd.cs.findbugs.internalAnnotations.SlashedClassName;
+import edu.umd.cs.findbugs.util.HTML;
 import edu.umd.cs.findbugs.util.Multiset;
 import edu.umd.cs.findbugs.util.Util;
 
@@ -1290,8 +1292,19 @@ public  class DBCloud extends AbstractCloud {
 		return stringWriter.toString();
 	}
 
+	/**
+	 * Get the Plain text describing the bug.
+	 */
+	private String getDetailPlainText(BugPattern bp) {
+		try {
+	        return HTML.convertHtmlSnippetToText(bp.getDetailText());
+        } catch (Exception e) {
+        	return bp.getDetailText();
+        }
+	}    
+    
 	String getBugPatternExplanation(BugInstance b) {
-		String detailPlainText = b.getBugPattern().getDetailPlainText();
+		String detailPlainText = getDetailPlainText(b.getBugPattern());
 		return "Bug pattern explanation:\n" + detailPlainText + "\n\n";
 	}
 
