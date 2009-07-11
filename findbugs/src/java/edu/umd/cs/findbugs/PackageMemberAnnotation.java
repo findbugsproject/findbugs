@@ -49,7 +49,7 @@ public abstract class PackageMemberAnnotation extends BugAnnotationWithSourceLin
 			assert false: "classname " + className + " should be dotted";
 			className = className.replace('/', '.');
 		}
-		this.className = DescriptorFactory.canonicalizeString(className);
+		this.className = className;
 		AnalysisContext context = AnalysisContext.currentAnalysisContext();
 		if (context != null) this.sourceFileName = context.lookupSourceFile(className);
 		else this.sourceFileName = SourceLineAnnotation.UNKNOWN_SOURCE_FILE;

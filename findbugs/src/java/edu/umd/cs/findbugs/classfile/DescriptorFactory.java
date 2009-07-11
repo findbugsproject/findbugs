@@ -37,7 +37,6 @@ import edu.umd.cs.findbugs.classfile.analysis.MethodInfo;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 import edu.umd.cs.findbugs.internalAnnotations.SlashedClassName;
 import edu.umd.cs.findbugs.util.ClassName;
-import edu.umd.cs.findbugs.util.MapCache;
 
 /**
  * Factory for creating ClassDescriptors, MethodDescriptors, and FieldDescriptors.
@@ -64,9 +63,6 @@ public class DescriptorFactory {
 		this.dottedClassDescriptorMap = new HashMap<String, ClassDescriptor>();
 		this.methodDescriptorMap = new HashMap<MethodDescriptor, MethodDescriptor>();
 		this.fieldDescriptorMap = new HashMap<FieldDescriptor, FieldDescriptor>();
-	}
-	public static String canonicalizeString(String s) {
-		return s;
 	}
 
 	public static void clearStringCache() {		
@@ -107,7 +103,6 @@ public class DescriptorFactory {
 	 */
 	public @Nonnull ClassDescriptor getClassDescriptor(@SlashedClassName String className) {
 		assert className.indexOf('.') == -1;
-		className = canonicalizeString(className);
 		ClassDescriptor classDescriptor = classDescriptorMap.get(className);
 		if (classDescriptor == null) {
 			classDescriptor = new ClassDescriptor(className);

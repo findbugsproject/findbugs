@@ -23,7 +23,6 @@ import java.io.Writer;
 
 import org.apache.bcel.Constants;
 
-import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.classfile.DescriptorFactory;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
 import edu.umd.cs.findbugs.util.ClassName;
@@ -45,11 +44,9 @@ public abstract class MethodPropertyDatabase<Property>
 
 		try {
 			int accessFlags = Integer.parseInt(tuple[3]);
-//			return XFactory.createMethodDescriptor(XFactory.canonicalizeString(tuple[0]),
-//					XFactory.canonicalizeString( tuple[1]), XFactory.canonicalizeString(tuple[2]), accessFlags);
-			String className = XFactory.canonicalizeString(tuple[0]);
-			String methodName = XFactory.canonicalizeString(tuple[1]);
-			String methodSig = XFactory.canonicalizeString(tuple[2]);
+			String className = tuple[0];
+			String methodName = tuple[1];
+			String methodSig = tuple[2];
 			return DescriptorFactory.instance().getMethodDescriptor(
 					ClassName.toSlashedClassName(className),
 					methodName,

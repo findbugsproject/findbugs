@@ -20,7 +20,6 @@
 package edu.umd.cs.findbugs.classfile.analysis;
 
 import java.lang.annotation.ElementType;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -158,8 +157,8 @@ public class MethodInfo extends MethodDescriptor implements XMethod, AnnotatedOb
 		this.exceptions = exceptions;
 		if (exceptions != null) 
 			for(int i = 0; i < exceptions.length; i++) 
-			exceptions[i] = DescriptorFactory.canonicalizeString(exceptions[i]);
-		this.methodSourceSignature = DescriptorFactory.canonicalizeString(methodSourceSignature);
+				exceptions[i] = exceptions[i];
+		this.methodSourceSignature = methodSourceSignature;
 		this.methodAnnotations = Util.immutableMap(methodAnnotations);
 		this.methodParameterAnnotations = Util.immutableMap(methodParameterAnnotations);
 		if (isUnconditionalThrower) unconditionalThrowers.put(this, null);

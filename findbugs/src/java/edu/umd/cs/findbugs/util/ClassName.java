@@ -21,10 +21,7 @@ package edu.umd.cs.findbugs.util;
 
 import javax.annotation.meta.When;
 
-import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
-import edu.umd.cs.findbugs.classfile.ClassDescriptor;
-import edu.umd.cs.findbugs.classfile.DescriptorFactory;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 import edu.umd.cs.findbugs.internalAnnotations.SlashedClassName;
 
@@ -81,7 +78,7 @@ public abstract class ClassName {
 	 */
 	public static @SlashedClassName String toSlashedClassName(String className) {
 		if (className.indexOf('.') >= 0) {
-			return DescriptorFactory.canonicalizeString(className.replace('.', '/'));
+			return className.replace('.', '/');
 		}
 		return className;
 	}
@@ -96,7 +93,7 @@ public abstract class ClassName {
 	 */
 	public static @DottedClassName String toDottedClassName(@SlashedClassName(when=When.UNKNOWN) String className) {
 		if (className.indexOf('/') >= 0) {
-			return DescriptorFactory.canonicalizeString(className.replace('/', '.'));
+			return className.replace('/', '.');
 		}
 		return className;
 	}
