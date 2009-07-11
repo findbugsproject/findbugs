@@ -19,6 +19,7 @@
 
 package edu.umd.cs.findbugs.ba.vna;
 
+import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.util.MapCache;
 import edu.umd.cs.findbugs.util.Util;
 
@@ -59,11 +60,10 @@ public class ValueNumber implements Comparable<ValueNumber> {
 	    return createValueNumber(number, 0);
     }
 	static {
+		if(SystemProperties.getBoolean("findbugs.shutdownLogging"))
 		Util.runLogAtShutdown(new Runnable(){
-
 			public void run() {
-	            System.out.println("Value number statistics: " + valueNumbersCreated + " created, " + valueNumbersReused + " reused");
-	            
+	            System.out.println("Value number statistics: " + valueNumbersCreated + " created, " + valueNumbersReused + " reused");	            
             }});
 	}
 	/**

@@ -31,14 +31,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import edu.umd.cs.findbugs.SystemProperties;
-import edu.umd.cs.findbugs.log.Profiler;
-
 /**
  * @author pugh
  */
 public class TopologicalSort {
-	final static boolean DEBUG = SystemProperties.getBoolean("tsort.debug");
+	final static boolean DEBUG = Boolean.getBoolean("tsort.debug");
 	
 	public interface OutEdges<E> {
 		Collection<E> getOutEdges(E e);
@@ -62,14 +59,10 @@ public class TopologicalSort {
         }
 		
 	}
-	public static <E> List<E> sortByCallGraph(Collection<E> elements, OutEdges<E> outEdges, Profiler profile) {
-		profile.start(TopologicalSort.class);
-		try {
+	
+	public static <E> List<E> sortByCallGraph(Collection<E> elements, OutEdges<E> outEdges) {
 		SortAlgorithm<E> instance = new Worker2<E>(elements, outEdges);
 		return instance.compute();
-		} finally {
-			profile.end(TopologicalSort.class);
-		}
 	}
 	
 	public static <E> void countBadEdges(List<E> elements, OutEdges<E> outEdges) {

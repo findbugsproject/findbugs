@@ -48,7 +48,6 @@ import javax.annotation.WillClose;
 import javax.annotation.WillCloseWhenClosed;
 import javax.annotation.WillNotClose;
 
-import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 
@@ -56,7 +55,6 @@ import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
  * @author William Pugh
  */
 public class Util {
-	public static final boolean LOGGING = SystemProperties.getBoolean("findbugs.shutdownLogging");
 
 	/**
 	 * return sign of x - y
@@ -116,25 +114,22 @@ public class Util {
 	static Collection<Runnable> runAtShutdown;
 	
 	public static synchronized void runLogAtShutdown(Runnable r) {
-		if (LOGGING) {
-			if (runAtShutdown == null) {
-				runAtShutdown = new LinkedList<Runnable>();
-				Runtime.getRuntime().addShutdownHook(new Thread() {
-					@Override
-                    public void run() {
-						for(Runnable r : runAtShutdown) {
-							try {
-								r.run();
-							} catch (RuntimeException e) {
-								e.printStackTrace();
-							}
-						}
-					}
-				});
-			}
-			runAtShutdown.add(r);
-		}
-		
+		if (runAtShutdown == null) {
+        	runAtShutdown = new LinkedList<Runnable>();
+        	Runtime.getRuntime().addShutdownHook(new Thread() {
+        		@Override
+                public void run() {
+        			for(Runnable r : runAtShutdown) {
+        				try {
+        					r.run();
+        				} catch (RuntimeException e) {
+        					e.printStackTrace();
+        				}
+        			}
+        		}
+        	});
+        }
+        runAtShutdown.add(r);		
 	}
 	
 	public static <T>  Set<T> emptyOrNonnullSingleton(T t) {

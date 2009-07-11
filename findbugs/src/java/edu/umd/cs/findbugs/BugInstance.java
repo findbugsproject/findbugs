@@ -431,12 +431,11 @@ public class BugInstance implements Comparable<BugInstance>, XMLWriteableWithMes
 	static int keyCount = 0;
 	static int keyDifferentCount = 0;
 	static {
-		if (CHECK) Util.runLogAtShutdown(new Runnable() {
-
+		if (CHECK && SystemProperties.getBoolean("findbugs.shutdownLogging")) 
+			Util.runLogAtShutdown(new Runnable() {
 			public void run() {
 	           System.out.printf("%d/%d instance keys changed\n", keyDifferentCount, keyCount);  
-            }
-			
+            }			
 		});
 	}
 	public String getInstanceKey() {

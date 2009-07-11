@@ -749,19 +749,24 @@ public class FindBugs2 implements IFindBugsEngine2 {
 		referencedClassSet = new ArrayList<ClassDescriptor>(DescriptorFactory.instance().getAllClassDescriptors());
 	}
 
-	 public List<ClassDescriptor> sortByCallGraph(Collection<ClassDescriptor> classList, OutEdges<ClassDescriptor> outEdges) {
-		 Profiler profiler = bugReporter.getProjectStats().getProfiler();
-		List<ClassDescriptor> evaluationOrder = TopologicalSort.sortByCallGraph(classList, outEdges, profiler);
-		TopologicalSort.countBadEdges(evaluationOrder, outEdges);
-		return evaluationOrder;
-
+	public List<ClassDescriptor> sortByCallGraph(Collection<ClassDescriptor> classList, OutEdges<ClassDescriptor> outEdges) {
+		List<ClassDescriptor> evaluationOrder = null;
+		Profiler profiler = bugReporter.getProjectStats().getProfiler();
+		profiler.start(TopologicalSort.class);
+		try {
+			evaluationOrder = TopologicalSort.sortByCallGraph(classList, outEdges);
+			TopologicalSort.countBadEdges(evaluationOrder, outEdges);
+		} finally {
+			profiler.end(TopologicalSort.class);
 		}
+		return evaluationOrder;
+	}
 
 
 	 public static void clearAnalysisContext() {
 		 AnalysisContext.removeCurrentAnalysisContext();
-
 	 }
+	 
 	/**
 	 * Create the AnalysisContext that will serve as the BCEL-compatibility
 	 * layer over the AnalysisCache.

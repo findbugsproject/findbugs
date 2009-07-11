@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
@@ -539,8 +540,8 @@ public class ValueNumberFrame extends Frame<ValueNumber> implements ValueNumberA
 	static int madeImmutableMutable;
 	static int reusedMutableMap;
 	static {
+		if(SystemProperties.getBoolean("findbugs.shutdownLogging"))
 		Util.runLogAtShutdown(new Runnable() {
-
 			public void run() {
 			   System.err.println("Getting updatable previously known as:");
 			   System.err.println("  " + createdEmptyMap + " created empty map");
@@ -550,7 +551,6 @@ public class ValueNumberFrame extends Frame<ValueNumber> implements ValueNumberA
 			   System.err.println("  " + constructedUnmodifiableMap + " made mutable map unmodifiable");
 			   System.err.println("  " + reusedMap + " reused immutable map");
 			   System.err.println();
-
 			}});
 	}
 	private Map<ValueNumber, AvailableLoad> getUpdateablePreviouslyKnownAs() {

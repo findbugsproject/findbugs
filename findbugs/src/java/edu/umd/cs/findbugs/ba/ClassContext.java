@@ -279,7 +279,12 @@ public class ClassContext {
 		}
 		
 		Profiler profile = Global.getAnalysisCache().getProfiler();
-		methodsInCallOrder =  TopologicalSort.sortByCallGraph(methodList, edges1, profile);
+		profile.start(TopologicalSort.class);
+		try {
+			methodsInCallOrder =  TopologicalSort.sortByCallGraph(methodList, edges1);
+		} finally {
+			profile.end(TopologicalSort.class);
+		}
 		
 		assert methodList.size() == methodsInCallOrder.size();
 		return methodsInCallOrder;
