@@ -29,11 +29,11 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import edu.umd.cs.findbugs.RecursiveFileSearch;
 import edu.umd.cs.findbugs.classfile.ICodeBaseEntry;
 import edu.umd.cs.findbugs.classfile.ICodeBaseIterator;
 import edu.umd.cs.findbugs.classfile.ICodeBaseLocator;
 import edu.umd.cs.findbugs.classfile.IScannableCodeBase;
+import edu.umd.cs.findbugs.util.RecursiveFileSearch;
 
 /**
  * IScannableCodeBase implementation to read resources

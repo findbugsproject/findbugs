@@ -21,7 +21,6 @@
 package edu.umd.cs.findbugs.workflow;
 
 import edu.umd.cs.findbugs.Project;
-import edu.umd.cs.findbugs.RecursiveFileSearch;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.ba.ClassNotFoundExceptionParser;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
@@ -36,6 +35,8 @@ import edu.umd.cs.findbugs.classfile.MethodDescriptor;
 import edu.umd.cs.findbugs.classfile.analysis.ClassInfo;
 import edu.umd.cs.findbugs.classfile.engine.ClassParserUsingASM;
 import edu.umd.cs.findbugs.classfile.impl.ClassFactory;
+import edu.umd.cs.findbugs.util.RecursiveFileSearch;
+
 import java.io.File;
 import java.io.FileFilter;
 import java.io.IOException;
