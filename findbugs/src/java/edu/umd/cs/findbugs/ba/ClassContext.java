@@ -66,13 +66,13 @@ import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.DescriptorFactory;
 import edu.umd.cs.findbugs.classfile.Global;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
-import edu.umd.cs.findbugs.classfile.ResourceNotFoundException;
 import edu.umd.cs.findbugs.classfile.analysis.ClassInfo;
 import edu.umd.cs.findbugs.classfile.engine.SelfMethodCalls;
 import edu.umd.cs.findbugs.classfile.engine.bcel.NonExceptionPostdominatorsAnalysis;
 import edu.umd.cs.findbugs.classfile.engine.bcel.NonImplicitExceptionPostDominatorsAnalysis;
 import edu.umd.cs.findbugs.classfile.engine.bcel.UnpackedBytecodeCallback;
 import edu.umd.cs.findbugs.classfile.engine.bcel.UnpackedCode;
+import edu.umd.cs.findbugs.log.Profiler;
 import edu.umd.cs.findbugs.util.MapCache;
 import edu.umd.cs.findbugs.util.MultiMap;
 import edu.umd.cs.findbugs.util.TopologicalSort;
@@ -277,7 +277,9 @@ public class ClassContext {
 			}
 		};
 		}
-		methodsInCallOrder =  TopologicalSort.sortByCallGraph(methodList, edges1);
+		
+		Profiler profile = Global.getAnalysisCache().getProfiler();
+		methodsInCallOrder =  TopologicalSort.sortByCallGraph(methodList, edges1, profile);
 		
 		assert methodList.size() == methodsInCallOrder.size();
 		return methodsInCallOrder;
