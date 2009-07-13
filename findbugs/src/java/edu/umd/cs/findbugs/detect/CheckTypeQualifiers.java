@@ -30,13 +30,16 @@ import org.apache.bcel.classfile.Method;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.LocalVariableAnnotation;
+import edu.umd.cs.findbugs.ILocalVariableAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.StringAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.BasicBlock;
 import edu.umd.cs.findbugs.ba.CFG;
+import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.DataflowAnalysisException;
 import edu.umd.cs.findbugs.ba.DataflowCFGPrinter;
 import edu.umd.cs.findbugs.ba.Edge;
@@ -462,14 +465,13 @@ public class CheckTypeQualifiers extends CFGDetector {
 			(backward == FlowValue.NEVER) ? "TQ_ALWAYS_VALUE_USED_WHERE_NEVER_REQUIRED" : "TQ_NEVER_VALUE_USED_WHERE_ALWAYS_REQUIRED";
 
 		// Issue warning
-		BugInstance warning = new BugInstance(this, bugType, Priorities.NORMAL_PRIORITY)
-			.addClassAndMethod(methodDescriptor);
+		BugInstance warning = DetectorUtil.addClassAndMethod(new BugInstance(this, bugType, Priorities.NORMAL_PRIORITY), methodDescriptor);
 		annotateWarningWithTypeQualifier(warning, typeQualifierValue);
 
 		// Hopefully we can find the conflicted value in a local variable
 		if (locationWhereDoomedValueIsObserved != null) {
 			Method method = Global.getAnalysisCache().getMethodAnalysis(Method.class, methodDescriptor); 
-			LocalVariableAnnotation localVariable =
+			ILocalVariableAnnotation localVariable =
 				ValueNumberSourceInfo.findLocalAnnotationFromValueNumber(method, locationWhereDoomedValueIsObserved, vn, vnaFrame);
 			if (localVariable != null) {
 				localVariable.setDescription(localVariable.isSignificant() ? "LOCAL_VARIABLE_VALUE_DOOMED_NAMED" : "LOCAL_VARIABLE_VALUE_DOOMED");
@@ -483,7 +485,8 @@ public class CheckTypeQualifiers extends CFGDetector {
 			// The only reason to use a different reporting location
 			// is to produce a more informative report for the user,
 			// since the edge source is where the branch is found.
-			SourceLineAnnotation observedLocation = SourceLineAnnotation.fromVisitedInstruction(methodDescriptor, locationToReport);
+			ISourceLineAnnotation observedLocation = AnnotationFactory.createSourceLine(
+					methodDescriptor, locationToReport.getHandle().getPosition());
 			observedLocation.setDescription("SOURCE_LINE_VALUE_DOOMED");
 			warning.add(observedLocation);
 		}
@@ -514,8 +517,7 @@ public class CheckTypeQualifiers extends CFGDetector {
 			SourceSinkInfo source,
 			ValueNumber vn, Location location) {
 		
-		BugInstance warning = new BugInstance(this, bugType, Priorities.NORMAL_PRIORITY)
-			.addClassAndMethod(methodDescriptor);
+		BugInstance warning = DetectorUtil.addClassAndMethod(new BugInstance(this, bugType, Priorities.NORMAL_PRIORITY), methodDescriptor);
 		annotateWarningWithTypeQualifier(warning, typeQualifierValue);
 		
 		annotateWarningWithSourceSinkInfo(warning, methodDescriptor, vn, source);
@@ -547,30 +549,49 @@ public class CheckTypeQualifiers extends CFGDetector {
 		case PARAMETER:
 			try {
 				Method method = Global.getAnalysisCache().getMethodAnalysis(Method.class, methodDescriptor);
-				LocalVariableAnnotation lva = LocalVariableAnnotation.getParameterLocalVariableAnnotation(
+				ILocalVariableAnnotation lva = AnnotationFactory.createParameter(
 						method,
 						sourceSinkInfo.getLocal());
 				lva.setDescription(lva.isSignificant()
 						? "LOCAL_VARIABLE_PARAMETER_VALUE_SOURCE_NAMED" : "LOCAL_VARIABLE_PARAMETER_VALUE_SOURCE");
 				warning.add(lva);
 			} catch (CheckedAnalysisException e) {
-				warning.addSourceLine(methodDescriptor, sourceSinkInfo.getLocation()).describe("SOURCE_LINE_VALUE_SOURCE");
+				addSourceLine(warning, methodDescriptor, sourceSinkInfo.getLocation()).describe("SOURCE_LINE_VALUE_SOURCE");
 			}
 			break;
 
 		case RETURN_VALUE_OF_CALLED_METHOD:
 		case FIELD_LOAD:
-			warning.addSourceLine(methodDescriptor, sourceSinkInfo.getLocation()).describe("SOURCE_LINE_VALUE_SOURCE");
+			addSourceLine(warning, methodDescriptor, sourceSinkInfo.getLocation()).describe("SOURCE_LINE_VALUE_SOURCE");
 			break;
 
 		case ARGUMENT_TO_CALLED_METHOD:
 		case RETURN_VALUE:
 		case FIELD_STORE:
-			warning.addSourceLine(methodDescriptor, sourceSinkInfo.getLocation()).describe("SOURCE_LINE_VALUE_SINK");
+			addSourceLine(warning, methodDescriptor, sourceSinkInfo.getLocation()).describe("SOURCE_LINE_VALUE_SINK");
 			return;
 
 		default:
 			throw new IllegalStateException();
 		}
 	}
+	
+	/**
+	 * Add source line annotation for given Location in a method.
+	 * 
+	 * @param methodDescriptor the method
+	 * @param location         the Location in the method
+	 * @return this BugInstance
+	 */
+	private static BugInstance addSourceLine(BugInstance bug, MethodDescriptor methodDescriptor, Location location) {
+		try {
+			IAnalysisCache analysisCache = Global.getAnalysisCache();
+			ClassContext classContext = analysisCache.getClassAnalysis(ClassContext.class, methodDescriptor.getClassDescriptor());
+			Method method = analysisCache.getMethodAnalysis(Method.class, methodDescriptor);
+			bug.add(AnnotationFactory.createSourceLine(classContext, method, location.getHandle()));
+		} catch (CheckedAnalysisException e) {
+			bug.add(SourceLineAnnotation.createReallyUnknown(methodDescriptor.getClassDescriptor().toDottedClassName()));
+		}
+		return bug;
+	}	
 }

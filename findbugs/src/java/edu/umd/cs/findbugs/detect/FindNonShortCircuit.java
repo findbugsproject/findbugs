@@ -27,6 +27,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.OpcodeStack;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 
 public class FindNonShortCircuit extends OpcodeStackDetector implements
@@ -181,7 +182,8 @@ public class FindNonShortCircuit extends OpcodeStackDetector implements
 			else priority = NORMAL_PRIORITY;
 		}
 
-		bugAccumulator.accumulateBug(new  BugInstance(this, pattern,priority).addClassAndMethod(this), this);
+		bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+				new  BugInstance(this, pattern,priority), this), AnnotationFactory.createSourceLine(this));
 	}
 
 

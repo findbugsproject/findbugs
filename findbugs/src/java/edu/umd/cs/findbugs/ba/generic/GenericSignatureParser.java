@@ -25,8 +25,6 @@ import java.util.NoSuchElementException;
 import org.apache.bcel.classfile.Attribute;
 import org.apache.bcel.classfile.Method;
 import org.apache.bcel.classfile.Signature;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.InvokeInstruction;
 import org.apache.bcel.generic.ObjectType;
 import org.apache.bcel.generic.Type;
 
@@ -169,18 +167,6 @@ public class GenericSignatureParser {
 			++count;
 		}
 		return count;
-	}
-
-	/**
-	 * Get the number of parameters passed to method invocation.
-	 * 
-	 * @param inv
-	 * @param cpg
-	 * @return int number of parameters
-	 */
-	public static int getNumParametersForInvocation(InvokeInstruction inv, ConstantPoolGen cpg) {
-		GenericSignatureParser sigParser = new GenericSignatureParser(inv.getSignature(cpg));
-		return sigParser.getNumParameters();
 	}
 
 	/**

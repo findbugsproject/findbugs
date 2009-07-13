@@ -18,6 +18,8 @@
  */
 package edu.umd.cs.findbugs.architecture;
 
+import java.io.File;
+
 import jdepend.framework.JDepend;
 import jdepend.framework.JavaPackage;
 import junit.framework.TestCase;
@@ -31,54 +33,105 @@ import junit.framework.TestCase;
 public class PackageDependenciesTest extends TestCase {
 	private JDepend engine;
 
-	public void testGui2Dependencies() {
-		String expectedNotEfferent = "edu.umd.cs.findbugs.gui2";
+	/**
+	 * The only packages today which have no cycles...
+	 * Should be much more here!
+	 */
+	public void testNoCycles() throws Exception {
+	    assertNoCycles("edu.umd.cs.findbugs.ba.generic");
+	    assertNoCycles("edu.umd.cs.findbugs.graph");
+	    assertNoCycles("edu.umd.cs.findbugs.io");
+	    assertNoCycles("edu.umd.cs.findbugs.signature");
+	    assertNoCycles("edu.umd.cs.findbugs.util");
+	    assertNoCycles("edu.umd.cs.findbugs.xml");
+    }
 
-		assertPackageConstraint("edu.umd.cs.findbugs", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.asm", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.ba", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.bcel", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.classfile", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.detect", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.graph", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.io", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.log", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.model", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.plan", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.util", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.visitclass", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.xml", expectedNotEfferent);
+	public void testAnnotationDependencies() {
+	    String testPackage = "edu.umd.cs.findbugs.ann";
+
+	    // This is the only package which should use annotations
+	    // assertFirstNotDependOnSecond("edu.umd.cs.findbugs.detect", testPackage);
+
+	    // TODO the root should not depend too, but currently it does...
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs", testPackage);
+
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.asm", testPackage);
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.ba", testPackage);
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.bcel", testPackage);
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.classfile", testPackage);
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.cloud", testPackage);
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.graph", testPackage);
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.io", testPackage);
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.log", testPackage);
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.model", testPackage);
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.plan", testPackage);
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.signature", testPackage);
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.util", testPackage);
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.visitclass", testPackage);
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.xml", testPackage);
+	    assertFirstNotDependOnSecond("edu.umd.cs.findbugs.xml", testPackage);
+
+	    assertFirstNotDependOnSecond(testPackage, "edu.umd.cs.findbugs.detect");
+	}
+
+	public void testGui2Dependencies() {
+		String testPackage = "edu.umd.cs.findbugs.gui2";
+
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.asm", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.ba", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.bcel", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.classfile", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.cloud", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.detect", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.graph", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.io", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.log", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.model", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.plan", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.signature", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.util", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.visitclass", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.xml", testPackage);
 	}
 
 	public void testCloudDependencies() {
-		String expectedNotEfferent = "edu.umd.cs.findbugs.cloud";
+		String testPackage = "edu.umd.cs.findbugs.cloud";
 		// TODO refactor code to made core independent from annotation plugin implementation
-//		assertPackageConstraint("edu.umd.cs.findbugs", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.asm", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.ba", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.bcel", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.classfile", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.detect", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.graph", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.io", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.log", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.model", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.plan", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.util", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.visitclass", expectedNotEfferent);
-		assertPackageConstraint("edu.umd.cs.findbugs.xml", expectedNotEfferent);
+//		assertFirstNotDependOnSecond("edu.umd.cs.findbugs", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.asm", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.ba", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.bcel", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.classfile", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.detect", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.graph", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.io", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.log", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.model", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.plan", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.signature", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.util", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.visitclass", testPackage);
+		assertFirstNotDependOnSecond("edu.umd.cs.findbugs.xml", testPackage);
 	}
 
 	@Override
 	protected void setUp() throws Exception {
 		super.setUp();
+		// Setup the JDepend analysis
+		engine = new JDepend();
 
 		// Get the classes root directory
 		String rootDirectory = getClass().getResource("/").getFile();
 
-		// Setup the JDepend analysis
-		engine = new JDepend();
-		engine.addDirectory(rootDirectory);
+		if(rootDirectory.endsWith("/bin/") || rootDirectory.endsWith("/bin")){
+		    // started from eclipse UI
+		    engine.addDirectory(new File(rootDirectory + "../../findbugs/classesEclipse").toString());
+		    engine.addDirectory(new File(rootDirectory + "../../findbugs-gui/bin").toString());
+		} else {
+		    // started from ant
+		    engine.addDirectory(rootDirectory);
+		}
 		engine.analyze();
 	}
 
@@ -89,10 +142,19 @@ public class PackageDependenciesTest extends TestCase {
 		super.tearDown();
 	}
 
-	private void assertPackageConstraint(String afferent, String expectedNotEfferent) {
-		JavaPackage afferentPackage = engine.getPackage(afferent);
-		JavaPackage efferentPackage = engine.getPackage(expectedNotEfferent);
+	private void assertFirstNotDependOnSecond(String first, String second) {
+		JavaPackage afferentPackage = engine.getPackage(first);
+		JavaPackage efferentPackage = engine.getPackage(second);
 		assertFalse(afferentPackage.getName() + " shouldn't depend on " + efferentPackage.getName(), afferentPackage
 				.getEfferents().contains(efferentPackage));
+	}
+
+	private void assertNoCycles(String afferent) {
+	    JavaPackage afferentPackage = engine.getPackage(afferent);
+	    assertFalse(afferentPackage.getName() +
+	            " has dependency cycle: depends on " + afferentPackage.getEfferents()
+	            + " and used by: " + afferentPackage.getAfferents(),
+	            afferentPackage.containsCycle());
+
 	}
 }

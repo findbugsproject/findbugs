@@ -26,6 +26,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.FieldAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.visitclass.PreorderVisitor;
 
@@ -52,8 +53,8 @@ public class ConfusedInheritance extends PreorderVisitor  implements Detector {
 		if (obj.isProtected()) {
 			bugReporter.reportBug( 
 				new BugInstance( this, "CI_CONFUSED_INHERITANCE", LOW_PRIORITY)
-					.addClass(cls)
-					.addField(
+					.add(AnnotationFactory.createClass(cls.getClassName()))
+					.add(
 						new FieldAnnotation(cls.getClassName(), obj.getName(), obj.getSignature(), obj.isStatic())));
 		}
 	}

@@ -21,13 +21,9 @@ package edu.umd.cs.findbugs.detect;
 
 import org.apache.bcel.Constants;
 import org.apache.bcel.classfile.Code;
-import org.apache.bcel.generic.InstructionHandle;
-
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.OpcodeStack.Item;
-import edu.umd.cs.findbugs.ba.AnalysisContext;
-import edu.umd.cs.findbugs.ba.FieldSummary;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.ba.XField;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
@@ -141,10 +137,10 @@ public class TestingGround extends OpcodeStackDetector {
 				if (getXClass().usesConcurrency())
 					priority--;
 				// Report the bug.
-				bugReporter.reportBug(new BugInstance(this, state == 4 ? "LI_LAZY_INIT_UPDATE_STATIC" : "LI_LAZY_INIT_STATIC",
-				        priority).addClassAndMethod(this).addField(f).describe("FIELD_ON").addSourceLineRange(getClassContext(),
-				        this, startPC, getPC()));
-
+				BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, state == 4 ? "LI_LAZY_INIT_UPDATE_STATIC" : "LI_LAZY_INIT_STATIC", priority), this)
+					.add(AnnotationFactory.createField(f)).describe("FIELD_ON")
+					.add(AnnotationFactory.createSourceLineRange(this, startPC, getPC()));
+				bugReporter.reportBug(bugInstance);
 			}
 			resetStateMachine();
 		}

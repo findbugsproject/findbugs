@@ -24,6 +24,7 @@ import org.apache.bcel.classfile.Code;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Priorities;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.XField;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 
@@ -63,8 +64,9 @@ public class SynchronizingOnContentsOfFieldToProtectField extends OpcodeStackDet
 		}
 		if (seen == MONITOREXIT && getPrevOpcode(2) == PUTFIELD
 				&& putField != null && putField.equals(syncField)) {
-			bugReporter.reportBug(new BugInstance(this, "ML_SYNC_ON_FIELD_TO_GUARD_CHANGING_THAT_FIELD", Priorities.HIGH_PRIORITY).addClassAndMethod(this)
-			        .addField(syncField).addSourceLine(this, putPC));
+			bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "ML_SYNC_ON_FIELD_TO_GUARD_CHANGING_THAT_FIELD", Priorities.HIGH_PRIORITY), this)
+			        .add(AnnotationFactory.createField(syncField))
+			        .add(AnnotationFactory.createSourceLine(this, putPC)));
 		}
 		
 		if (seen==MONITORENTER)

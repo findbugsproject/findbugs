@@ -38,21 +38,21 @@ import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.FieldAnnotation;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.DataflowAnalysisException;
 import edu.umd.cs.findbugs.ba.Location;
 import edu.umd.cs.findbugs.ba.MethodUnprofitableException;
-import edu.umd.cs.findbugs.ba.SignatureParser;
 import edu.umd.cs.findbugs.ba.XField;
 import edu.umd.cs.findbugs.ba.vna.ValueNumber;
 import edu.umd.cs.findbugs.ba.vna.ValueNumberDataflow;
 import edu.umd.cs.findbugs.ba.vna.ValueNumberFrame;
 import edu.umd.cs.findbugs.ba.vna.ValueNumberSourceInfo;
+import edu.umd.cs.findbugs.signature.SignatureParser;
 
 public class FindSelfComparison2 implements Detector {
 
@@ -185,21 +185,24 @@ public class FindSelfComparison2 implements Detector {
 		String prefix;
 		if (field != null) {
 			if (field.isVolatile()) return;
-			if (true) return; // don't report these; too many false positives
-			annotation = FieldAnnotation.fromXField(field);
-			prefix = "SA_FIELD_SELF_";
+			if (true) {
+	            return; // don't report these; too many false positives
+            }
+//			annotation = FieldAnnotation.fromXField(field);
+//			prefix = "SA_FIELD_SELF_";
 		} else {
 			annotation  = ValueNumberSourceInfo.findLocalAnnotationFromValueNumber(method, location, v0, frame);
 			prefix = "SA_LOCAL_SELF_" ;
 			if (opcode == ISUB) return; // only report this if simple detector reports it
 		}
 		if (annotation == null) return;
-		SourceLineAnnotation sourceLine = SourceLineAnnotation.fromVisitedInstruction(classContext, methodGen, sourceFile, location.getHandle());
+		ISourceLineAnnotation sourceLine = AnnotationFactory.createSourceLine(methodGen, sourceFile, location.getHandle());
 		int line = sourceLine.getStartLine();
 		BitSet occursMultipleTimes = ClassContext.linesMentionedMultipleTimes(method);
 		if (line > 0 && occursMultipleTimes.get(line)) return;
-		BugInstance bug = new BugInstance(this, prefix + op, priority).addClassAndMethod(methodGen, sourceFile)
-		.add(annotation).addSourceLine(classContext, methodGen, sourceFile, location.getHandle());
+		BugInstance bug = DetectorUtil.addClassAndMethod(new BugInstance(this, prefix + op, priority), methodGen, sourceFile)
+			.add(annotation).add(
+				AnnotationFactory.createSourceLine(methodGen, sourceFile, location.getHandle()));
 		bugReporter.reportBug(bug);
 	}
 

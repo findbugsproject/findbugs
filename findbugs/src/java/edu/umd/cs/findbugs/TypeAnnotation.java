@@ -21,13 +21,12 @@ package edu.umd.cs.findbugs;
 import java.io.IOException;
 
 import org.apache.bcel.generic.Type;
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 
 import edu.umd.cs.findbugs.ba.AnalysisContext;
-import edu.umd.cs.findbugs.ba.SignatureConverter;
 import edu.umd.cs.findbugs.ba.generic.GenericObjectType;
 import edu.umd.cs.findbugs.ba.generic.GenericUtilities;
+import edu.umd.cs.findbugs.internalAnnotations.SlashedClassName;
+import edu.umd.cs.findbugs.signature.SignatureConverter;
 import edu.umd.cs.findbugs.xml.XMLAttributeList;
 import edu.umd.cs.findbugs.xml.XMLOutput;
 
@@ -36,17 +35,10 @@ import edu.umd.cs.findbugs.xml.XMLOutput;
  * This is of lighter weight than ClassAnnotation,
  * and can be used for things like array types.
  * 
- * @see ClassAnnotation
+ * @see IClassAnnotation
  */
-public class TypeAnnotation extends BugAnnotationWithSourceLines {
+public class TypeAnnotation extends BugAnnotationWithSourceLines implements ITypeAnnotation {
 	private static final long serialVersionUID = 1L;
-
-	public static final String DEFAULT_ROLE = "TYPE_DEFAULT";
-	public static final String EXPECTED_ROLE = "TYPE_EXPECTED";
-	public static final String FOUND_ROLE = "TYPE_FOUND";
-	public static final String CLOSEIT_ROLE = "TYPE_CLOSEIT";
-	public static final String UNHASHABLE_ROLE = "TYPE_UNHASHABLE";
-
 
 	final private String descriptor; // jvm type descriptor, such as "[I"
 	private String roleDescription;
@@ -61,7 +53,7 @@ public class TypeAnnotation extends BugAnnotationWithSourceLines {
 	 * 
 	 * @param typeDescriptor a jvm type descriptor, such as "[I"
 	 */
-	public TypeAnnotation(String typeDescriptor) {
+	public TypeAnnotation(@SlashedClassName String typeDescriptor) {
 		this(typeDescriptor, DEFAULT_ROLE);
 	}
 
@@ -79,20 +71,25 @@ public class TypeAnnotation extends BugAnnotationWithSourceLines {
 		}
 	}
 		
-	public TypeAnnotation(String typeDescriptor, String roleDescription) {
+	public TypeAnnotation(@SlashedClassName String typeDescriptor, String roleDescription) {
 		descriptor = typeDescriptor;
 		this.roleDescription = roleDescription;
 		if (descriptor.startsWith("L")) {
+			/*
+			 * TODO Andrei: should move out from this class, because 
+			 * this code belongs to other module (factory).  
+			 */
 			String className = typeDescriptor.substring(1, typeDescriptor.length()-1).replace('/','.');
 			AnalysisContext context = AnalysisContext.currentAnalysisContext();
 			if (context != null) {
 				this.sourceFileName = context.lookupSourceFile(className);
 				this.sourceLines = ClassAnnotation.getSourceLinesForClass(className, sourceFileName);
-			}
-			else this.sourceFileName = SourceLineAnnotation.UNKNOWN_SOURCE_FILE;
+			} else {
+	            this.sourceFileName = ISourceLineAnnotation.UNKNOWN_SOURCE_FILE;
+            }
 		}
 	}
-
+	
 	/**
 	 * Get the type descriptor.
 	 * @return the jvm type descriptor, such as "[I"
@@ -106,7 +103,7 @@ public class TypeAnnotation extends BugAnnotationWithSourceLines {
 	}
 
 
-	public String format(String key, ClassAnnotation primaryClass) {
+	public String format(String key, IClassAnnotation primaryClass) {
 		String name = new SignatureConverter(descriptor).parseNext().replace("java.lang.", "");
 		if (key.equals("givenClass"))
 			name =  ClassAnnotation.shorten(primaryClass.getPackageName(), name);
@@ -136,15 +133,15 @@ public class TypeAnnotation extends BugAnnotationWithSourceLines {
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof TypeAnnotation))
+		if (!(o instanceof ITypeAnnotation))
 			return false;
-		return descriptor.equals(((TypeAnnotation) o).descriptor);
+		return descriptor.equals(((ITypeAnnotation) o).getTypeDescriptor());
 	}
 
 	public int compareTo(BugAnnotation o) {
-		if (!(o instanceof TypeAnnotation)) // BugAnnotations must be Comparable with any type of BugAnnotation
+		if (!(o instanceof ITypeAnnotation)) // BugAnnotations must be Comparable with any type of BugAnnotation
 			return this.getClass().getName().compareTo(o.getClass().getName());
-		return descriptor.compareTo(((TypeAnnotation) o).descriptor);
+		return descriptor.compareTo(((ITypeAnnotation) o).getTypeDescriptor());
 		// could try to determine equivalence with ClassAnnotation, but don't see how this would be useful
 	}
 

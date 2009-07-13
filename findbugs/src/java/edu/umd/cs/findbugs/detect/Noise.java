@@ -28,6 +28,7 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Priorities;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 
 public class Noise extends OpcodeStackDetector {
@@ -162,8 +163,10 @@ public class Noise extends OpcodeStackDetector {
 
 			 priority = hq.getPriority();
 			if (priority <= Priorities.LOW_PRIORITY)
-				accumulator.accumulateBug(new BugInstance(this, "NOISE_METHOD_CALL", priority).addClassAndMethod(this)
-				        .addCalledMethod(this), this);
+				accumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+						new BugInstance(this, "NOISE_METHOD_CALL", priority), this)
+						.add(AnnotationFactory.createCalledMethod(this)), 
+						AnnotationFactory.createSourceLine(this));
 			
 			break;
 		case GETFIELD:
@@ -176,8 +179,9 @@ public class Noise extends OpcodeStackDetector {
 			hq.pushHash(getSigConstantOperand());
 			 priority = hq.getPriority();
 			if (priority <= Priorities.LOW_PRIORITY)
-				accumulator.accumulateBug(new BugInstance(this, "NOISE_FIELD_REFERENCE", priority).addClassAndMethod(this)
-				        .addReferencedField(this), this);
+				accumulator.accumulateBug(
+						DetectorUtil.addClassAndMethod(new BugInstance(this, "NOISE_FIELD_REFERENCE", priority), this)
+						.add(AnnotationFactory.createReferencedField(this)), AnnotationFactory.createSourceLine(this));
 			break;
 		case CHECKCAST:
 		case INSTANCEOF:
@@ -234,10 +238,12 @@ public class Noise extends OpcodeStackDetector {
 		case BALOAD:
 		case BASTORE:
 			hq.push(seen);
-			 priority = hq.getPriority();
-				if (priority <= Priorities.LOW_PRIORITY)
-					accumulator.accumulateBug(new BugInstance(this, "NOISE_OPERATION", priority).addClassAndMethod(this)
-							.addString(OPCODE_NAMES[seen]), this);
+			priority = hq.getPriority();
+			if (priority <= Priorities.LOW_PRIORITY) {
+	            accumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+						new BugInstance(this, "NOISE_OPERATION", priority), this)
+						.addString(OPCODE_NAMES[seen]), AnnotationFactory.createSourceLine(this));
+            }
 		}
 	}
 	

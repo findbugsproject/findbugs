@@ -84,7 +84,7 @@ public class StringAnnotation implements BugAnnotation {
 		visitor.visitStringAnnotation(this);
 	}   
 
-	public String format(String key, ClassAnnotation primaryClass) {
+	public String format(String key, IClassAnnotation primaryClass) {
 		return value;
 	}
 
@@ -146,7 +146,7 @@ public class StringAnnotation implements BugAnnotation {
 	public boolean isSignificant() {
 		return true;
 	}
-    public String toString(ClassAnnotation primaryClass) {
+    public String toString(IClassAnnotation primaryClass) {
 	    return toString();
     }
 }

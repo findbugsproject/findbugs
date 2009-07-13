@@ -27,6 +27,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.ClassContext;
 
 public class InefficientMemberAccess extends BytecodeScanningDetector implements StatelessDetector {
@@ -69,9 +70,8 @@ public class InefficientMemberAccess extends BytecodeScanningDetector implements
 			if ((argTypes.length == 2) && !argTypes[1].getSignature().equals(Type.getReturnType(methodSig).getSignature()))
 				return;
 
-			bugReporter.reportBug(new BugInstance(this, "IMA_INEFFICIENT_MEMBER_ACCESS", LOW_PRIORITY)
-				.addClassAndMethod(this)
-				.addSourceLine(this));
+			bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "IMA_INEFFICIENT_MEMBER_ACCESS", LOW_PRIORITY), this)
+				.add(AnnotationFactory.createSourceLine(this)));
 		}
 	}
 

@@ -27,6 +27,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.OpcodeStack;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 
@@ -61,9 +62,8 @@ public class UseObjectEquals extends OpcodeStackDetector implements StatelessDet
 								if (!AnalysisContext.currentAnalysisContext().isApplicationClass(cls))
 									return;
 
-								bugReporter.reportBug(new BugInstance(this, "UOE_USE_OBJECT_EQUALS", LOW_PRIORITY)
-									.addClassAndMethod(this)
-									.addSourceLine(this));	
+								bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "UOE_USE_OBJECT_EQUALS", LOW_PRIORITY), this)
+									.add(AnnotationFactory.createSourceLine(this)));	
 							}
 						}
 					} catch (ClassNotFoundException cnfe) {

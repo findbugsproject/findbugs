@@ -31,6 +31,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class MutableLock extends BytecodeScanningDetector implements  StatelessDetector {
 	Set<String> setFields = new HashSet<String>();
@@ -80,13 +81,12 @@ public class MutableLock extends BytecodeScanningDetector implements  StatelessD
 					&& setFields.contains(getNameConstantOperand())
 					&& asUnsignedByte(codeBytes[getPC() + 3]) == DUP
 					&& asUnsignedByte(codeBytes[getPC() + 5]) == MONITORENTER
-
-					&& !finalFields.contains(getNameConstantOperand())
-			)
-				bugReporter.reportBug(new BugInstance(this, "ML_SYNC_ON_UPDATED_FIELD", NORMAL_PRIORITY)
-						.addClassAndMethod(this)
-						.addReferencedField(this)
-						.addSourceLine(this, getPC() + 5));
+					&& !finalFields.contains(getNameConstantOperand())) {
+				
+	            bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "ML_SYNC_ON_UPDATED_FIELD", NORMAL_PRIORITY), this)
+						.add(AnnotationFactory.createReferencedField(this))
+						.add(AnnotationFactory.createSourceLine(this, getPC() + 5)));
+            }
 			break;
 		default:
 		}

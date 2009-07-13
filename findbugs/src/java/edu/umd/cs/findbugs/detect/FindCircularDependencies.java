@@ -32,6 +32,7 @@ import org.apache.bcel.classfile.JavaClass;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class FindCircularDependencies extends BytecodeScanningDetector
 {
@@ -95,7 +96,7 @@ public class FindCircularDependencies extends BytecodeScanningDetector
 						"CD_CIRCULAR_DEPENDENCY",
 						NORMAL_PRIORITY);
 				for (String loopCls : loop) {
-					bug.addClass(loopCls);
+					bug.add(AnnotationFactory.createClass(loopCls));
 				}
 				bugReporter.reportBug(bug);
 				pruneLeaves = removeLoopLinks(dependencyGraph, loop);

@@ -17,14 +17,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.umd.cs.findbugs.ba;
+package edu.umd.cs.findbugs.signature;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.InvokeInstruction;
 
 /**
  * A simple class to parse method signatures.
@@ -36,20 +33,26 @@ public class SignatureParser {
 	int parameterOffset[] = null;
 
 	private void calculateOffsets() {
-		if (parameterOffset != null) return;
+		if (parameterOffset != null) {
+			return;
+		}
 		ArrayList<Integer> offsets = new ArrayList<Integer>();
 		Iterator<String> i = parameterSignatureIterator();
 		totalArgumentSize = 0;
 		while(i.hasNext()) {
 			String s = i.next();
 
-			if (s.equals("D") || s.equals("J")) totalArgumentSize += 2;
-			else totalArgumentSize += 1;
-			offsets.add(totalArgumentSize);
+			if (s.equals("D") || s.equals("J")) {
+				totalArgumentSize += 2;
+			} else {
+				totalArgumentSize += 1;
+			}
+			offsets.add(Integer.valueOf(totalArgumentSize));
 		}
 		parameterOffset = new int[offsets.size()];
-		for(int j = 0; j < offsets.size(); j++)
-			parameterOffset[j] = offsets.get(j);
+		for(int j = 0; j < offsets.size(); j++) {
+			parameterOffset[j] = offsets.get(j).intValue();
+		}
 	}
 
 	public int getSlotsFromTopOfStackForParameter(int paramNum) {
@@ -63,11 +66,13 @@ public class SignatureParser {
 
 		public boolean hasNext() {
 			return index < signature.length()
-					&& signature.charAt(index) != ')';
+			&& signature.charAt(index) != ')';
 		}
 
 		public String next() {
-			if (!hasNext()) throw new NoSuchElementException();
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
 			StringBuilder result = new StringBuilder();
 			boolean done;
 			do {
@@ -88,8 +93,9 @@ public class SignatureParser {
 
 				case 'L':
 					int semi = signature.indexOf(';', index + 1);
-					if (semi < 0)
+					if (semi < 0) {
 						throw new IllegalStateException("Invalid method signature: " + signature);
+					}
 					result.append(signature.substring(index, semi + 1));
 					index = semi + 1;
 					break;
@@ -126,8 +132,9 @@ public class SignatureParser {
 	 * @param signature the method signature to be parsed
 	 */
 	public SignatureParser(String signature) {
-		if (!signature.startsWith("("))
+		if (!signature.startsWith("(")) {
 			throw new IllegalArgumentException("Bad method signature: " + signature);
+		}
 		this.signature = signature;
 	}
 
@@ -147,8 +154,9 @@ public class SignatureParser {
 	 */
 	public String getReturnTypeSignature() {
 		int endOfParams = signature.lastIndexOf(')');
-		if (endOfParams < 0)
+		if (endOfParams < 0) {
 			throw new IllegalArgumentException("Bad method signature: " + signature);
+		}
 		return signature.substring(endOfParams + 1);
 	}
 
@@ -169,7 +177,9 @@ public class SignatureParser {
 	public boolean hasReferenceParameters() {
 		for (Iterator<String> i = parameterSignatureIterator(); i.hasNext();) {
 			char c = i.next().charAt(0);
-			if (c == 'L' || c == '[') return true;
+			if (c == 'L' || c == '[') {
+				return true;
+			}
 		}
 		return false;
 	}
@@ -178,7 +188,9 @@ public class SignatureParser {
 		int count = 0;
 		for (Iterator<String> i = parameterSignatureIterator(); i.hasNext();) {
 			String p = i.next();
-			if (pos == count) return p;
+			if (pos == count) {
+				return p;
+			}
 			++count;
 		}
 		throw new IndexOutOfBoundsException("Asked for parameter " + pos + " of " + signature);
@@ -194,23 +206,11 @@ public class SignatureParser {
 	public static boolean isReferenceType(String signature) {
 		return signature.startsWith("L") || signature.startsWith("[");
 	}
-	
-	/**
-	 * Get the number of parameters passed to method invocation.
-	 * 
-	 * @param inv
-	 * @param cpg
-	 * @return int number of parameters
-	 */
-	public static int getNumParametersForInvocation(InvokeInstruction inv, ConstantPoolGen cpg) {
-		SignatureParser sigParser = new SignatureParser(inv.getSignature(cpg));
-		return sigParser.getNumParameters();
-	}
-	
+
 	/**
 	 * Return how many stack frame slots a type whose signature
 	 * is given will occupy.  long and double values take 2 slots,
-	 * while all other kinds of values take 1 slot. 
+	 * while all other kinds of values take 1 slot.
 	 * 
 	 * @param sig a type signature
 	 * @return number of stack frame slots a value of the given type will occupy
@@ -218,9 +218,8 @@ public class SignatureParser {
 	public static int getNumSlotsForType(String sig) {
 		if (sig.equals("J") || sig.equals("D")) {
 			return 2;
-		} else {
-			return 1;
 		}
+		return 1;
 	}
 
 	public static void main(String[] args) {

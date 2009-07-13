@@ -46,9 +46,9 @@ public abstract class BugAnnotationUtil {
 			XMLAttributeList attributeList,
 			boolean addMessages) throws IOException {
 
-		SourceLineAnnotation src = null;
-		if (annotation instanceof BugAnnotationWithSourceLines) 
-			 src = ((BugAnnotationWithSourceLines) annotation).getSourceLines();
+		ISourceLineAnnotation src = null;
+		if (annotation instanceof IBugAnnotationWithSourceLines) 
+			 src = ((IBugAnnotationWithSourceLines) annotation).getSourceLines();
 		
 		if (addMessages || src != null) {
 			xmlOutput.openTag(elementName, attributeList);

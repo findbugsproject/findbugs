@@ -42,7 +42,7 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.ba.BasicBlock;
 import edu.umd.cs.findbugs.ba.CFG;
@@ -418,7 +418,7 @@ public class FindSqlInjection implements Detector {
 		}
 
 		BugInstance bug = new BugInstance(this, description, priority);
-		bug.addClassAndMethod(methodGen, javaClass.getSourceFileName());
+		DetectorUtil.addClassAndMethod(bug, methodGen, javaClass.getSourceFileName());
 
 		return bug;
 	}
@@ -456,7 +456,7 @@ public class FindSqlInjection implements Detector {
 					if (prev == null || !isSafeValue(prev, cpg)) {
 						BugInstance bug = generateBugInstance(javaClass, methodGen, location.getHandle(),
 								stringAppendState);
-						bugAccumulator.accumulateBug(bug, SourceLineAnnotation.fromVisitedInstruction(classContext, methodGen, javaClass.getSourceFileName(), location.getHandle()));
+						bugAccumulator.accumulateBug(bug, AnnotationFactory.createSourceLine(methodGen, javaClass.getSourceFileName(), location.getHandle()));
 					}
 				}
 			}

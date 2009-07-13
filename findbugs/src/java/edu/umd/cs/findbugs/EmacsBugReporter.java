@@ -69,9 +69,9 @@ public class EmacsBugReporter extends TextUIBugReporter {
 		int lineEnd = 0;
 		String fullPath = "???";
 
-		SourceLineAnnotation line = bugInstance.getPrimarySourceLineAnnotation();
+		ISourceLineAnnotation line = bugInstance.getPrimarySourceLineAnnotation();
 		if (line == null) {
-			ClassAnnotation classInfo = bugInstance.getPrimaryClass();
+			IClassAnnotation classInfo = bugInstance.getPrimaryClass();
 			if (classInfo != null) {
 				fullPath = sourceFileNameCache.get(classInfo.getClassName());
 			}

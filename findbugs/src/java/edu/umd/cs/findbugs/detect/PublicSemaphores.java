@@ -28,6 +28,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.ClassContext;
 
 /**
@@ -87,9 +88,8 @@ public class PublicSemaphores extends BytecodeScanningDetector implements Statel
 				&&  getClassConstantOperand().equals("java/lang/Object")) {
 					String methodName = getNameConstantOperand();
 					if ("wait".equals(methodName) || "notify".equals(methodName) || "notifyAll".equals(methodName)) {
-						bugReporter.reportBug( new BugInstance( this, "PS_PUBLIC_SEMAPHORES", NORMAL_PRIORITY )
-								.addClassAndMethod(this)
-								.addSourceLine(this));
+						bugReporter.reportBug( DetectorUtil.addClassAndMethod(new BugInstance( this, "PS_PUBLIC_SEMAPHORES", NORMAL_PRIORITY ), this)
+								.add(AnnotationFactory.createSourceLine(this)));
 						alreadyReported = true;
 					}
 				}

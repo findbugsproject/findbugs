@@ -33,24 +33,26 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.FieldAnnotation;
+import edu.umd.cs.findbugs.IFieldAnnotation;
 import edu.umd.cs.findbugs.IntAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class LockedFields extends BytecodeScanningDetector {
 	private static final boolean DEBUG = SystemProperties.getBoolean("lockedfields.debug");
 
-	Set<FieldAnnotation> volatileOrFinalFields = new HashSet<FieldAnnotation>();
-	Set<FieldAnnotation> fieldsWritten = new HashSet<FieldAnnotation>();
-	Set<FieldAnnotation> fieldsRead = new HashSet<FieldAnnotation>();
-	Set<FieldAnnotation> localLocks = new HashSet<FieldAnnotation>();
-	Set<FieldAnnotation> publicFields = new HashSet<FieldAnnotation>();
-	Set<FieldAnnotation> writtenOutsideOfConstructor = new HashSet<FieldAnnotation>();
+	Set<IFieldAnnotation> volatileOrFinalFields = new HashSet<IFieldAnnotation>();
+	Set<IFieldAnnotation> fieldsWritten = new HashSet<IFieldAnnotation>();
+	Set<IFieldAnnotation> fieldsRead = new HashSet<IFieldAnnotation>();
+	Set<IFieldAnnotation> localLocks = new HashSet<IFieldAnnotation>();
+	Set<IFieldAnnotation> publicFields = new HashSet<IFieldAnnotation>();
+	Set<IFieldAnnotation> writtenOutsideOfConstructor = new HashSet<IFieldAnnotation>();
 	boolean synchronizedMethod;
 	boolean publicMethod;
 	boolean protectedMethod;
 	// boolean privateMethod;
 	boolean inConstructor;
-	Map<FieldAnnotation, int[]> stats = new TreeMap<FieldAnnotation, int[]>();
+	Map<IFieldAnnotation, int[]> stats = new TreeMap<IFieldAnnotation, int[]>();
 	int state;
 	boolean thisOnTopOfStack;
 	boolean doubleThisOnTopOfStack;
@@ -74,7 +76,7 @@ public class LockedFields extends BytecodeScanningDetector {
 		this.bugReporter = bugReporter;
 	}
 
-	private void updateStats(Set<FieldAnnotation> fields, int mode) {
+	private void updateStats(Set<IFieldAnnotation> fields, int mode) {
 		// if (privateMethod) return;
 		if (!publicMethod && !protectedMethod) {
 			if (mode == READ_UNLOCKED || mode == WRITTEN_UNLOCKED) return;
@@ -84,7 +86,7 @@ public class LockedFields extends BytecodeScanningDetector {
 			if (mode == READ_UNLOCKED || mode == WRITTEN_UNLOCKED) return;
 			}
 		*/
-		for (FieldAnnotation f : fields) {
+		for (IFieldAnnotation f : fields) {
 			if (f.getClassName().equals(getDottedClassName()) && mode <= WRITTEN_LOCKED)
 				localLocks.add(f);
 			int[] theseStats = stats.get(f);
@@ -107,7 +109,7 @@ public class LockedFields extends BytecodeScanningDetector {
 		 public void visit(Field obj) {
 		super.visit(obj);
 
-		FieldAnnotation f = FieldAnnotation.fromVisitedField(this);
+		IFieldAnnotation f = AnnotationFactory.createField(this);
 
 		int flags = obj.getAccessFlags();
 		boolean publicField = (flags & ACC_PUBLIC) != 0;
@@ -202,7 +204,7 @@ public class LockedFields extends BytecodeScanningDetector {
 			break;
 		case PUTFIELD:
 			{
-				FieldAnnotation f = FieldAnnotation.fromReferencedField(this);
+				IFieldAnnotation f = AnnotationFactory.createReferencedField(this);
 				writtenOutsideOfConstructor.add(f);
 				if (!getClassName().equals(getClassConstantOperand())) break;
 				// System.out.println("putfield	" + f + ", state = " + state);
@@ -213,7 +215,7 @@ public class LockedFields extends BytecodeScanningDetector {
 			int next = codeBytes[getPC() + 3] & 0xff;
 			if (!thisOnTopOfStack) break;
 			if (next != IFNULL && next != IFNONNULL) {
-				FieldAnnotation f = FieldAnnotation.fromReferencedField(this);
+				IFieldAnnotation f = AnnotationFactory.createReferencedField(this);
 				// System.out.println("getfield	" + f);
 				fieldsRead.add(f);
 				/*
@@ -247,7 +249,7 @@ public class LockedFields extends BytecodeScanningDetector {
 		int mostlyUnlocked = 0;
 
 		//for (Iterator<Map.Entry<FieldAnnotation, int[]>> i = stats.entrySet().iterator(); i.hasNext();) {
-		for (FieldAnnotation f : stats.keySet()) {
+		for (IFieldAnnotation f : stats.keySet()) {
 			int[] theseStats = stats.get(f);
 
 			int locked = theseStats[READ_LOCKED] + theseStats[WRITTEN_LOCKED];
@@ -295,8 +297,8 @@ public class LockedFields extends BytecodeScanningDetector {
 			}
 			int freq = (100 * locked) / (locked + unlocked);
 			bugReporter.reportBug(new BugInstance(this, "IS_INCONSISTENT_SYNC", NORMAL_PRIORITY)
-					.addClass(f.getClassName())
-					.addField(f)
+					.add(AnnotationFactory.createClass(f.getClassName()))
+					.add(f)
 					.addInt(freq).describe(IntAnnotation.INT_SYNC_PERCENT));
 			if (DEBUG) {
 				System.out.print(freq

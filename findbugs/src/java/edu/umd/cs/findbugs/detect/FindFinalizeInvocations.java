@@ -30,6 +30,7 @@ import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.Lookup;
 import edu.umd.cs.findbugs.StatelessDetector;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class FindFinalizeInvocations extends BytecodeScanningDetector implements StatelessDetector {
 	private static final boolean DEBUG = SystemProperties.getBoolean("ffi.debug");
@@ -53,7 +54,7 @@ public class FindFinalizeInvocations extends BytecodeScanningDetector implements
 				&& getMethodSig().equals("()V")
 				&& (obj.getAccessFlags() & (ACC_PUBLIC)) != 0
 		)
-			bugReporter.reportBug(new BugInstance(this, "FI_PUBLIC_SHOULD_BE_PROTECTED", NORMAL_PRIORITY).addClassAndMethod(this));
+			bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "FI_PUBLIC_SHOULD_BE_PROTECTED", NORMAL_PRIORITY), this));
 	}
 
 	@Override
@@ -73,32 +74,40 @@ public class FindFinalizeInvocations extends BytecodeScanningDetector implements
 		// System.out.println("superclass: " + superclassName);
 		if (obj.getCode().length == 1) {
 			if (superHasNoFinalizer) {
-				if (!getMethod().isFinal())
-				bugReporter.reportBug(new BugInstance(this, "FI_EMPTY", NORMAL_PRIORITY).addClassAndMethod(this));
-			} else
-				bugReporter.reportBug(new BugInstance(this, "FI_NULLIFY_SUPER", NORMAL_PRIORITY)
-						.addClassAndMethod(this)
-						.addClass(overridesFinalizeIn));
-		} else if (obj.getCode().length == 5 && sawSuperFinalize)
-			bugReporter.reportBug(new BugInstance(this, "FI_USELESS", NORMAL_PRIORITY).addClassAndMethod(this));
-		else if (!sawSuperFinalize && !superHasNoFinalizer)
-			bugReporter.reportBug(new BugInstance(this, "FI_MISSING_SUPER_CALL", NORMAL_PRIORITY).addClassAndMethod(this)
-					.addClass(overridesFinalizeIn));
+				if (!getMethod().isFinal()) {
+	                bugReporter.reportBug(DetectorUtil.addClassAndMethod(
+	                		new BugInstance(this, "FI_EMPTY", NORMAL_PRIORITY), this));
+                }
+			} else {
+	            bugReporter.reportBug(DetectorUtil.addClassAndMethod(
+						new BugInstance(this, "FI_NULLIFY_SUPER", NORMAL_PRIORITY), this)
+						.add(AnnotationFactory.createClass(overridesFinalizeIn)));
+            }
+		} else if (obj.getCode().length == 5 && sawSuperFinalize) {
+	        bugReporter.reportBug(DetectorUtil.addClassAndMethod(
+					new BugInstance(this, "FI_USELESS", NORMAL_PRIORITY), this));
+        } else if (!sawSuperFinalize && !superHasNoFinalizer) {
+	        bugReporter.reportBug(DetectorUtil.addClassAndMethod(
+					new BugInstance(this, "FI_MISSING_SUPER_CALL", NORMAL_PRIORITY), this)
+					.add(AnnotationFactory.createClass(overridesFinalizeIn)));
+        }
 	}
 
 	@Override
 	public void sawOpcode(int seen) {
 		if (seen == INVOKEVIRTUAL &&
-		    getNameConstantOperand().equals("finalize") &&
-		    getSigConstantOperand().equals("()V"))
+				getNameConstantOperand().equals("finalize") &&
+				getSigConstantOperand().equals("()V"))
 		{
-			bugAccumulator.accumulateBug(new BugInstance(this, "FI_EXPLICIT_INVOCATION", 
-						getMethodName().equals("finalize") && getMethodSig().equals("()V") ? HIGH_PRIORITY : NORMAL_PRIORITY)
-					.addClassAndMethod(this)
-					.addCalledMethod(this), this);
+			bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+					new BugInstance(this, "FI_EXPLICIT_INVOCATION", 
+							getMethodName().equals("finalize") && getMethodSig().equals("()V") ? HIGH_PRIORITY : NORMAL_PRIORITY), this)
+							.add(AnnotationFactory.createCalledMethod(this)),
+							AnnotationFactory.createSourceLine(this));
 
 		}
-		if (seen == INVOKESPECIAL && getNameConstantOperand().equals("finalize"))
-			sawSuperFinalize = true;
+		if (seen == INVOKESPECIAL && getNameConstantOperand().equals("finalize")) {
+	        sawSuperFinalize = true;
+        }
 	}
 }

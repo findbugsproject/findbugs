@@ -26,6 +26,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class QuestionableBooleanAssignment extends BytecodeScanningDetector implements StatelessDetector
 {
@@ -81,9 +82,8 @@ public class QuestionableBooleanAssignment extends BytecodeScanningDetector impl
 			case SEEN_ISTORE: 
 				if (seen == IFEQ || seen == IFNE)
 				{
-					bug = new BugInstance( this, "QBA_QUESTIONABLE_BOOLEAN_ASSIGNMENT", HIGH_PRIORITY)
-						.addClassAndMethod(this)
-						.addSourceLine(this);
+					bug = DetectorUtil.addClassAndMethod(new BugInstance( this, "QBA_QUESTIONABLE_BOOLEAN_ASSIGNMENT", HIGH_PRIORITY), this)
+						.add(AnnotationFactory.createSourceLine(this));
 					state = SEEN_IF;
 				}
 				else state = SEEN_NOTHING;

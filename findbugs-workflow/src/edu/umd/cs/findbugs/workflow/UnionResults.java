@@ -1,17 +1,17 @@
 /*
  * FindBugs - Find bugs in Java programs
  * Copyright (C) 2004, University of Maryland
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -24,8 +24,8 @@ import java.util.Iterator;
 
 import org.dom4j.DocumentException;
 
-import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.DetectorFactoryCollection;
+import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.Project;
 import edu.umd.cs.findbugs.ProjectStats;
 import edu.umd.cs.findbugs.SortedBugCollection;
@@ -36,11 +36,11 @@ import edu.umd.cs.findbugs.config.CommandLine;
  * preserving annotations.
  */
 public class UnionResults {
-	
+
 	static class UnionResultsCommandLine extends CommandLine {
 		public String outputFile;
 		boolean withMessages;
-		
+
 		UnionResultsCommandLine() {
 			addSwitch("-withMessages", "Generated XML should contain msgs for external processing");
 			addOption("-output", "outputFile", "File in which to store combined results");
@@ -51,8 +51,11 @@ public class UnionResults {
          */
         @Override
         protected void handleOption(String option, String optionExtraPart) throws IOException {
-        	if (option.equals("-withMessages")) withMessages = true;
-        	else throw new IllegalArgumentException("Unknown option : " + option);
+        	if (option.equals("-withMessages")) {
+                withMessages = true;
+            } else {
+                throw new IllegalArgumentException("Unknown option : " + option);
+            }
         }
 
 		/* (non-Javadoc)
@@ -60,10 +63,13 @@ public class UnionResults {
          */
         @Override
         protected void handleOptionWithArgument(String option, String argument) throws IOException {
-        	if (option.equals("-output")) outputFile = argument;
-        	else throw new IllegalArgumentException("Unknown option : " + option);
+        	if (option.equals("-output")) {
+                outputFile = argument;
+            } else {
+                throw new IllegalArgumentException("Unknown option : " + option);
+            }
         }
-		
+
 	}
 
 	static {
@@ -91,14 +97,14 @@ public class UnionResults {
 
 		int argCount = commandLine.parse(argv, 2, Integer.MAX_VALUE, "Usage: " + UnionResults.class.getName()
 				+ " [options] [<results1> <results2> ... <resultsn>] ");
-		
+
 
 		SortedBugCollection results = null;
 		Project project = null;
 		for(int i = argCount; i < argv.length; i++) {
 			try {
 				SortedBugCollection more = new SortedBugCollection();
-				
+
 				more.readXML(argv[i]);
 				if (project != null) {
 					project.add(more.getProject());
@@ -119,10 +125,11 @@ public class UnionResults {
 			System.exit(1);
 		}
 		results.setWithMessages(commandLine.withMessages);
-		if (commandLine.outputFile == null)
-			results.writeXML(System.out);
-		else
-			results.writeXML(commandLine.outputFile);
+		if (commandLine.outputFile == null) {
+            results.writeXML(System.out);
+        } else {
+            results.writeXML(commandLine.outputFile);
+        }
 	}
 
 

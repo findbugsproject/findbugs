@@ -2,11 +2,11 @@ package edu.umd.cs.findbugs;
 
 public class ParameterWarningSuppressor extends ClassWarningSuppressor {
 
-	final MethodAnnotation method;
+	final IMethodAnnotation method;
 
 	final int register;
 
-	public ParameterWarningSuppressor(String bugPattern, ClassAnnotation clazz, MethodAnnotation method, int register) {
+	public ParameterWarningSuppressor(String bugPattern, IClassAnnotation clazz, IMethodAnnotation method, int register) {
 		super(bugPattern, clazz);
 		this.method = method;
 		this.register = register;
@@ -18,8 +18,8 @@ public class ParameterWarningSuppressor extends ClassWarningSuppressor {
 		if (!super.match(bugInstance))
 			return false;
 
-		MethodAnnotation bugMethod = bugInstance.getPrimaryMethod();
-		LocalVariableAnnotation localVariable = bugInstance.getPrimaryLocalVariableAnnotation();
+		IMethodAnnotation bugMethod = bugInstance.getPrimaryMethod();
+		ILocalVariableAnnotation localVariable = bugInstance.getPrimaryLocalVariableAnnotation();
 		if (bugMethod == null || !method.equals(bugMethod))
 			return false;
 		if (localVariable == null || localVariable.getRegister() != register)

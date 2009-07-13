@@ -26,6 +26,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class WaitInLoop extends BytecodeScanningDetector implements StatelessDetector {
 
@@ -54,14 +55,12 @@ public class WaitInLoop extends BytecodeScanningDetector implements StatelessDet
 		super.visit(obj);
 		if ((sawWait || sawAwait) && waitAt < earliestJump) {
 			String bugType = sawWait ? "WA_NOT_IN_LOOP" : "WA_AWAIT_NOT_IN_LOOP";
-			bugReporter.reportBug(new BugInstance(this, bugType, waitHasTimeout ? LOW_PRIORITY : NORMAL_PRIORITY)
-					.addClassAndMethod(this)
-					.addSourceLine(this, waitAt));
+			bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, bugType, waitHasTimeout ? LOW_PRIORITY : NORMAL_PRIORITY), this)
+					.add(AnnotationFactory.createSourceLine(this, waitAt)));
 		}
 		if (sawNotify)
-			bugReporter.reportBug(new BugInstance(this, "NO_NOTIFY_NOT_NOTIFYALL", LOW_PRIORITY)
-					.addClassAndMethod(this)
-					.addSourceLine(this, notifyPC));
+			bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "NO_NOTIFY_NOT_NOTIFYALL", LOW_PRIORITY), this)
+					.add(AnnotationFactory.createSourceLine(this, notifyPC)));
 	}
 
 	@Override

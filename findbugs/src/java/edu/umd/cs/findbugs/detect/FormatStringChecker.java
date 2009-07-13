@@ -20,19 +20,17 @@
 
 package edu.umd.cs.findbugs.detect;
 
-import java.util.ArrayList;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
 import org.apache.bcel.classfile.Code;
 
+import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
+import edu.umd.cs.findbugs.ITypeAnnotation;
 import edu.umd.cs.findbugs.IntAnnotation;
 import edu.umd.cs.findbugs.OpcodeStack;
 import edu.umd.cs.findbugs.StringAnnotation;
-import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.TypeAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.XMethod;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import edu.umd.cs.findbugs.formatStringChecker.Formatter;
@@ -131,67 +129,68 @@ public class FormatStringChecker extends OpcodeStackDetector {
 					
 				} catch (IllegalFormatConversionException e) {
 				
-					if (e.getConversion() == 'b')
-						bugReporter.reportBug(
-								new BugInstance(this, "VA_FORMAT_STRING_BAD_CONVERSION_TO_BOOLEAN", HIGH_PRIORITY)
-								.addClassAndMethod(this)
-								.addCalledMethod(this)
-								.addType(e.getArgumentSignature()).describe(TypeAnnotation.FOUND_ROLE)
-								.addString(e.getFormatSpecifier()).describe(StringAnnotation.FORMAT_SPECIFIER_ROLE)
-								.addString(formatString).describe(StringAnnotation.FORMAT_STRING_ROLE)
-								.addValueSource(arguments[e.getArgIndex()], getMethod(), getPC())
-								.addSourceLine(this)
-							);
-					else if (e.getArgumentSignature().charAt(0) == '[' && e.getConversion() == 's')
-                	bugReporter.reportBug(
-							new BugInstance(this, "VA_FORMAT_STRING_BAD_CONVERSION_FROM_ARRAY", HIGH_PRIORITY)
-							.addClassAndMethod(this)
-							.addCalledMethod(this)
-							.addType(e.getArgumentSignature()).describe(TypeAnnotation.FOUND_ROLE)
-							.addString(e.getFormatSpecifier()).describe(StringAnnotation.FORMAT_SPECIFIER_ROLE)
-							.addString(formatString).describe(StringAnnotation.FORMAT_STRING_ROLE)
-							.addValueSource(arguments[e.getArgIndex()], getMethod(), getPC())
-							.addSourceLine(this)
-						);
-					else bugReporter.reportBug(
-							new BugInstance(this, "VA_FORMAT_STRING_BAD_CONVERSION", HIGH_PRIORITY)
-							.addClassAndMethod(this)
-							.addCalledMethod(this)
-							.addType(e.getArgumentSignature()).describe(TypeAnnotation.FOUND_ROLE)
-							.addString(e.getFormatSpecifier()).describe(StringAnnotation.FORMAT_SPECIFIER_ROLE)
-							.addString(formatString).describe(StringAnnotation.FORMAT_STRING_ROLE)
-							.addValueSource(arguments[e.getArgIndex()], getMethod(), getPC())
-							.addSourceLine(this)
-						);
+					BugAnnotation valueSource = AnnotationFactory.createValueSource(getMethod(), arguments[e.getArgIndex()], getPC());
+					
+					if (e.getConversion() == 'b') {
+	                    BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "VA_FORMAT_STRING_BAD_CONVERSION_TO_BOOLEAN", HIGH_PRIORITY), this)
+	                        .add(AnnotationFactory.createCalledMethod(this))
+	                        .add(new TypeAnnotation(e.getArgumentSignature()))
+	                        .describe(ITypeAnnotation.FOUND_ROLE)
+	                        .addString(e.getFormatSpecifier()).describe(StringAnnotation.FORMAT_SPECIFIER_ROLE)
+	                        .addString(formatString).describe(StringAnnotation.FORMAT_STRING_ROLE);
+	                    if(valueSource != null){
+	                    	bugInstance.add(valueSource);
+	                    }
+						bugReporter.reportBug(bugInstance.add(AnnotationFactory.createSourceLine(this)));
+                    } else if (e.getArgumentSignature().charAt(0) == '[' && e.getConversion() == 's') {
+	                    BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "VA_FORMAT_STRING_BAD_CONVERSION_FROM_ARRAY", HIGH_PRIORITY), this)
+	                        .add(AnnotationFactory.createCalledMethod(this))
+	                        .add(new TypeAnnotation(e.getArgumentSignature()))
+	                        .describe(ITypeAnnotation.FOUND_ROLE)
+	                        .addString(e.getFormatSpecifier()).describe(StringAnnotation.FORMAT_SPECIFIER_ROLE)
+	                        .addString(formatString).describe(StringAnnotation.FORMAT_STRING_ROLE);
+	                    if(valueSource != null){
+	                    	bugInstance.add(valueSource);
+	                    }
+						bugReporter.reportBug(bugInstance.add(AnnotationFactory.createSourceLine(this)));
+                    } else {
+	                    BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "VA_FORMAT_STRING_BAD_CONVERSION", HIGH_PRIORITY), this)
+	                        .add(AnnotationFactory.createCalledMethod(this))
+	                        .add(new TypeAnnotation(e.getArgumentSignature()))
+	                        .describe(ITypeAnnotation.FOUND_ROLE)
+	                        .addString(e.getFormatSpecifier()).describe(StringAnnotation.FORMAT_SPECIFIER_ROLE)
+	                        .addString(formatString).describe(StringAnnotation.FORMAT_STRING_ROLE);
+	                    if(valueSource != null){
+	                    	bugInstance.add(valueSource);
+	                    }
+						bugReporter.reportBug(bugInstance.add(AnnotationFactory.createSourceLine(this)));
+                    }
                 } catch (IllegalArgumentException e) {
                 	bugReporter.reportBug(
-							new BugInstance(this, "VA_FORMAT_STRING_ILLEGAL", HIGH_PRIORITY)
-							.addClassAndMethod(this)
-							.addCalledMethod(this)
+							DetectorUtil.addClassAndMethod(new BugInstance(this, "VA_FORMAT_STRING_ILLEGAL", HIGH_PRIORITY), this)
+							.add(AnnotationFactory.createCalledMethod(this))
 							.addString(formatString).describe(StringAnnotation.FORMAT_STRING_ROLE)
-							.addSourceLine(this)
+							.add(AnnotationFactory.createSourceLine(this))
 						);
                 } catch (MissingFormatArgumentException e) {
 
                 	if (e.pos < 0) {
 	                    bugReporter.reportBug(
-							new BugInstance(this, "VA_FORMAT_STRING_NO_PREVIOUS_ARGUMENT", HIGH_PRIORITY)
-							.addClassAndMethod(this)
-							.addCalledMethod(this)
+							DetectorUtil.addClassAndMethod(new BugInstance(this, "VA_FORMAT_STRING_NO_PREVIOUS_ARGUMENT", HIGH_PRIORITY), this)
+							.add(AnnotationFactory.createCalledMethod(this))
 							.addString(e.formatSpecifier).describe(StringAnnotation.FORMAT_SPECIFIER_ROLE)
 							.addString(formatString).describe(StringAnnotation.FORMAT_STRING_ROLE)
-							.addSourceLine(this)
+							.add(AnnotationFactory.createSourceLine(this))
 						);
                     } else {
 	                    bugReporter.reportBug(
-	                    		new BugInstance(this, "VA_FORMAT_STRING_MISSING_ARGUMENT", HIGH_PRIORITY)
-	                    		.addClassAndMethod(this)
-	                    		.addCalledMethod(this)
+	                    		DetectorUtil.addClassAndMethod(new BugInstance(this, "VA_FORMAT_STRING_MISSING_ARGUMENT", HIGH_PRIORITY), this)
+	                    		.add(AnnotationFactory.createCalledMethod(this))
 	                    		.addString(e.formatSpecifier).describe(StringAnnotation.FORMAT_SPECIFIER_ROLE)
 	                    		.addString(formatString).describe(StringAnnotation.FORMAT_STRING_ROLE)
 	                    		.addInt(e.pos+1).describe(IntAnnotation.INT_EXPECTED_ARGUMENTS)
 	                    		.addInt(arguments.length).describe(IntAnnotation.INT_ACTUAL_ARGUMENTS)
-	                    		.addSourceLine(this)
+	                    		.add(AnnotationFactory.createSourceLine(this))
 	                    	);
                     }
 
@@ -205,13 +204,12 @@ public class FormatStringChecker extends OpcodeStackDetector {
                 	}
                 		
                 	bugReporter.reportBug(
-							new BugInstance(this, pattern, priority)
-							.addClassAndMethod(this)
-							.addCalledMethod(this)
+							DetectorUtil.addClassAndMethod(new BugInstance(this, pattern, priority), this)
+							.add(AnnotationFactory.createCalledMethod(this))
 							.addString(formatString).describe(StringAnnotation.FORMAT_STRING_ROLE)
 							.addInt(e.used).describe(IntAnnotation.INT_EXPECTED_ARGUMENTS)
 							.addInt(e.provided).describe(IntAnnotation.INT_ACTUAL_ARGUMENTS)
-							.addSourceLine(this)
+							.add(AnnotationFactory.createSourceLine(this))
 						);
                 }
 			}

@@ -21,7 +21,7 @@
  */
 package edu.umd.cs.findbugs.plugin.eclipse.quickfix.util;
 
-import static edu.umd.cs.findbugs.plugin.eclipse.quickfix.util.ConditionCheck.checkForNull;
+import static edu.umd.cs.findbugs.plugin.eclipse.quickfix.util.ConditionCheck.*;
 
 import java.util.Comparator;
 import java.util.HashMap;
@@ -52,10 +52,10 @@ import org.eclipse.jdt.core.dom.VariableDeclarationFragment;
 import org.eclipse.jdt.core.dom.rewrite.ASTRewrite;
 import org.eclipse.jdt.core.dom.rewrite.ListRewrite;
 
-import edu.umd.cs.findbugs.ClassAnnotation;
-import edu.umd.cs.findbugs.FieldAnnotation;
-import edu.umd.cs.findbugs.MethodAnnotation;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.IClassAnnotation;
+import edu.umd.cs.findbugs.IFieldAnnotation;
+import edu.umd.cs.findbugs.IMethodAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.plugin.eclipse.quickfix.exception.ASTNodeNotFoundException;
 import edu.umd.cs.findbugs.plugin.eclipse.quickfix.exception.FieldDeclarationNotFoundException;
@@ -69,9 +69,9 @@ import edu.umd.cs.findbugs.plugin.eclipse.quickfix.exception.TypeDeclarationNotF
  * to get a type, field or method declaration for a class, field or method
  * annotation.
  *
- * @see ASTUtil#getTypeDeclaration(CompilationUnit, ClassAnnotation)
- * @see ASTUtil#getFieldDeclaration(TypeDeclaration, FieldAnnotation)
- * @see ASTUtil#getMethodDeclaration(TypeDeclaration, MethodAnnotation)
+ * @see ASTUtil#getTypeDeclaration(CompilationUnit, IClassAnnotation)
+ * @see ASTUtil#getFieldDeclaration(TypeDeclaration, IFieldAnnotation)
+ * @see ASTUtil#getMethodDeclaration(TypeDeclaration, IMethodAnnotation)
  * @author <a href="mailto:twyss@hsr.ch">Thierry Wyss</a>
  * @author <a href="mailto:mbusarel@hsr.ch">Marco Busarello</a>
  * @author <a href="mailto:g1zgragg@hsr.ch">Guido Zgraggen</a>
@@ -170,7 +170,7 @@ public class ASTUtil {
 		}
 	}
 
-	public static ASTNode getASTNode(CompilationUnit compilationUnit, SourceLineAnnotation sourceLineAnno) throws ASTNodeNotFoundException {
+	public static ASTNode getASTNode(CompilationUnit compilationUnit, ISourceLineAnnotation sourceLineAnno) throws ASTNodeNotFoundException {
 		checkForNull(sourceLineAnno, "source line annotation");
 		return getASTNode(compilationUnit, sourceLineAnno.getStartLine(), sourceLineAnno.getEndLine());
     }
@@ -214,7 +214,7 @@ public class ASTUtil {
      * @throws TypeDeclarationNotFoundException
 	 *             if no matching <CODE>TypeDeclaration</CODE> was found.
 	 */
-	public static TypeDeclaration getTypeDeclaration(CompilationUnit compilationUnit, ClassAnnotation classAnno) throws TypeDeclarationNotFoundException {
+	public static TypeDeclaration getTypeDeclaration(CompilationUnit compilationUnit, IClassAnnotation classAnno) throws TypeDeclarationNotFoundException {
         checkForNull(classAnno, "class annotation");
 		return getTypeDeclaration(compilationUnit, classAnno.getClassName());
 	}
@@ -263,7 +263,7 @@ public class ASTUtil {
      * @throws FieldDeclarationNotFoundException
 	 *             if no matching <CODE>FieldDeclaration</CODE> was found.
 	 */
-	public static FieldDeclaration getFieldDeclaration(TypeDeclaration type, FieldAnnotation fieldAnno) throws FieldDeclarationNotFoundException {
+	public static FieldDeclaration getFieldDeclaration(TypeDeclaration type, IFieldAnnotation fieldAnno) throws FieldDeclarationNotFoundException {
         checkForNull(fieldAnno, "field annotation");
 
 		return getFieldDeclaration(type, fieldAnno.getFieldName());
@@ -313,7 +313,7 @@ public class ASTUtil {
 	 * @throws MethodDeclarationNotFoundException
 	 *             if no matching <CODE>MethodDeclaration</CODE> was found.
 	 */
-    public static MethodDeclaration getMethodDeclaration(TypeDeclaration type, MethodAnnotation methodAnno) throws MethodDeclarationNotFoundException {
+    public static MethodDeclaration getMethodDeclaration(TypeDeclaration type, IMethodAnnotation methodAnno) throws MethodDeclarationNotFoundException {
 		checkForNull(methodAnno, "method annotation");
 
 		return getMethodDeclaration(type, methodAnno.getMethodName(), methodAnno.getMethodSignature());
@@ -347,7 +347,7 @@ public class ASTUtil {
 		return method;
 	}
 
-	public static Statement getStatement(CompilationUnit compilationUnit, MethodDeclaration method, SourceLineAnnotation sourceLineAnno) throws StatementNotFoundException {
+	public static Statement getStatement(CompilationUnit compilationUnit, MethodDeclaration method, ISourceLineAnnotation sourceLineAnno) throws StatementNotFoundException {
 		checkForNull(sourceLineAnno, "source line annotation");
 
 		return getStatement(compilationUnit, method, sourceLineAnno.getStartLine(), sourceLineAnno.getEndLine());

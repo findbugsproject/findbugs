@@ -181,12 +181,12 @@ public class FuzzyBugComparator implements WarningComparator {
 				return cmp;
 			}
 
-			if (lhsAnnotation.getClass() == ClassAnnotation.class)
-				cmp = compareClasses(lhsCollection, rhsCollection, (ClassAnnotation) lhsAnnotation, (ClassAnnotation) rhsAnnotation);
-			else if (lhsAnnotation.getClass() == MethodAnnotation.class)
-				cmp = compareMethods(lhsCollection, rhsCollection, (MethodAnnotation) lhsAnnotation, (MethodAnnotation) rhsAnnotation);
-			else if (lhsAnnotation.getClass() == SourceLineAnnotation.class)
-				cmp = compareSourceLines(lhsCollection, rhsCollection, (SourceLineAnnotation) lhsAnnotation, (SourceLineAnnotation) rhsAnnotation);
+			if (lhsAnnotation instanceof IClassAnnotation)
+				cmp = compareClasses(lhsCollection, rhsCollection, (IClassAnnotation) lhsAnnotation, (IClassAnnotation) rhsAnnotation);
+			else if (lhsAnnotation instanceof IMethodAnnotation)
+				cmp = compareMethods(lhsCollection, rhsCollection, (IMethodAnnotation) lhsAnnotation, (IMethodAnnotation) rhsAnnotation);
+			else if (lhsAnnotation instanceof ISourceLineAnnotation)
+				cmp = compareSourceLines(lhsCollection, rhsCollection, (ISourceLineAnnotation) lhsAnnotation, (ISourceLineAnnotation) rhsAnnotation);
 			else
 				// everything else just compare directly
 				cmp = lhsAnnotation.compareTo(rhsAnnotation);
@@ -224,7 +224,7 @@ public class FuzzyBugComparator implements WarningComparator {
 			return 0;
 	}
 
-	public int compareClasses(BugCollection lhsCollection, BugCollection rhsCollection, ClassAnnotation lhsClass, ClassAnnotation rhsClass) {
+	public int compareClasses(BugCollection lhsCollection, BugCollection rhsCollection, IClassAnnotation lhsClass, IClassAnnotation rhsClass) {
 		if (lhsClass == null || rhsClass == null) {
 			return compareNullElements(lhsClass, rhsClass);
 		} else {
@@ -253,7 +253,7 @@ public class FuzzyBugComparator implements WarningComparator {
 	}
 
 	// Compare methods: either exact name and signature must match, or method hash must match
-	public int compareMethods(BugCollection lhsCollection, BugCollection rhsCollection, MethodAnnotation lhsMethod, MethodAnnotation rhsMethod) {
+	public int compareMethods(BugCollection lhsCollection, BugCollection rhsCollection, IMethodAnnotation lhsMethod, IMethodAnnotation rhsMethod) {
 		if (lhsMethod == null || rhsMethod == null) {
 			return compareNullElements(lhsMethod, rhsMethod);
 		}
@@ -279,7 +279,7 @@ public class FuzzyBugComparator implements WarningComparator {
 	 * @param rhs           another SourceLineAnnotation
 	 * @return comparison of lhs and rhs
 	 */
-	public int compareSourceLines(BugCollection lhsCollection, BugCollection rhsCollection, SourceLineAnnotation lhs, SourceLineAnnotation rhs) {
+	public int compareSourceLines(BugCollection lhsCollection, BugCollection rhsCollection, ISourceLineAnnotation lhs, ISourceLineAnnotation rhs) {
 		if (lhs == null || rhs == null) {
 			return compareNullElements(lhs, rhs);
 		}
@@ -299,11 +299,11 @@ public class FuzzyBugComparator implements WarningComparator {
 		significantDescriptionSet.add("CLASS_DEFAULT");
 		significantDescriptionSet.add("CLASS_EXCEPTION");
 		significantDescriptionSet.add("CLASS_REFTYPE");
-		significantDescriptionSet.add(ClassAnnotation.SUPERCLASS_ROLE);
-		significantDescriptionSet.add(ClassAnnotation.IMPLEMENTED_INTERFACE_ROLE);
-		significantDescriptionSet.add(ClassAnnotation.INTERFACE_ROLE);
+		significantDescriptionSet.add(IClassAnnotation.SUPERCLASS_ROLE);
+		significantDescriptionSet.add(IClassAnnotation.IMPLEMENTED_INTERFACE_ROLE);
+		significantDescriptionSet.add(IClassAnnotation.INTERFACE_ROLE);
 		significantDescriptionSet.add("METHOD_DEFAULT");
-		significantDescriptionSet.add(MethodAnnotation.METHOD_CALLED);
+		significantDescriptionSet.add(IMethodAnnotation.METHOD_CALLED);
 		significantDescriptionSet.add("METHOD_DANGEROUS_TARGET"); // but do NOT use safe targets
 		significantDescriptionSet.add("METHOD_DECLARED_NONNULL");
 		significantDescriptionSet.add("FIELD_DEFAULT");

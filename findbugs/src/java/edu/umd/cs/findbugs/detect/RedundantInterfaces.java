@@ -30,6 +30,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.visitclass.PreorderVisitor;
 
@@ -68,9 +69,10 @@ public class RedundantInterfaces extends PreorderVisitor implements Detector, St
 
 			if (redundantInfNames.size() > 0) {
 				BugInstance bug = new BugInstance( this, "RI_REDUNDANT_INTERFACES", LOW_PRIORITY )
-							.addClass(obj);
+					.add(AnnotationFactory.createClass(obj.getClassName()));
 				for (String redundantInfName : redundantInfNames)
-					bug.addClass(redundantInfName).describe("INTERFACE_TYPE");
+					bug.add(AnnotationFactory.createClass(redundantInfName))
+						.describe("INTERFACE_TYPE");
 
 				bugReporter.reportBug(bug);
 			}

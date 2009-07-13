@@ -36,17 +36,19 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.FieldAnnotation;
-import edu.umd.cs.findbugs.LocalVariableAnnotation;
+import edu.umd.cs.findbugs.IFieldAnnotation;
+import edu.umd.cs.findbugs.ILocalVariableAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.FieldSummary;
 import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XField;
 
 public class FindUninitializedGet extends BytecodeScanningDetector implements StatelessDetector {
-	Set<FieldAnnotation> initializedFields = new HashSet<FieldAnnotation>();
-	Set<FieldAnnotation> declaredFields = new HashSet<FieldAnnotation>();
-	Set<FieldAnnotation> containerFields = new HashSet<FieldAnnotation>();
+	Set<IFieldAnnotation> initializedFields = new HashSet<IFieldAnnotation>();
+	Set<IFieldAnnotation> declaredFields = new HashSet<IFieldAnnotation>();
+	Set<IFieldAnnotation> containerFields = new HashSet<IFieldAnnotation>();
 	Collection<BugInstance> pendingBugs = new LinkedList<BugInstance>();
 	BugInstance uninitializedFieldReadAndCheckedForNonnull;
 	boolean inConstructor;
@@ -70,7 +72,7 @@ public class FindUninitializedGet extends BytecodeScanningDetector implements St
 	@Override
 	public void visit(Field obj) {
 		super.visit(obj);
-		FieldAnnotation f = FieldAnnotation.fromVisitedField(this);
+		IFieldAnnotation f = AnnotationFactory.createField(this);
 		declaredFields.add(f);
 		
 
@@ -80,7 +82,7 @@ public class FindUninitializedGet extends BytecodeScanningDetector implements St
 			Map<String, Object> map, boolean runtimeVisible) {
 		if (!visitingField()) return;
 		if (UnreadFields.isInjectionAttribute(annotationClass)) {
-			containerFields.add(FieldAnnotation.fromVisitedField(this));
+			containerFields.add(AnnotationFactory.createField(this));
 		}
 	
 	}
@@ -132,12 +134,12 @@ public class FindUninitializedGet extends BytecodeScanningDetector implements St
 		}
 
 		if (seen == PUTFIELD && getClassConstantOperand().equals(getClassName()))
-			initializedFields.add(FieldAnnotation.fromReferencedField(this));
+			initializedFields.add(AnnotationFactory.createReferencedField(this));
 
 		else if (thisOnTOS && seen == GETFIELD && getClassConstantOperand().equals(getClassName())) {
 			UnreadFields unreadFields = AnalysisContext.currentAnalysisContext().getUnreadFields();
 			XField xField = XFactory.createReferencedXField(this);
-			FieldAnnotation f = FieldAnnotation.fromReferencedField(this);
+			IFieldAnnotation f = AnnotationFactory.createReferencedField(this);
 			int nextOpcode = 0xff & codeBytes[getPC() + 3];
 			if (nextOpcode != POP
 					&& !initializedFields.contains(f) 
@@ -145,9 +147,9 @@ public class FindUninitializedGet extends BytecodeScanningDetector implements St
 					&& !containerFields.contains(f)
 					&& !unreadFields.isContainerField(xField)) {
 				// System.out.println("Next opcode: " + OPCODE_NAMES[nextOpcode]);
-				LocalVariableAnnotation possibleTarget = LocalVariableAnnotation.findMatchingIgnoredParameter(getClassContext(), getMethod(), getNameConstantOperand(), xField.getSignature());
+				ILocalVariableAnnotation possibleTarget = DetectorUtil.findMatchingIgnoredParameter(getClassContext(), getMethod(), getNameConstantOperand(), xField.getSignature());
 				if (possibleTarget == null)
-					possibleTarget = LocalVariableAnnotation.findUniqueBestMatchingParameter(getClassContext(), getMethod(), 
+					possibleTarget = DetectorUtil.findUniqueBestMatchingParameter(getClassContext(), getMethod(), 
 							getNameConstantOperand(), getSigConstantOperand());
 				int priority = unreadFields.getReadFields().contains(xField)  ? NORMAL_PRIORITY : LOW_PRIORITY;
 				boolean priorityLoweredBecauseOfIfNonnullTest = false;
@@ -163,11 +165,12 @@ public class FindUninitializedGet extends BytecodeScanningDetector implements St
 						}
 					}
 			
-				BugInstance bug = new BugInstance(this, "UR_UNINIT_READ", priority)
-				.addClassAndMethod(this)
-				.addField(f)
-				.addOptionalAnnotation(possibleTarget)
-				.addSourceLine(this);
+				BugInstance bug = DetectorUtil.addClassAndMethod(new BugInstance(this, "UR_UNINIT_READ", priority), this)
+					.add(f);
+				if(possibleTarget != null){
+					bug.add(possibleTarget);
+				}
+				bug.add(AnnotationFactory.createSourceLine(this));
 				pendingBugs.add(bug);
 				if (priorityLoweredBecauseOfIfNonnullTest) {
 					uninitializedFieldReadAndCheckedForNonnull = bug;

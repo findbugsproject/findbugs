@@ -35,7 +35,6 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jdt.core.IClassFile;
 import org.eclipse.jdt.core.IField;
@@ -65,18 +64,18 @@ import de.tobject.findbugs.marker.FindBugsMarker;
 import de.tobject.findbugs.view.explorer.BugGroup;
 import edu.umd.cs.findbugs.BugCode;
 import edu.umd.cs.findbugs.BugCollection;
-import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugPattern;
-import edu.umd.cs.findbugs.ClassAnnotation;
-import edu.umd.cs.findbugs.FieldAnnotation;
 import edu.umd.cs.findbugs.I18N;
-import edu.umd.cs.findbugs.PackageMemberAnnotation;
+import edu.umd.cs.findbugs.BugInstance;
+import edu.umd.cs.findbugs.IClassAnnotation;
+import edu.umd.cs.findbugs.IFieldAnnotation;
+import edu.umd.cs.findbugs.IPackageMemberAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.SortedBugCollection;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.config.ProjectFilterSettings;
-import edu.umd.cs.findbugs.util.Archive;
 
 /**
 	* Utility methods for converting FindBugs BugInstance objects
@@ -181,7 +180,7 @@ public final class MarkerUtil {
 
 		int startLine = -1;
 		if (primaryLine <= 0) {
-			FieldAnnotation primaryField = bug.getPrimaryField();
+			IFieldAnnotation primaryField = bug.getPrimaryField();
 			if (primaryField != null && primaryField.getSourceLines() != null) {
 				startLine = primaryField.getSourceLines().getStartLine();
 			} else {
@@ -208,7 +207,7 @@ public final class MarkerUtil {
 	private static void reportNoResourceFound(BugInstance bug) {
 		String className = null;
 		String packageName = null;
-		ClassAnnotation primaryClass = bug.getPrimaryClass();
+		IClassAnnotation primaryClass = bug.getPrimaryClass();
 		if (primaryClass != null) {
 			className = primaryClass.getClassName();
 			packageName = primaryClass.getPackageName();
@@ -239,8 +238,8 @@ public final class MarkerUtil {
 	private static @CheckForNull
 	IJavaElement getJavaElement(BugInstance bug, IJavaProject project) throws JavaModelException {
 
-		SourceLineAnnotation primarySourceLineAnnotation = bug.getPrimarySourceLineAnnotation();
-		PackageMemberAnnotation packageAnnotation = null;
+		ISourceLineAnnotation primarySourceLineAnnotation = bug.getPrimarySourceLineAnnotation();
+		IPackageMemberAnnotation packageAnnotation = null;
 		String packageName = null;
 		String qualifiedClassName = null;
 		if (primarySourceLineAnnotation == null) {
@@ -314,13 +313,13 @@ public final class MarkerUtil {
 		return type;
 	}
 
-	private static boolean hasLineInfo(SourceLineAnnotation annotation) {
+	private static boolean hasLineInfo(ISourceLineAnnotation annotation) {
 		return annotation != null && annotation.getStartLine() > 0;
 	}
 
 	private static void completeFieldInfo(String qualifiedClassName, String innerName,
 			IType type, BugInstance bug)  throws JavaModelException  {
-		FieldAnnotation field = bug.getPrimaryField();
+		IFieldAnnotation field = bug.getPrimaryField();
 		if (field == null || type == null) {
 			return;
 		}
@@ -358,7 +357,7 @@ public final class MarkerUtil {
 		lineNbr = lineNbr <= 0 ? 1 : lineNbr;
 		String sourceFileStr = getSourceFileHint(type, qualifiedClassName);
 		if (sourceFileStr != null && sourceFileStr.length() > 0) {
-			bug.addSourceLine(new SourceLineAnnotation(qualifiedClassName, sourceFileStr,
+			bug.add(new SourceLineAnnotation(qualifiedClassName, sourceFileStr,
 					lineNbr, lineNbr, 0, 0));
 		}
 	}

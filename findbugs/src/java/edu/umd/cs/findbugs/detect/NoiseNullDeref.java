@@ -22,33 +22,22 @@ package edu.umd.cs.findbugs.detect;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
 import java.util.Set;
 import java.util.SortedSet;
-import java.util.TreeSet;
-
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.ConstantPool;
 import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.LineNumberTable;
 import org.apache.bcel.classfile.Method;
 import org.apache.bcel.generic.ATHROW;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.FieldInstruction;
-import org.apache.bcel.generic.IFNONNULL;
-import org.apache.bcel.generic.IFNULL;
 import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.InstructionTargeter;
 import org.apache.bcel.generic.InvokeInstruction;
 import org.apache.bcel.generic.MethodGen;
-import org.apache.bcel.generic.PUTFIELD;
 import org.apache.bcel.generic.ReturnInstruction;
 
 import edu.umd.cs.findbugs.BugAccumulator;
@@ -56,58 +45,41 @@ import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.FieldAnnotation;
 import edu.umd.cs.findbugs.FindBugsAnalysisFeatures;
+import edu.umd.cs.findbugs.IMethodAnnotation;
 import edu.umd.cs.findbugs.LocalVariableAnnotation;
-import edu.umd.cs.findbugs.MethodAnnotation;
 import edu.umd.cs.findbugs.Priorities;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.StringAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.UseAnnotationDatabase;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.BasicBlock;
-import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.DataflowAnalysisException;
-import edu.umd.cs.findbugs.ba.DataflowValueChooser;
-import edu.umd.cs.findbugs.ba.Edge;
-import edu.umd.cs.findbugs.ba.Hierarchy;
-import edu.umd.cs.findbugs.ba.INullnessAnnotationDatabase;
-import edu.umd.cs.findbugs.ba.JavaClassAndMethod;
 import edu.umd.cs.findbugs.ba.Location;
 import edu.umd.cs.findbugs.ba.MissingClassException;
-import edu.umd.cs.findbugs.ba.NullnessAnnotation;
 import edu.umd.cs.findbugs.ba.SignatureConverter;
-import edu.umd.cs.findbugs.ba.SignatureParser;
 import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XField;
 import edu.umd.cs.findbugs.ba.XMethod;
-import edu.umd.cs.findbugs.ba.XMethodParameter;
-import edu.umd.cs.findbugs.ba.interproc.PropertyDatabase;
 import edu.umd.cs.findbugs.ba.npe.IsNullValue;
-import edu.umd.cs.findbugs.ba.npe.IsNullValueDataflow;
-import edu.umd.cs.findbugs.ba.npe.IsNullValueFrame;
 import edu.umd.cs.findbugs.ba.npe.NullDerefAndRedundantComparisonCollector;
 import edu.umd.cs.findbugs.ba.npe.NullDerefAndRedundantComparisonFinder;
 import edu.umd.cs.findbugs.ba.npe.NullValueUnconditionalDeref;
-import edu.umd.cs.findbugs.ba.npe.ParameterNullnessProperty;
 import edu.umd.cs.findbugs.ba.npe.ParameterNullnessPropertyDatabase;
 import edu.umd.cs.findbugs.ba.npe.PointerUsageRequiringNonNullValue;
 import edu.umd.cs.findbugs.ba.npe.RedundantBranch;
 import edu.umd.cs.findbugs.ba.npe.ReturnPathType;
 import edu.umd.cs.findbugs.ba.npe.ReturnPathTypeDataflow;
 import edu.umd.cs.findbugs.ba.npe.UsagesRequiringNonNullValues;
-import edu.umd.cs.findbugs.ba.type.TypeDataflow;
-import edu.umd.cs.findbugs.ba.type.TypeFrame;
 import edu.umd.cs.findbugs.ba.vna.ValueNumber;
 import edu.umd.cs.findbugs.ba.vna.ValueNumberDataflow;
 import edu.umd.cs.findbugs.ba.vna.ValueNumberFrame;
 import edu.umd.cs.findbugs.ba.vna.ValueNumberSourceInfo;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
-import edu.umd.cs.findbugs.log.Profiler;
 import edu.umd.cs.findbugs.props.GeneralWarningProperty;
 import edu.umd.cs.findbugs.props.WarningProperty;
 import edu.umd.cs.findbugs.props.WarningPropertySet;
@@ -321,8 +293,8 @@ public class NoiseNullDeref implements Detector, UseAnnotationDatabase,
 		if (ins instanceof InvokeInstruction) {
 			InvokeInstruction iins = (InvokeInstruction) ins;
 			XMethod invokedMethod = XFactory.createXMethod((InvokeInstruction) ins, cpg);
-			cause = MethodAnnotation.fromXMethod(invokedMethod);
-			cause.setDescription(MethodAnnotation.METHOD_CALLED);
+			cause = AnnotationFactory.createMethod(invokedMethod);
+			cause.setDescription(IMethodAnnotation.METHOD_CALLED);
 			
 			if (iins.getMethodName(cpg).equals("close") 
 					&& iins.getSignature(cpg).equals("()V")) 
@@ -330,7 +302,7 @@ public class NoiseNullDeref implements Detector, UseAnnotationDatabase,
 		} else if (ins instanceof FieldInstruction) {
 			FieldInstruction fins = (FieldInstruction) ins;
 			XField referencedField = XFactory.createXField(fins, cpg);
-			cause = FieldAnnotation.fromXField(referencedField);
+			cause = AnnotationFactory.createField(referencedField);
 			
 		} else {
 			cause = new StringAnnotation(ins.getName());
@@ -353,15 +325,14 @@ public class NoiseNullDeref implements Detector, UseAnnotationDatabase,
 			BugAnnotation cause,
 			@CheckForNull BugAnnotation variable) {
 
-		BugInstance bugInstance = new BugInstance(this, type, priority)
-				.addClassAndMethod(classContext.getJavaClass(), method);
+		BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, type, priority), classContext.getJavaClass(), method);
 		bugInstance.add(cause);
 		if (variable != null)
 			bugInstance.add(variable);
 		else
 			bugInstance.add(new LocalVariableAnnotation("?", -1, -1));
-		bugInstance.addSourceLine(classContext, method, 
-				location).describe("SOURCE_LINE_DEREF");
+		bugInstance.add(AnnotationFactory.createSourceLine(classContext, method, 
+				location.getHandle())).describe("SOURCE_LINE_DEREF");
 
 		if (FindBugsAnalysisFeatures.isRelaxedMode()) {
 			WarningPropertyUtil.addPropertiesForDataMining(propertySet,

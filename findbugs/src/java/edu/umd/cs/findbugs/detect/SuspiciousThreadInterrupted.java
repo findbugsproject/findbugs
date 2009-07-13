@@ -29,6 +29,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 /**
  * looks for calls to Thread.interrupted from a non static context, especially when that context is
@@ -112,13 +113,11 @@ public class SuspiciousThreadInterrupted extends BytecodeScanningDetector implem
 					&& getNameConstantOperand().equals("interrupted")
 					&& getSigConstantOperand().equals("()Z")) {
 				if (state == SEEN_POP_AFTER_CURRENTTHREAD) {
-					bugReporter.reportBug(new BugInstance(this, "STI_INTERRUPTED_ON_CURRENTTHREAD", LOW_PRIORITY)
-					.addClassAndMethod(this)
-					.addSourceLine(this));
+					bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "STI_INTERRUPTED_ON_CURRENTTHREAD", LOW_PRIORITY), this)
+					.add(AnnotationFactory.createSourceLine(this)));
 				} else if (state == SEEN_UNKNOWNCONTEXT_POP) {
-					bugReporter.reportBug(new BugInstance(this, "STI_INTERRUPTED_ON_UNKNOWNTHREAD", NORMAL_PRIORITY)
-					.addClassAndMethod(this)
-					.addSourceLine(this));
+					bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "STI_INTERRUPTED_ON_UNKNOWNTHREAD", NORMAL_PRIORITY), this)
+					.add(AnnotationFactory.createSourceLine(this)));
 				}
 			}
 		state = SEEN_NOTHING;		        	

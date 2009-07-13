@@ -29,6 +29,7 @@ import org.apache.bcel.classfile.Method;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class BadlyOverriddenAdapter extends BytecodeScanningDetector  {
 	private BugReporter bugReporter;
@@ -84,9 +85,8 @@ public class BadlyOverriddenAdapter extends BytecodeScanningDetector  {
 			if (!methodName.equals("<init>") && signature != null) {
 				if (!signature.equals(obj.getSignature())) {
 					if (!badOverrideMap.keySet().contains(methodName)) {
-						badOverrideMap.put(methodName, new BugInstance(this, "BOA_BADLY_OVERRIDDEN_ADAPTER", NORMAL_PRIORITY)
-								.addClassAndMethod(this)
-								.addSourceLine(this));
+						badOverrideMap.put(methodName, DetectorUtil.addClassAndMethod(new BugInstance(this, "BOA_BADLY_OVERRIDDEN_ADAPTER", NORMAL_PRIORITY), this)
+								.add(AnnotationFactory.createSourceLine(this)));
 					}
 				}
 				else {

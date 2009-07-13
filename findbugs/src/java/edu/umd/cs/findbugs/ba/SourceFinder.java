@@ -44,8 +44,8 @@ import java.util.zip.ZipInputStream;
 
 import javax.annotation.WillClose;
 
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.Project;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.classfile.ReflectionDatabaseFactory;
 import edu.umd.cs.findbugs.io.IO;
@@ -388,11 +388,11 @@ public class SourceFinder {
 		SourceFile sourceFile = findSourceFile(packageName, fileName);
 		return sourceFile.getInputStream();
 	}
-	public InputStream openSource(SourceLineAnnotation source) throws IOException {
+	public InputStream openSource(ISourceLineAnnotation source) throws IOException {
 		SourceFile sourceFile = findSourceFile(source);
 		return sourceFile.getInputStream();
 	}
-	public SourceFile findSourceFile(SourceLineAnnotation source) throws IOException {
+	public SourceFile findSourceFile(ISourceLineAnnotation source) throws IOException {
 		if (source.isSourceFileKnown())
 			return findSourceFile(source.getPackageName(), source.getSourceFile());
 		String packageName = source.getPackageName();
@@ -452,7 +452,7 @@ public class SourceFinder {
 		throw new FileNotFoundException("Can't find source file " + fileName);
 	}
 	
-	public boolean hasSourceFile(SourceLineAnnotation source) {
+	public boolean hasSourceFile(ISourceLineAnnotation source) {
 		if (source.isSourceFileKnown())
 			return hasSourceFile(source.getPackageName(), source.getSourceFile());
 		String packageName = source.getPackageName();

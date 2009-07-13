@@ -24,6 +24,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.Priorities;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
@@ -34,7 +35,6 @@ import edu.umd.cs.findbugs.ba.Location;
 import edu.umd.cs.findbugs.ba.MethodUnprofitableException;
 import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.ba.XMethod;
-import edu.umd.cs.findbugs.ba.ch.Subtypes2;
 import edu.umd.cs.findbugs.ba.type.TypeDataflow;
 import edu.umd.cs.findbugs.ba.type.TypeFrame;
 
@@ -142,10 +142,9 @@ public class CallToUnsupportedMethod implements Detector  {
                     }
 				}
 			}
-			BugInstance bug = new BugInstance(this, "DMI_UNSUPPORTED_METHOD", priority)
-				.addClassAndMethod(classContext.getJavaClass(), method)
-				.addCalledMethod(constantPoolGen, inv)
-				.addSourceLine(classContext, method, location);
+			BugInstance bug = DetectorUtil.addClassAndMethod(new BugInstance(this, "DMI_UNSUPPORTED_METHOD", priority), classContext.getJavaClass(), method)
+				.add(AnnotationFactory.createCalledMethod(constantPoolGen, inv))
+				.add(AnnotationFactory.createSourceLine(classContext, method, location.getHandle()));
 			bugReporter.reportBug(bug);
 			
 		}

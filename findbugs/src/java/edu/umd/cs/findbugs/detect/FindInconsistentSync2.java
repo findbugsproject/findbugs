@@ -53,12 +53,12 @@ import edu.umd.cs.findbugs.CallGraphEdge;
 import edu.umd.cs.findbugs.CallGraphNode;
 import edu.umd.cs.findbugs.CallSite;
 import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.FindBugsAnalysisFeatures;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.IntAnnotation;
 import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.SelfCalls;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
@@ -164,11 +164,11 @@ public class FindInconsistentSync2 implements Detector {
 			this.methodDescriptor = methodDescriptor;
 			this.position = position;
 		}
-		SourceLineAnnotation asSourceLineAnnotation() {
-			return SourceLineAnnotation.fromVisitedInstruction(methodDescriptor, position);
+		ISourceLineAnnotation asSourceLineAnnotation() {
+			return AnnotationFactory.createSourceLine(methodDescriptor, position);
 		}
-		public static Collection<SourceLineAnnotation> asSourceLineAnnotation(Collection<FieldAccess> c) {
-			ArrayList<SourceLineAnnotation> result = new ArrayList<SourceLineAnnotation>(c.size());
+		public static Collection<ISourceLineAnnotation> asSourceLineAnnotation(Collection<FieldAccess> c) {
+			ArrayList<ISourceLineAnnotation> result = new ArrayList<ISourceLineAnnotation>(c.size());
 			for(FieldAccess f : c)
 				result.add(f.asSourceLineAnnotation());
 			return result;
@@ -259,12 +259,12 @@ public class FindInconsistentSync2 implements Detector {
 			(isLocked ? syncAccessList : unsyncAccessList).add(new FieldAccess(method, handle.getPosition()));
 		}
 		
-		public Iterator<SourceLineAnnotation> unsyncAccessIterator() {
+		public Iterator<ISourceLineAnnotation> unsyncAccessIterator() {
 			if (!interesting) throw new IllegalStateException("Not interesting");
 			return FieldAccess.asSourceLineAnnotation(unsyncAccessList).iterator();
 		}
 
-		public Iterator<SourceLineAnnotation> syncAccessIterator() {
+		public Iterator<ISourceLineAnnotation> syncAccessIterator() {
 			if (!interesting) throw new IllegalStateException("Not interesting");
 			return FieldAccess.asSourceLineAnnotation(syncAccessList).iterator();
 		}
@@ -466,26 +466,26 @@ public class FindInconsistentSync2 implements Detector {
 			BugInstance bugInstance;
 			if (stats.isServletField())
 				bugInstance = new BugInstance(this,  "MSF_MUTABLE_SERVLET_FIELD" , Priorities.NORMAL_PRIORITY)
-					.addClass(xfield.getClassName())
-					.addField(xfield);
+					.add(AnnotationFactory.createClass(xfield.getClassName()))
+					.add(AnnotationFactory.createField(xfield));
 			else bugInstance = new BugInstance(this, guardedByThis? "IS_FIELD_NOT_GUARDED" : "IS2_INCONSISTENT_SYNC", Priorities.NORMAL_PRIORITY)
-					.addClass(xfield.getClassName())
-					.addField(xfield)
+					.add(AnnotationFactory.createClass(xfield.getClassName()))
+					.add(AnnotationFactory.createField(xfield))
 					.addInt(printFreq).describe(IntAnnotation.INT_SYNC_PERCENT);
 
 			propertySet.decorateBugInstance(bugInstance);
 			// Add source lines for unsynchronized accesses
-			for (Iterator<SourceLineAnnotation> j = stats.unsyncAccessIterator(); j.hasNext();) {
-				SourceLineAnnotation accessSourceLine = j.next();
-				bugInstance.addSourceLine(accessSourceLine).describe("SOURCE_LINE_UNSYNC_ACCESS");
+			for (Iterator<ISourceLineAnnotation> j = stats.unsyncAccessIterator(); j.hasNext();) {
+				ISourceLineAnnotation accessSourceLine = j.next();
+				bugInstance.add(accessSourceLine).describe("SOURCE_LINE_UNSYNC_ACCESS");
 			}
 
 			if (SYNC_ACCESS) {
 				// Add source line for synchronized accesses;
 				// useful for figuring out what the detector is doing
-				for (Iterator<SourceLineAnnotation> j = stats.syncAccessIterator(); j.hasNext();) {
-					SourceLineAnnotation accessSourceLine = j.next();
-					bugInstance.addSourceLine(accessSourceLine).describe("SOURCE_LINE_SYNC_ACCESS");
+				for (Iterator<ISourceLineAnnotation> j = stats.syncAccessIterator(); j.hasNext();) {
+					ISourceLineAnnotation accessSourceLine = j.next();
+					bugInstance.add(accessSourceLine).describe("SOURCE_LINE_SYNC_ACCESS");
 				}
 			}
 

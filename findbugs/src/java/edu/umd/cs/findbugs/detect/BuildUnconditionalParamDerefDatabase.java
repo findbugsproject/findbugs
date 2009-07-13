@@ -32,13 +32,12 @@ import org.apache.bcel.generic.Type;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.FindBugsAnalysisFeatures;
-import edu.umd.cs.findbugs.LocalVariableAnnotation;
 import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.ClassContext;
-import edu.umd.cs.findbugs.ba.SignatureParser;
 import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XMethod;
 import edu.umd.cs.findbugs.ba.deref.UnconditionalValueDerefDataflow;
@@ -52,6 +51,7 @@ import edu.umd.cs.findbugs.ba.vna.ValueNumberDataflow;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.DescriptorFactory;
+import edu.umd.cs.findbugs.signature.SignatureParser;
 
 /**
  * Build database of unconditionally dereferenced parameters.
@@ -132,9 +132,8 @@ public abstract class BuildUnconditionalParamDerefDatabase implements Detector {
 						if (xmethod.isStatic() || xmethod.isFinal() || xmethod.isPrivate() || xmethod.getName().equals("<init>") || jclass.isFinal())
 							priority--;
 						reportBug(
-								new BugInstance(this, "NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE", priority)
-									.addClassAndMethod(jclass, method)
-									.add(LocalVariableAnnotation.getParameterLocalVariableAnnotation(method, paramLocal)));
+								DetectorUtil.addClassAndMethod(new BugInstance(this, "NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE", priority), jclass, method)
+									.add(AnnotationFactory.createParameter(method, paramLocal)));
 					}
 				}
 				i++;

@@ -21,10 +21,10 @@ package edu.umd.cs.findbugs.classfile.engine.bcel;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import edu.umd.cs.findbugs.ba.SignatureParser;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.IAnalysisCache;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
+import edu.umd.cs.findbugs.signature.SignatureParser;
 
 /**
  * Analysis engine to produce parameter signature lists for

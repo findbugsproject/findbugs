@@ -24,6 +24,7 @@ package edu.umd.cs.findbugs.detect;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class FindEmptySynchronizedBlock 
 	extends BytecodeScanningDetector  {
@@ -40,9 +41,8 @@ public class FindEmptySynchronizedBlock
 	@Override
 		 public void sawOpcode(int seen) {
 		if (seen == MONITOREXIT && (getPrevOpcode(2) == MONITORENTER || getPrevOpcode(1) == MONITORENTER) )
-		  bugReporter.reportBug(new BugInstance(this, "ESync_EMPTY_SYNC", NORMAL_PRIORITY)
-								.addClassAndMethod(this)
-								.addSourceLine(this));
+		  bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "ESync_EMPTY_SYNC", NORMAL_PRIORITY), this)
+								.add(AnnotationFactory.createSourceLine(this)));
 
 		}
 	}

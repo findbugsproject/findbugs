@@ -18,8 +18,9 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
 import edu.umd.cs.findbugs.ba.ClassContext;
@@ -152,10 +153,8 @@ public class LoadOfKnownNullValue implements Detector {
 			if (v.isDefinitelyNull()) {
 				Instruction next = handle.getNext().getInstruction();
 				InstructionHandle prevHandle = handle.getPrev();
-				SourceLineAnnotation sourceLineAnnotation = SourceLineAnnotation
-				.fromVisitedInstruction(classContext, methodGen, sourceFile, handle);
-				SourceLineAnnotation prevSourceLineAnnotation = SourceLineAnnotation
-				.fromVisitedInstruction(classContext, methodGen, sourceFile, prevHandle);
+				ISourceLineAnnotation sourceLineAnnotation = AnnotationFactory.createSourceLine(methodGen, sourceFile, handle);
+				ISourceLineAnnotation prevSourceLineAnnotation = AnnotationFactory.createSourceLine(methodGen, sourceFile, prevHandle);
 
 				if (next instanceof ARETURN) {
 					// probably stored for duration of finally block
@@ -187,10 +186,9 @@ public class LoadOfKnownNullValue implements Detector {
 				// System.out.println("lineMentionedMultipleTimes: " + lineMentionedMultipleTimes);
 				// System.out.println("linesWithLoadsOfNonNullValues: " + linesWithLoadsOfNotDefinitelyNullValues);
 
-				bugAccumulator.accumulateBug(new BugInstance(this,
+				bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this,
 						"NP_LOAD_OF_KNOWN_NULL_VALUE",
-						priority)
-						.addClassAndMethod(methodGen, sourceFile),
+						priority), methodGen, sourceFile),
 						sourceLineAnnotation);
 			}
 

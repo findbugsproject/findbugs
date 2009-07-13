@@ -28,6 +28,7 @@ import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.OpcodeStack;
 import edu.umd.cs.findbugs.StatelessDetector;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XMethod;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
@@ -100,8 +101,9 @@ public class InfiniteRecursiveLoop extends OpcodeStackDetector implements
 			OpcodeStack.Item it1 = stack.getStackItem(1);
 			int r1 = it1.getRegisterNumber();
 			if (r0 == r1 && r0 > 0)
-				bugReporter.reportBug(new BugInstance(this, "IL_CONTAINER_ADDED_TO_ITSELF",
-						NORMAL_PRIORITY).addClassAndMethod(this).addSourceLine(this));
+				bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "IL_CONTAINER_ADDED_TO_ITSELF",
+						NORMAL_PRIORITY), this)
+						.add(AnnotationFactory.createSourceLine(this)));
 		}
 
 		if ((seen == INVOKEVIRTUAL || seen == INVOKESPECIAL || seen == INVOKEINTERFACE || seen == INVOKESTATIC)
@@ -172,8 +174,9 @@ public class InfiniteRecursiveLoop extends OpcodeStackDetector implements
 					int priority = HIGH_PRIORITY;
 					if (!match1 && !match2 && seenThrow) priority = NORMAL_PRIORITY;
 					if (seen == INVOKEINTERFACE) priority = NORMAL_PRIORITY;
-					bugReporter.reportBug(new BugInstance(this, "IL_INFINITE_RECURSIVE_LOOP",
-							HIGH_PRIORITY).addClassAndMethod(this).addSourceLine(this));
+					bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "IL_INFINITE_RECURSIVE_LOOP",
+							HIGH_PRIORITY), this)
+							.add(AnnotationFactory.createSourceLine(this)));
 				}
 			}
 		}

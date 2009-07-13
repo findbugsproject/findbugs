@@ -38,8 +38,8 @@ import org.apache.bcel.generic.InvokeInstruction;
 import org.apache.bcel.generic.MethodGen;
 import org.objectweb.asm.Opcodes;
 
-import edu.umd.cs.findbugs.FieldAnnotation;
-import edu.umd.cs.findbugs.MethodAnnotation;
+import edu.umd.cs.findbugs.IFieldAnnotation;
+import edu.umd.cs.findbugs.IMethodAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
@@ -340,7 +340,7 @@ public class XFactory {
 		return new UnresolvedXMethod(originalDescriptor);
 	}
 
-	public static XMethod createXMethod(MethodAnnotation ma) {
+	public static XMethod createXMethod(IMethodAnnotation ma) {
 		return createXMethod(ma.getClassName(), ma.getMethodName(), ma.getMethodSignature(), ma.isStatic());
 	}
 
@@ -401,7 +401,7 @@ public class XFactory {
 		        .getSigConstantOperand(), visitor.getOpcode() == Constants.INVOKESTATIC);
 	}
 
-	public static XField createXField(FieldAnnotation f) {
+	public static XField createXField(IFieldAnnotation f) {
 		return createXField(f.getClassName(), f.getFieldName(), f.getFieldSignature(), f.isStatic());
 	}
 
@@ -611,5 +611,14 @@ public class XFactory {
 
 		return (lhs.isStatic() ? 1 : 0) - (rhs.isStatic() ? 1 : 0);
 	}
+	
+	/**
+	 * Convert to an XMethod.
+	 * 
+	 * @return an XMethod specifying the same method as given MethodAnnotation
+	 */
+    public static XMethod toXMethod(IMethodAnnotation ma) {
+	    return createXMethod(ma.getClassName(), ma.getMethodName(), ma.getMethodSignature(), ma.isStatic());
+    }
 
 }

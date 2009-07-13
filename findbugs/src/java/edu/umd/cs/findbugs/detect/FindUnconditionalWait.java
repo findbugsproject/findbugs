@@ -26,6 +26,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 //   2:   astore_1
 //   3:   monitorenter
@@ -64,10 +65,9 @@ public class FindUnconditionalWait extends BytecodeScanningDetector implements S
 			break;
 		case 1:
 			if (seen == INVOKEVIRTUAL && getNameConstantOperand().equals("wait")) {
-				bugReporter.reportBug(new BugInstance(this, "UW_UNCOND_WAIT",
-						getSigConstantOperand().equals("()V") ? NORMAL_PRIORITY : LOW_PRIORITY)
-						.addClassAndMethod(this)
-						.addSourceLine(this));
+				bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "UW_UNCOND_WAIT",
+						getSigConstantOperand().equals("()V") ? NORMAL_PRIORITY : LOW_PRIORITY), this)
+						.add(AnnotationFactory.createSourceLine(this)));
 				stage = 2;
 			}
 			break;

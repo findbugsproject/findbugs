@@ -21,7 +21,7 @@ public class PackageWarningSuppressor extends WarningSuppressor {
 		if (!super.match(bugInstance)) return false;
 
 
-	 ClassAnnotation primaryClassAnnotation = bugInstance.getPrimaryClass();
+	 IClassAnnotation primaryClassAnnotation = bugInstance.getPrimaryClass();
 	 if (DEBUG) System.out.println("Compare " + primaryClassAnnotation + " with " + packageName);
 
 	String className = primaryClassAnnotation.getClassName();

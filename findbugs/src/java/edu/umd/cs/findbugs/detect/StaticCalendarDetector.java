@@ -36,6 +36,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.OpcodeStack;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
@@ -159,9 +160,11 @@ public class StaticCalendarDetector extends OpcodeStackDetector {
 			}
 		if (getClassContext().getXClass().usesConcurrency())
 				priority--;
-		if (tBugType != null) {
-				
-				pendingBugs.put(getXField(), new BugInstance(this, tBugType, priority).addClass(currentClass).addField(this));
+		if (tBugType != null) {				
+				pendingBugs.put(getXField(), 
+						new BugInstance(this, tBugType, priority)
+							.add(AnnotationFactory.createClass(currentClass))
+							.add(AnnotationFactory.createField(this)));
 			}
 		} catch (ClassNotFoundException e) {
 			AnalysisContext.reportMissingClass(e);
@@ -288,8 +291,10 @@ public class StaticCalendarDetector extends OpcodeStackDetector {
 					|| invokedName.equals("applyPattern"))
 				  priority--;
 			}
-			bugAccumulator.accumulateBug(new BugInstance(this, tBugType, priority).addClassAndMethod(this).addCalledMethod(this)
-					.addOptionalField(field), this);
+			BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, tBugType, priority), this)
+					.add(AnnotationFactory.createCalledMethod(this));
+			bugInstance.add(AnnotationFactory.createField(field));
+			bugAccumulator.accumulateBug(bugInstance, AnnotationFactory.createSourceLine(this));
 
 		} catch (ClassNotFoundException e) {
 			AnalysisContext.reportMissingClass(e);

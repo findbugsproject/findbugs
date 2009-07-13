@@ -104,20 +104,20 @@ import javax.swing.tree.TreePath;
 import javax.swing.tree.TreeSelectionModel;
 
 import edu.umd.cs.findbugs.BugAnnotation;
-import edu.umd.cs.findbugs.BugAnnotationWithSourceLines;
 import edu.umd.cs.findbugs.BugCollection;
-import edu.umd.cs.findbugs.BugInstance;
-import edu.umd.cs.findbugs.ClassAnnotation;
-import edu.umd.cs.findbugs.FieldAnnotation;
 import edu.umd.cs.findbugs.FindBugs;
 import edu.umd.cs.findbugs.FindBugsDisplayFeatures;
 import edu.umd.cs.findbugs.I18N;
+import edu.umd.cs.findbugs.IBugAnnotationWithSourceLines;
+import edu.umd.cs.findbugs.BugInstance;
+import edu.umd.cs.findbugs.IClassAnnotation;
+import edu.umd.cs.findbugs.IFieldAnnotation;
 import edu.umd.cs.findbugs.IGuiCallback;
-import edu.umd.cs.findbugs.MethodAnnotation;
+import edu.umd.cs.findbugs.IMethodAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.Project;
 import edu.umd.cs.findbugs.ProjectPackagePrefixes;
 import edu.umd.cs.findbugs.SortedBugCollection;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.UserDesignation;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
@@ -1987,9 +1987,9 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback {
 		 * the same class.
 		 */
 		if(bug.getPrimaryClass() != null){
-			FieldAnnotation primeField = bug.getPrimaryField();
-			MethodAnnotation primeMethod = bug.getPrimaryMethod();
-			ClassAnnotation primeClass = bug.getPrimaryClass();
+			IFieldAnnotation primeField = bug.getPrimaryField();
+			IMethodAnnotation primeMethod = bug.getPrimaryMethod();
+			IClassAnnotation primeClass = bug.getPrimaryClass();
 			String fieldClass = "";
 			String methodClass = "";
 			if(primeField != null) {
@@ -2112,14 +2112,14 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback {
 		label.setFont(label.getFont().deriveFont(Driver.getFontSize()));
 		label.setFont(label.getFont().deriveFont(Font.PLAIN));
 		label.setForeground(Color.BLACK);
-		ClassAnnotation primaryClass = bug.getPrimaryClass();
+		IClassAnnotation primaryClass = bug.getPrimaryClass();
 
 		String sourceCodeLabel = L10N.getLocalString("summary.source_code", "source code.");
 		String summaryLine = L10N.getLocalString("summary.line", "Line");
 		String summaryLines = L10N.getLocalString("summary.lines", "Lines");
 		String clickToGoToText = L10N.getLocalString("tooltip.click_to_go_to", "Click to go to");
-		if (value instanceof SourceLineAnnotation) {
-			final SourceLineAnnotation note = (SourceLineAnnotation) value;
+		if (value instanceof ISourceLineAnnotation) {
+			final ISourceLineAnnotation note = (ISourceLineAnnotation) value;
 			if (sourceCodeExist(note)) {
 				String srcStr = "";
 				int start = note.getStartLine();
@@ -2138,9 +2138,9 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback {
 			}
 
 			label.setText(note.toString());
-		} else if (value instanceof BugAnnotationWithSourceLines) {
-			BugAnnotationWithSourceLines note = (BugAnnotationWithSourceLines) value;
-			final SourceLineAnnotation noteSrc = note.getSourceLines();
+		} else if (value instanceof IBugAnnotationWithSourceLines) {
+			IBugAnnotationWithSourceLines note = (IBugAnnotationWithSourceLines) value;
+			final ISourceLineAnnotation noteSrc = note.getSourceLines();
 			String srcStr = "";
 			if (noteSrc != null && sourceCodeExist(noteSrc)) {
 				int start = noteSrc.getStartLine();
@@ -2311,9 +2311,9 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback {
 	private class BugSummaryMouseListener extends MouseAdapter{
 		private final BugInstance bugInstance;
 		private final JLabel label;
-		private final SourceLineAnnotation note;
+		private final ISourceLineAnnotation note;
 
-		BugSummaryMouseListener(@NonNull BugInstance bugInstance, @NonNull JLabel label,  @NonNull SourceLineAnnotation note){
+		BugSummaryMouseListener(@NonNull BugInstance bugInstance, @NonNull JLabel label,  @NonNull ISourceLineAnnotation note){
 			this.bugInstance = bugInstance;
 			this.label = label;
 			this.note = note;
@@ -2340,7 +2340,7 @@ public class MainFrame extends FBFrame implements LogSync, IGuiCallback {
 	 * @param note
 	 * @return
 	 */
-	private boolean sourceCodeExist(@Nonnull SourceLineAnnotation note){
+	private boolean sourceCodeExist(@Nonnull ISourceLineAnnotation note){
 		try{
 			getProject().getSourceFinder().findSourceFile(note);
 		}catch(FileNotFoundException e){

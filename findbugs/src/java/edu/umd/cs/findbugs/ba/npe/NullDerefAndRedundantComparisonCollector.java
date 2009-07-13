@@ -38,16 +38,6 @@ import edu.umd.cs.findbugs.ba.vna.ValueNumberFrame;
  * @author David Hovemeyer
  */
 public interface NullDerefAndRedundantComparisonCollector {
-	/**
-     * Subclasses should override this method to capture locations where
-     * a null pointer is dereferenced.
-     * @param location    the Location of the null dereference
-     * @param valueNumber the ValueNumber of the possibly-null value
-     * @param refValue    the kind of possibly-null value dereferenced
-     * @param vnaFrame 	  The ValueNumber Frame at the point where the dereference occurred
-     * @deprecated Use {@link #foundNullDeref(Location,ValueNumber,IsNullValue,ValueNumberFrame,boolean)} instead
-     */
-    public void foundNullDeref(Location location, ValueNumber valueNumber, IsNullValue refValue, ValueNumberFrame vnaFrame);
 
 	/**
 	 * Subclasses should override this method to capture locations where

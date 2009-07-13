@@ -31,6 +31,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.OpcodeStack;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 
 /** Use FindBadCast2 instead */
@@ -119,16 +120,15 @@ public @java.lang.Deprecated class FindBadCast extends OpcodeStackDetector imple
 											|| signatureClass.isFinal() || toClass
 											.isFinal()))
 								bugReporter
-										.reportBug(new BugInstance(
+										.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(
 												this,
 												seen == CHECKCAST ? "BC_IMPOSSIBLE_CAST"
 														: "BC_IMPOSSIBLE_INSTANCEOF",
 												seen == CHECKCAST ? HIGH_PRIORITY
-														: NORMAL_PRIORITY)
-												.addClassAndMethod(this)
-												.addSourceLine(this).addClass(
-														signatureDot).addClass(
-														toDot));
+														: NORMAL_PRIORITY), this)
+												.add(AnnotationFactory.createSourceLine(this))
+												.add(AnnotationFactory.createClass(signatureDot))
+												.add(AnnotationFactory.createClass(toDot)));
 							else if (seen == CHECKCAST) {
 								int priority = NORMAL_PRIORITY;
 								if (DEBUG) {
@@ -203,10 +203,10 @@ public @java.lang.Deprecated class FindBadCast extends OpcodeStackDetector imple
 													.equals("java/util/Collection") || signature
 													.equals("java/lang/Iterable")))
 										bug = "BC_BAD_CAST_TO_ABSTRACT_COLLECTION";
-									bugReporter.reportBug(new BugInstance(this,
-											bug, priority).addClassAndMethod(
-											this).addSourceLine(this).addClass(
-											signatureDot).addClass(toDot));
+									bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this,	bug, priority), this)
+										.add(AnnotationFactory.createSourceLine(this))
+										.add(AnnotationFactory.createClass(signatureDot))
+										.add(AnnotationFactory.createClass(toDot)));
 								}
 							}
 

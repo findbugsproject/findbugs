@@ -34,6 +34,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 /**
  * Find occurrences of Math using constants, where the result of the
@@ -136,9 +137,8 @@ public class UnnecessaryMath extends BytecodeScanningDetector implements Statele
 					if (((constValue == 0.0) && zeroMethods.contains(methodName))
 					||  ((constValue == 1.0) && oneMethods.contains(methodName))
 					||   (anyMethods.contains(methodName))) {
-						bugReporter.reportBug(new BugInstance(this, "UM_UNNECESSARY_MATH", LOW_PRIORITY)
-												.addClassAndMethod(this)
-												.addSourceLine(this));				
+						bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "UM_UNNECESSARY_MATH", LOW_PRIORITY), this)
+												.add(AnnotationFactory.createSourceLine(this)));				
 					}
 				}
 			}

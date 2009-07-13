@@ -30,8 +30,9 @@ import org.apache.bcel.classfile.Method;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
-import edu.umd.cs.findbugs.ClassAnnotation;
-import edu.umd.cs.findbugs.MethodAnnotation;
+import edu.umd.cs.findbugs.IClassAnnotation;
+import edu.umd.cs.findbugs.IMethodAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.ba.XFactory;
@@ -153,7 +154,7 @@ public class UncallableMethodOfAnonymousClass extends BytecodeScanningDetector {
 			super.doVisitMethod(obj);
 			if (pendingBug != null) {
 				if (potentialSuperCall == null) {
-					String role = ClassAnnotation.SUPERCLASS_ROLE;
+					String role = IClassAnnotation.SUPERCLASS_ROLE;
 
 					String superclassName = ClassName.toDottedClassName(getSuperclassName());
 					if (superclassName.equals("java.lang.Object")) {
@@ -162,16 +163,17 @@ public class UncallableMethodOfAnonymousClass extends BytecodeScanningDetector {
                         	JavaClass interfaces[] = getThisClass().getInterfaces();
 	                        if (interfaces.length == 1) {
 								superclassName = interfaces[0].getClassName();
-								role = ClassAnnotation.IMPLEMENTED_INTERFACE_ROLE;
+								role = IClassAnnotation.IMPLEMENTED_INTERFACE_ROLE;
 							}
                         } catch (ClassNotFoundException e) {
 	                        AnalysisContext.reportMissingClass(e);
                         }
 					}
-					pendingBug.addClass(superclassName).describe(role);
+					pendingBug.add(AnnotationFactory.createClass(superclassName)).describe(role);
                 } else  {
 					pendingBug.setPriority(pendingBug.getPriority()-1);
-					pendingBug.addMethod(potentialSuperCall).describe(MethodAnnotation.METHOD_DID_YOU_MEAN_TO_OVERRIDE);
+					pendingBug.add(AnnotationFactory.createMethod(potentialSuperCall))
+						.describe(IMethodAnnotation.METHOD_DID_YOU_MEAN_TO_OVERRIDE);
 				}
 				bugReporter.reportBug(pendingBug);
 				pendingBug = null;
@@ -219,8 +221,8 @@ public class UncallableMethodOfAnonymousClass extends BytecodeScanningDetector {
 				if (code != null && code.getLength() == 1) 
 					priority++; // TODO: why didn't FindBugs give a warning here before the null check was added?
 				
-				pendingBug = new BugInstance(this, "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS",
-						priority).addClassAndMethod(this);
+				pendingBug = DetectorUtil.addClassAndMethod(new BugInstance(this, "UMAC_UNCALLABLE_METHOD_OF_ANONYMOUS_CLASS",
+						priority), this);
 				potentialSuperCall = null;
 			}
 

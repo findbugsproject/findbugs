@@ -169,65 +169,65 @@ public class VersionInsensitiveBugComparator implements WarningComparator {
 			if (lhsAnnotation.getClass() != rhsAnnotation.getClass())
 				return lhsAnnotation.getClass().getName().compareTo(rhsAnnotation.getClass().getName());
 
-			if (lhsAnnotation.getClass() == ClassAnnotation.class) {
+			if (lhsAnnotation instanceof IClassAnnotation) {
 				// ClassAnnotations should have their class names rewritten to
 				// handle moved and renamed classes.
 
 				String lhsClassName = classNameRewriter.rewriteClassName(
-						((ClassAnnotation)lhsAnnotation).getClassName());
+						((IClassAnnotation)lhsAnnotation).getClassName());
 				String rhsClassName = classNameRewriter.rewriteClassName(
-						((ClassAnnotation)rhsAnnotation).getClassName());
+						((IClassAnnotation)rhsAnnotation).getClassName());
 
 				cmp = lhsClassName.compareTo(rhsClassName);
 				if (cmp != 0)
 					return cmp;
-			} else if(lhsAnnotation.getClass() == MethodAnnotation.class ) {
+			} else if(lhsAnnotation instanceof IMethodAnnotation ) {
 				// Rewrite class names in MethodAnnotations
-				MethodAnnotation lhsMethod = ClassNameRewriterUtil.convertMethodAnnotation(
-						classNameRewriter, (MethodAnnotation) lhsAnnotation);
-				MethodAnnotation rhsMethod = ClassNameRewriterUtil.convertMethodAnnotation(
-						classNameRewriter, (MethodAnnotation) rhsAnnotation);
+				IMethodAnnotation lhsMethod = ClassNameRewriterUtil.convertMethodAnnotation(
+						classNameRewriter, (IMethodAnnotation) lhsAnnotation);
+				IMethodAnnotation rhsMethod = ClassNameRewriterUtil.convertMethodAnnotation(
+						classNameRewriter, (IMethodAnnotation) rhsAnnotation);
 
 				cmp = lhsMethod.compareTo(rhsMethod);
 				if (cmp != 0)
 					return cmp;
 
-			} else if(lhsAnnotation.getClass() == FieldAnnotation.class) {
+			} else if(lhsAnnotation instanceof IFieldAnnotation) {
 				// Rewrite class names in FieldAnnotations
-				FieldAnnotation lhsField = ClassNameRewriterUtil.convertFieldAnnotation(
-						classNameRewriter, (FieldAnnotation) lhsAnnotation);
-				FieldAnnotation rhsField = ClassNameRewriterUtil.convertFieldAnnotation(
-						classNameRewriter, (FieldAnnotation) rhsAnnotation);
+				IFieldAnnotation lhsField = ClassNameRewriterUtil.convertFieldAnnotation(
+						classNameRewriter, (IFieldAnnotation) lhsAnnotation);
+				IFieldAnnotation rhsField = ClassNameRewriterUtil.convertFieldAnnotation(
+						classNameRewriter, (IFieldAnnotation) rhsAnnotation);
 
 				cmp = lhsField.compareTo(rhsField);
 				if (cmp != 0)
 					return cmp;
-			} else if(lhsAnnotation.getClass() == StringAnnotation.class) {
+			} else if(lhsAnnotation instanceof StringAnnotation) {
 				// Rewrite class names in FieldAnnotations
 				String lhsString = ((StringAnnotation)lhsAnnotation).getValue();
 				String rhsString = ((StringAnnotation)rhsAnnotation).getValue();
 				cmp = lhsString.compareTo(rhsString);
 				if (cmp != 0)
 					return cmp;
-			} else if(lhsAnnotation.getClass() == LocalVariableAnnotation.class) {
+			} else if(lhsAnnotation instanceof ILocalVariableAnnotation) {
 				// Rewrite class names in FieldAnnotations
-				String lhsName = ((LocalVariableAnnotation)lhsAnnotation).getName();
-				String rhsName = ((LocalVariableAnnotation)rhsAnnotation).getName();
+				String lhsName = ((ILocalVariableAnnotation)lhsAnnotation).getName();
+				String rhsName = ((ILocalVariableAnnotation)rhsAnnotation).getName();
 				if (lhsName.equals("?") && rhsName.equals("?"))
 					continue;
 				cmp = lhsName.compareTo(rhsName);
 				if (cmp != 0)
 					return cmp;
-			} else if(lhsAnnotation.getClass() == TypeAnnotation.class) {
+			} else if(lhsAnnotation instanceof ITypeAnnotation) {
 				// Rewrite class names in FieldAnnotations
-				String lhsType = ((TypeAnnotation)lhsAnnotation).getTypeDescriptor();
-				String rhsType = ((TypeAnnotation)rhsAnnotation).getTypeDescriptor();
+				String lhsType = ((ITypeAnnotation)lhsAnnotation).getTypeDescriptor();
+				String rhsType = ((ITypeAnnotation)rhsAnnotation).getTypeDescriptor();
 				lhsType = ClassNameRewriterUtil.rewriteSignature(classNameRewriter, lhsType);
 				rhsType = ClassNameRewriterUtil.rewriteSignature(classNameRewriter, rhsType);
 				cmp = lhsType.compareTo(rhsType);
 				if (cmp != 0)
 					return cmp;
-			} else if(lhsAnnotation.getClass() == IntAnnotation.class) {
+			} else if(lhsAnnotation instanceof IntAnnotation) {
 				// Rewrite class names in FieldAnnotations
 				int lhsValue = ((IntAnnotation)lhsAnnotation).getValue();
 				int rhsValue = ((IntAnnotation)rhsAnnotation).getValue();

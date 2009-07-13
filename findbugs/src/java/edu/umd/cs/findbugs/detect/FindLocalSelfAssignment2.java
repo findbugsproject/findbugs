@@ -27,8 +27,8 @@ import org.apache.bcel.classfile.Code;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
-import edu.umd.cs.findbugs.LocalVariableAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class FindLocalSelfAssignment2 extends BytecodeScanningDetector implements StatelessDetector {
 
@@ -71,12 +71,10 @@ public class FindLocalSelfAssignment2 extends BytecodeScanningDetector implement
 					if (methodName.equals("<init>") || methodName.startsWith("set") && getCode().getCode().length <= 5 ||
 							!previousStores.get(getRegisterOperand())) priority = HIGH_PRIORITY;
 					   bugReporter.reportBug(
-					new BugInstance(this, 
-							"SA_LOCAL_SELF_ASSIGNMENT", priority)
-											.addClassAndMethod(this)
-											.add(LocalVariableAnnotation.getLocalVariableAnnotation(getMethod(), getRegisterOperand(), getPC(), getPC()))
-
-											.addSourceLine(this));
+					DetectorUtil.addClassAndMethod(new BugInstance(this, 
+							"SA_LOCAL_SELF_ASSIGNMENT", priority), this)
+											.add(AnnotationFactory.createVariable(getMethod(), getRegisterOperand(), getPC(), getPC()))
+											.add(AnnotationFactory.createSourceLine(this)));
 					}
 					previousStores.set(getRegisterOperand());
 				}

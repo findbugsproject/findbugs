@@ -30,6 +30,7 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class FinalizerNullsFields extends BytecodeScanningDetector {
 
@@ -71,8 +72,8 @@ public class FinalizerNullsFields extends BytecodeScanningDetector {
 			super.visit(obj);
 			bugAccumulator.reportAccumulatedBugs();
 			if (!sawAnythingElse && sawFieldNulling) {
-				BugInstance bug = new BugInstance(this, "FI_FINALIZER_ONLY_NULLS_FIELDS", HIGH_PRIORITY)
-				.addClassAndMethod(this);
+				BugInstance bug = DetectorUtil.addClassAndMethod(
+						new BugInstance(this, "FI_FINALIZER_ONLY_NULLS_FIELDS", HIGH_PRIORITY), this);
 				bugReporter.reportBug(bug);
 			}
 		}
@@ -80,13 +81,14 @@ public class FinalizerNullsFields extends BytecodeScanningDetector {
 
 	@Override
 	public void sawOpcode(int seen) {
-		if (state==0 && seen==ALOAD_0)
-			state++;
-		else if (state==1 && seen==ACONST_NULL)
-			state++;
-		else if (state==2 && seen==PUTFIELD) {
-			bugAccumulator.accumulateBug(new BugInstance(this, "FI_FINALIZER_NULLS_FIELDS", NORMAL_PRIORITY)
-			.addClassAndMethod(this).addReferencedField(this), this);
+		if (state==0 && seen==ALOAD_0) {
+	        state++;
+        } else if (state==1 && seen==ACONST_NULL) {
+	        state++;
+        } else if (state==2 && seen==PUTFIELD) {
+			bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+					new BugInstance(this, "FI_FINALIZER_NULLS_FIELDS", NORMAL_PRIORITY), this)
+					.add(AnnotationFactory.createReferencedField(this)), AnnotationFactory.createSourceLine(this));
 			sawFieldNulling = true;
 			state=0;
 		} else if (seen == RETURN) {

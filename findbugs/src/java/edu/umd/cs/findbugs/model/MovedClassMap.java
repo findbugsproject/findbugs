@@ -29,7 +29,7 @@ import java.util.Set;
 import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugCollection;
 import edu.umd.cs.findbugs.BugInstance;
-import edu.umd.cs.findbugs.ClassAnnotation;
+import edu.umd.cs.findbugs.IClassAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
 
 /**
@@ -108,9 +108,9 @@ public class MovedClassMap implements ClassNameRewriter {
 			BugInstance warning = i.next();
 			for (Iterator<BugAnnotation> j = warning.annotationIterator(); j.hasNext();) {
 				BugAnnotation annotation = j.next();
-				if (!(annotation instanceof ClassAnnotation))
+				if (!(annotation instanceof IClassAnnotation))
 					continue;
-				classSet.add(((ClassAnnotation)annotation).getClassName());
+				classSet.add(((IClassAnnotation)annotation).getClassName());
 			}
 		}
 

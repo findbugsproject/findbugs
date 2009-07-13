@@ -29,8 +29,11 @@ import org.apache.bcel.classfile.Code;
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
+import edu.umd.cs.findbugs.ILocalVariableAnnotation;
 import edu.umd.cs.findbugs.OpcodeStack;
 import edu.umd.cs.findbugs.StringAnnotation;
+import edu.umd.cs.findbugs.TypeAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.FieldSummary;
 import edu.umd.cs.findbugs.ba.XField;
@@ -71,13 +74,13 @@ public class SynchronizationOnSharedBuiltinConstant extends OpcodeStackDetector 
 			String signature = top.getSignature();
 			Object constant = top.getConstant();
 			if (signature.equals("Ljava/lang/String;") && constant instanceof String) {
-				BugInstance bug = new BugInstance(this, "DL_SYNCHRONIZATION_ON_SHARED_CONSTANT", NORMAL_PRIORITY).addClassAndMethod(this);
+				BugInstance bug = DetectorUtil.addClassAndMethod(new BugInstance(this, "DL_SYNCHRONIZATION_ON_SHARED_CONSTANT", NORMAL_PRIORITY), this);
 
 				String value = (String) constant;
 				if (identified.matcher(value).matches())
 					bug.addString(value).describe(StringAnnotation.STRING_CONSTANT_ROLE);
 				
-				bugAccumulator.accumulateBug(bug, this);
+				bugAccumulator.accumulateBug(bug, AnnotationFactory.createSourceLine(this));
 			} else if (badSignatures.contains(signature)) {
 				boolean isBoolean = signature.equals("Ljava/lang/Boolean;");
 				XField field = top.getXField();
@@ -85,14 +88,38 @@ public class SynchronizationOnSharedBuiltinConstant extends OpcodeStackDetector 
 				OpcodeStack.Item summary = fieldSummary.getSummary(field);
 				int priority = NORMAL_PRIORITY;
 				if (isBoolean) priority--;
-				if (newlyConstructedObject(summary))
-					bugAccumulator.accumulateBug(new BugInstance(this, "DL_SYNCHRONIZATION_ON_UNSHARED_BOXED_PRIMITIVE", NORMAL_PRIORITY)
-					.addClassAndMethod(this).addType(signature).addOptionalField(field).addOptionalLocalVariable(this, top), this);
-				else if (isBoolean) 
-					bugAccumulator.accumulateBug(new BugInstance(this, "DL_SYNCHRONIZATION_ON_BOOLEAN", priority)
-					.addClassAndMethod(this).addOptionalField(field).addOptionalLocalVariable(this, top), this);
-				else bugAccumulator.accumulateBug(new BugInstance(this, "DL_SYNCHRONIZATION_ON_BOXED_PRIMITIVE", priority)
-				.addClassAndMethod(this).addType(signature).addOptionalField(field).addOptionalLocalVariable(this, top), this);
+				if (newlyConstructedObject(summary)) {
+					BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "DL_SYNCHRONIZATION_ON_UNSHARED_BOXED_PRIMITIVE",
+					        NORMAL_PRIORITY), this).add(new TypeAnnotation(signature));
+					if(field != null){
+						bugInstance.add(AnnotationFactory.createField(field));
+					}
+					ILocalVariableAnnotation localVariable = AnnotationFactory.createVariable(this, top);
+					if(localVariable != null){
+						bugInstance.add(localVariable);
+					}
+					bugAccumulator.accumulateBug(bugInstance, AnnotationFactory.createSourceLine(this));
+                } else if (isBoolean) {
+	                BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "DL_SYNCHRONIZATION_ON_BOOLEAN", priority), this);
+	                if(field != null){
+						bugInstance.add(AnnotationFactory.createField(field));
+					}
+	                ILocalVariableAnnotation localVariable = AnnotationFactory.createVariable(this, top);
+					if(localVariable != null){
+						bugInstance.add(localVariable);
+					}
+					bugAccumulator.accumulateBug(bugInstance, AnnotationFactory.createSourceLine(this));
+                } else {
+	                BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "DL_SYNCHRONIZATION_ON_BOXED_PRIMITIVE", priority), this).add(new TypeAnnotation(signature));
+	                if(field != null){
+						bugInstance.add(AnnotationFactory.createField(field));
+					}
+	                ILocalVariableAnnotation localVariable = AnnotationFactory.createVariable(this, top);
+					if(localVariable != null){
+						bugInstance.add(localVariable);
+					}
+					bugAccumulator.accumulateBug(bugInstance, AnnotationFactory.createSourceLine(this));
+                }
 			}
 		}
 	}

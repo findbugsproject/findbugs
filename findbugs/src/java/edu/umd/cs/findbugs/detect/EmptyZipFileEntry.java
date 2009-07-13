@@ -27,6 +27,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class EmptyZipFileEntry extends BytecodeScanningDetector implements  StatelessDetector {
 
@@ -66,14 +67,13 @@ public class EmptyZipFileEntry extends BytecodeScanningDetector implements  Stat
 				&& getNameConstantOperand().equals("closeEntry")
 			&& getClassConstantOperand()
 				.equals(streamType) )
-						bugReporter.reportBug(new BugInstance(
+						bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(
 							this,
 							streamType.equals("java/util/zip/ZipOutputStream") ?
 								"AM_CREATES_EMPTY_ZIP_FILE_ENTRY" :
 								"AM_CREATES_EMPTY_JAR_FILE_ENTRY", 
-							NORMAL_PRIORITY)
-							.addClassAndMethod(this)
-							.addSourceLine(this));
+							NORMAL_PRIORITY), this)
+							.add(AnnotationFactory.createSourceLine(this)));
 
 			}
 

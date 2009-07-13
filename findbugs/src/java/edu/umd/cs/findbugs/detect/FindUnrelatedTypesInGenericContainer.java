@@ -46,12 +46,14 @@ import org.apache.bcel.generic.ReferenceType;
 import org.apache.bcel.generic.Type;
 
 import edu.umd.cs.findbugs.BugAccumulator;
+import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.Priorities;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
@@ -62,7 +64,6 @@ import edu.umd.cs.findbugs.ba.Hierarchy2;
 import edu.umd.cs.findbugs.ba.IncompatibleTypes;
 import edu.umd.cs.findbugs.ba.Location;
 import edu.umd.cs.findbugs.ba.MethodUnprofitableException;
-import edu.umd.cs.findbugs.ba.SignatureParser;
 import edu.umd.cs.findbugs.ba.TestCaseDetector;
 import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.ba.XFactory;
@@ -88,6 +89,7 @@ import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 import edu.umd.cs.findbugs.props.GeneralWarningProperty;
 import edu.umd.cs.findbugs.props.WarningProperty;
 import edu.umd.cs.findbugs.props.WarningPropertySet;
+import edu.umd.cs.findbugs.signature.SignatureParser;
 import edu.umd.cs.findbugs.util.MultiMap;
 
 /**
@@ -316,14 +318,16 @@ public class FindUnrelatedTypesInGenericContainer implements Detector {
 							}
 						}
 					}
-					accumulator.accumulateBug(new BugInstance(this,bugPattern, priority)
-					.addClassAndMethod(methodGen,
-					        sourceFile).addCalledMethod(
-					        methodGen, (InvokeInstruction) ins)
-					        .addOptionalAnnotation(ValueNumberSourceInfo.findAnnotationFromValueNumber(method,
-							location, objectVN, vnFrame, "INVOKED_ON")),
-					        SourceLineAnnotation.fromVisitedInstruction(classContext, methodGen,
-							        sourceFile, handle));
+					BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this,bugPattern, priority), methodGen, sourceFile)					    
+					    .add(AnnotationFactory.createCalledMethod(methodGen.getConstantPool(), (InvokeInstruction) ins));
+					
+					BugAnnotation annotation = ValueNumberSourceInfo.findAnnotationFromValueNumber(method,
+                    	location, objectVN, vnFrame, "INVOKED_ON");
+					if(annotation != null){
+						bugInstance.add(annotation);
+					}
+					accumulator.accumulateBug(bugInstance,
+					        AnnotationFactory.createSourceLine(methodGen, sourceFile, handle));
 				}
 			
 				// Only consider generic...
@@ -406,8 +410,7 @@ public class FindUnrelatedTypesInGenericContainer implements Detector {
 					noisy = unconditionalDeref.getValueNumbersThatAreUnconditionallyDereferenced().contains(top);
 				}
 				// Prepare bug report
-				SourceLineAnnotation sourceLineAnnotation = SourceLineAnnotation.fromVisitedInstruction(classContext, methodGen,
-				        sourceFile, handle);
+				ISourceLineAnnotation sourceLineAnnotation = AnnotationFactory.createSourceLine(methodGen, sourceFile, handle);
 
 				// Report a bug that mentions each of the failed arguments in
 				// matches
@@ -471,14 +474,22 @@ public class FindUnrelatedTypesInGenericContainer implements Detector {
 				}
 					
 				
-				BugInstance bug = new BugInstance(this, bugPattern, priority).addClassAndMethod(methodGen,
-				        sourceFile).addFoundAndExpectedType(actualType, expectedType).addCalledMethod(
-				        methodGen, (InvokeInstruction) ins)
-				        .addOptionalAnnotation(ValueNumberSourceInfo.findAnnotationFromValueNumber(method,
-								location, objectVN, vnFrame, "INVOKED_ON"))
-								.addOptionalAnnotation(ValueNumberSourceInfo.findAnnotationFromValueNumber(method,
-										location, argVN, vnFrame, "ARGUMENT"))
-										.addEqualsMethodUsed(targets);
+				BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, bugPattern, priority), methodGen, sourceFile);
+				DetectorUtil.addFoundAndExpectedType(bugInstance, actualType, expectedType);				
+				bugInstance.add(AnnotationFactory.createCalledMethod(methodGen.getConstantPool(), (InvokeInstruction) ins));
+				
+				BugAnnotation annotation = ValueNumberSourceInfo.findAnnotationFromValueNumber(method,
+								location, objectVN, vnFrame, "INVOKED_ON");
+				if(annotation != null){
+					bugInstance.add(annotation);					
+				}
+				annotation = ValueNumberSourceInfo.findAnnotationFromValueNumber(method,
+										location, argVN, vnFrame, "ARGUMENT");
+				if(annotation != null){
+					bugInstance.add(annotation);					
+				}
+				BugInstance bug = DetectorUtil.addEqualsMethodUsed(bugInstance, targets);
+				
 				if (noisy) {
 					WarningPropertySet<WarningProperty> propertySet = new WarningPropertySet<WarningProperty>();
 					

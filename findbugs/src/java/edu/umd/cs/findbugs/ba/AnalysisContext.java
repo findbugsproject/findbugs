@@ -24,8 +24,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.BitSet;
 import java.util.Collection;
-import java.util.List;
-
 import net.jcip.annotations.NotThreadSafe;
 
 import org.apache.bcel.Repository;
@@ -33,8 +31,8 @@ import org.apache.bcel.classfile.JavaClass;
 
 import edu.umd.cs.findbugs.AbstractBugReporter;
 import edu.umd.cs.findbugs.AnalysisLocal;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.Project;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.annotations.NonNull;
 //import edu.umd.cs.findbugs.ba.ch.Subtypes;
@@ -445,7 +443,7 @@ public abstract class AnalysisContext {
 	 * Lookup a class's source file
 	 * 
 	 * @param dottedClassName the name of the class
-	 * @return the source file for the class, or {@link SourceLineAnnotation#UNKNOWN_SOURCE_FILE} if unable to determine
+	 * @return the source file for the class, or {@link ISourceLineAnnotation#UNKNOWN_SOURCE_FILE} if unable to determine
 	 */
 	public final String lookupSourceFile(@NonNull @DottedClassName String dottedClassName) {
 		if (dottedClassName == null) 
@@ -454,11 +452,11 @@ public abstract class AnalysisContext {
 			XClass xClass = Global.getAnalysisCache().getClassAnalysis(XClass.class, DescriptorFactory.createClassDescriptorFromDottedClassName(dottedClassName));
 			String name = xClass.getSource();
 			if (name == null) {
-				return SourceLineAnnotation.UNKNOWN_SOURCE_FILE;
+				return ISourceLineAnnotation.UNKNOWN_SOURCE_FILE;
 			}
 			return name;
 		} catch (CheckedAnalysisException e) {
-			return SourceLineAnnotation.UNKNOWN_SOURCE_FILE;
+			return ISourceLineAnnotation.UNKNOWN_SOURCE_FILE;
         }
 	}
 

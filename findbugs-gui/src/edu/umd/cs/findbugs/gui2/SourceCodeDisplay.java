@@ -35,7 +35,7 @@ import javax.swing.text.StyledDocument;
 
 import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugInstance;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.annotations.NonNull;
 import edu.umd.cs.findbugs.ba.SourceFile;
@@ -67,10 +67,10 @@ public final class SourceCodeDisplay implements Runnable {
 
 	@CheckForNull private BugInstance bugToDisplay;
 
-	private SourceLineAnnotation sourceToHighlight;
+	private ISourceLineAnnotation sourceToHighlight;
 
 	public synchronized void displaySource(BugInstance bug,
-			SourceLineAnnotation source) {
+			ISourceLineAnnotation source) {
 		bugToDisplay = bug;
 		sourceToHighlight = source;
 		pendingUpdate = true;
@@ -82,7 +82,7 @@ public final class SourceCodeDisplay implements Runnable {
 	}
 
 	@NonNull
-	private JavaSourceDocument getDocument(SourceLineAnnotation source) {
+	private JavaSourceDocument getDocument(ISourceLineAnnotation source) {
 		try {
 			SourceFile sourceFile = frame.getProject().getSourceFinder().findSourceFile(source);
 			String fullFileName = sourceFile.getFullFileName();
@@ -114,7 +114,7 @@ public final class SourceCodeDisplay implements Runnable {
 	public void run() {
 		while (true) {
 			BugInstance myBug;
-			SourceLineAnnotation mySourceLine;
+			ISourceLineAnnotation mySourceLine;
 			synchronized (this) {
 				while (!pendingUpdate) {
 					try {
@@ -142,8 +142,8 @@ public final class SourceCodeDisplay implements Runnable {
 				// Display myBug and mySourceLine
 				for(Iterator<BugAnnotation> i = myBug.annotationIterator(); i.hasNext(); ) {
 					BugAnnotation annotation = i.next();
-					if (annotation instanceof SourceLineAnnotation) {
-						SourceLineAnnotation sourceAnnotation = (SourceLineAnnotation) annotation;
+					if (annotation instanceof ISourceLineAnnotation) {
+						ISourceLineAnnotation sourceAnnotation = (ISourceLineAnnotation) annotation;
 						if (sourceAnnotation == mySourceLine) {
 							continue;
 						}
@@ -156,7 +156,7 @@ public final class SourceCodeDisplay implements Runnable {
 				}
 				highlight(src, mySourceLine, MAIN_HIGHLIGHT);
 				final BugInstance thisBug = myBug;
-				final SourceLineAnnotation thisSource = mySourceLine;
+				final ISourceLineAnnotation thisSource = mySourceLine;
 				javax.swing.SwingUtilities.invokeLater(new Runnable() {
 					public void run() {
 						frame.sourceCodeTextPane.setEditorKit(src.getEditorKit());
@@ -175,8 +175,8 @@ public final class SourceCodeDisplay implements Runnable {
 						//show(frame.sourceCodeTextPane, document, thisSource);
 						for(Iterator<BugAnnotation> i = thisBug.annotationIterator(); i.hasNext(); ) {
 							BugAnnotation annotation = i.next();
-							if (annotation instanceof SourceLineAnnotation) {
-								SourceLineAnnotation sourceAnnotation = (SourceLineAnnotation) annotation;
+							if (annotation instanceof ISourceLineAnnotation) {
+								ISourceLineAnnotation sourceAnnotation = (ISourceLineAnnotation) annotation;
 								if (sourceAnnotation != thisSource) {
 									//show(frame.sourceCodeTextPane, document, sourceAnnotation);
 									int otherLine = sourceAnnotation.getStartLine();
@@ -204,7 +204,7 @@ public final class SourceCodeDisplay implements Runnable {
 	 * @param src
 	 * @param sourceAnnotation
 	 */
-	private void highlight(JavaSourceDocument src, SourceLineAnnotation sourceAnnotation, Color color) {
+	private void highlight(JavaSourceDocument src, ISourceLineAnnotation sourceAnnotation, Color color) {
 
 		int startLine = sourceAnnotation.getStartLine();
 		if (startLine == -1) {
@@ -212,8 +212,8 @@ public final class SourceCodeDisplay implements Runnable {
 		}
 		String sourceFile = sourceAnnotation.getSourcePath();
 		String sourceFile2 = src.getSourceFile().getFullFileName();
-		if(!java.io.File.separator.equals(String.valueOf(SourceLineAnnotation.CANONICAL_PACKAGE_SEPARATOR))) {
-			sourceFile2 = sourceFile2.replace(java.io.File.separatorChar, SourceLineAnnotation.CANONICAL_PACKAGE_SEPARATOR);
+		if(!java.io.File.separator.equals(String.valueOf(ISourceLineAnnotation.CANONICAL_PACKAGE_SEPARATOR))) {
+			sourceFile2 = sourceFile2.replace(java.io.File.separatorChar, ISourceLineAnnotation.CANONICAL_PACKAGE_SEPARATOR);
 		}
 		if (!sourceFile2.endsWith(sourceFile)) {
 			return;

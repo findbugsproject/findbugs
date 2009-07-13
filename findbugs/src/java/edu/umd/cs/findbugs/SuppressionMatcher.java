@@ -29,8 +29,8 @@ import edu.umd.cs.findbugs.filter.Matcher;
 import edu.umd.cs.findbugs.xml.XMLOutput;
 
 public class SuppressionMatcher implements Matcher {
-	private Map <ClassAnnotation, Collection<WarningSuppressor>> suppressedWarnings
-			= new HashMap<ClassAnnotation, Collection<WarningSuppressor>>();
+	private Map <IClassAnnotation, Collection<WarningSuppressor>> suppressedWarnings
+			= new HashMap<IClassAnnotation, Collection<WarningSuppressor>>();
 	private Map <String, Collection<WarningSuppressor>> suppressedPackageWarnings
 			= new HashMap<String, Collection<WarningSuppressor>>();
 	int count = 0;
@@ -47,7 +47,7 @@ public class SuppressionMatcher implements Matcher {
 		}
 
 	public void addSuppressor(ClassWarningSuppressor suppressor) {
-		ClassAnnotation clazz = suppressor.getClassAnnotation().getTopLevelClass();
+		IClassAnnotation clazz = suppressor.getClassAnnotation().getTopLevelClass();
 		Collection<WarningSuppressor> c =  suppressedWarnings.get(clazz);
 		if (c == null) {
 			c = new LinkedList<WarningSuppressor>();
@@ -59,7 +59,7 @@ public class SuppressionMatcher implements Matcher {
 		return count;
 		}
 	public boolean match(BugInstance b) {
-		ClassAnnotation clazz = b.getPrimaryClass().getTopLevelClass();
+		IClassAnnotation clazz = b.getPrimaryClass().getTopLevelClass();
 		Collection<WarningSuppressor> c = suppressedWarnings.get(clazz);
 		if (c != null) 
 		for(WarningSuppressor w : c) 

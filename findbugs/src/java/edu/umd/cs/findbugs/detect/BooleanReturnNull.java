@@ -22,8 +22,9 @@ package edu.umd.cs.findbugs.detect;
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.ba.SignatureParser;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
+import edu.umd.cs.findbugs.signature.SignatureParser;
 
 import org.apache.bcel.classfile.Code;
 
@@ -50,18 +51,12 @@ public class BooleanReturnNull extends OpcodeStackDetector {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.umd.cs.findbugs.bcel.OpcodeStackDetector#sawOpcode(int)
-	 */
 	@Override
 	public void sawOpcode(int seen) {
 		if (seen == ARETURN && getPrevOpcode(1) == ACONST_NULL)
-			bugAccumulator.accumulateBug(new BugInstance(this, "NP_BOOLEAN_RETURN_NULL", NORMAL_PRIORITY)
-			.addClassAndMethod(this), this);
-
-
-
+			bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+					new BugInstance(this, "NP_BOOLEAN_RETURN_NULL", NORMAL_PRIORITY), this), 
+					AnnotationFactory.createSourceLine(this) );
 	}
-
 
 }

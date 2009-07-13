@@ -26,8 +26,10 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
+import edu.umd.cs.findbugs.ITypeAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
 import edu.umd.cs.findbugs.TypeAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class EqStringTest extends BytecodeScanningDetector implements  StatelessDetector {
 	boolean constantOnTOS = false;
@@ -78,9 +80,10 @@ public class EqStringTest extends BytecodeScanningDetector implements  Stateless
 		case IF_ACMPEQ:
 		case IF_ACMPNE:
 			if (stringOnTop && constantOnTOS && !callToInternSeen)
-				bugAccumulator.accumulateBug(new BugInstance(this, "ES_COMPARING_STRINGS_WITH_EQ", NORMAL_PRIORITY)
-						.addClassAndMethod(this)
-						.addType("Ljava/lang/String;").describe(TypeAnnotation.FOUND_ROLE), this);
+				bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+						new BugInstance(this, "ES_COMPARING_STRINGS_WITH_EQ", NORMAL_PRIORITY), this)
+						.add(new TypeAnnotation("Ljava/lang/String;")).describe(ITypeAnnotation.FOUND_ROLE), 
+						AnnotationFactory.createSourceLine(this));
 			break;
 		default:
 			break;

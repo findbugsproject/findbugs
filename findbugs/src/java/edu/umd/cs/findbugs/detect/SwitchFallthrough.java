@@ -34,12 +34,13 @@ import org.apache.bcel.classfile.Code;
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.LocalVariableAnnotation;
+import edu.umd.cs.findbugs.ILocalVariableAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.OpcodeStack;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
 import edu.umd.cs.findbugs.SwitchHandler;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.SourceFile;
@@ -55,34 +56,31 @@ public class SwitchFallthrough extends OpcodeStackDetector implements StatelessD
 
 	private SwitchHandler switchHdlr;
 	private boolean reachable;
-	private final BugReporter bugReporter;
 	private final BugAccumulator bugAccumulator;
 	private int lastPC;
 	private BitSet potentiallyDeadStores = new BitSet();
 	private Set<XField> potentiallyDeadFields = new HashSet<XField>();
 	private BitSet potentiallyDeadStoresFromBeforeFallthrough = new BitSet();
 	private Set<XField> potentiallyDeadFieldsFromBeforeFallthrough = new HashSet<XField>();
-	private LocalVariableAnnotation deadStore = null;
+	private ILocalVariableAnnotation deadStore = null;
 	private int priority;
 	private int fallthroughDistance;
 
 	public SwitchFallthrough(BugReporter bugReporter) {
-		this.bugReporter = bugReporter;
 		this.bugAccumulator = new BugAccumulator(bugReporter);
 	}
 
 
-
 	@Override
-		 public void visitClassContext(ClassContext classContext) {
+	public void visitClassContext(ClassContext classContext) {
 		classContext.getJavaClass().accept(this);
 	}
 
-	Collection<SourceLineAnnotation> found = new LinkedList<SourceLineAnnotation>();
-	Collection<SourceLineAnnotation> foundDefault = new LinkedList<SourceLineAnnotation>();
+	Collection<ISourceLineAnnotation> found = new LinkedList<ISourceLineAnnotation>();
+	Collection<ISourceLineAnnotation> foundDefault = new LinkedList<ISourceLineAnnotation>();
 
 	@Override
-		 public void visit(Code obj) {
+	public void visit(Code obj) {
 		reachable = false;
 		lastPC = 0;
 		found.clear();
@@ -96,14 +94,12 @@ public class SwitchFallthrough extends OpcodeStackDetector implements StatelessD
 		if (!found.isEmpty()) {
 			if (found.size() >= 4 && priority == NORMAL_PRIORITY) 
 				priority = LOW_PRIORITY;
-			for(SourceLineAnnotation s : found) 
-			bugAccumulator.accumulateBug(new BugInstance(this, "SF_SWITCH_FALLTHROUGH", priority)
-					.addClassAndMethod(this), s);
+			for(ISourceLineAnnotation s : found) 
+			bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "SF_SWITCH_FALLTHROUGH", priority), this), s);
 		}
 
-		for(SourceLineAnnotation s : foundDefault) 
-			bugAccumulator.accumulateBug(new BugInstance(this, "SF_SWITCH_NO_DEFAULT", LOW_PRIORITY)
-				.addClassAndMethod(this), s);
+		for(ISourceLineAnnotation s : foundDefault) 
+			bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "SF_SWITCH_NO_DEFAULT", LOW_PRIORITY), this), s);
 		
 		bugAccumulator.reportAccumulatedBugs();
 	}
@@ -123,15 +119,13 @@ public class SwitchFallthrough extends OpcodeStackDetector implements StatelessD
 			potentiallyDeadStoresFromBeforeFallthrough = (BitSet) potentiallyDeadStores.clone();
 			potentiallyDeadFieldsFromBeforeFallthrough = new HashSet<XField>(potentiallyDeadFields);
 			if (!hasFallThruComment(lastPC + 1, getPC() - 1)) {
-				SourceLineAnnotation sourceLineAnnotation =
-					SourceLineAnnotation.fromVisitedInstructionRange(getClassContext(), this, lastPC, getPC());
-				if (sourceLineAnnotation != null) {
-					if(isDefaultOffset){
-						foundDefault.add(sourceLineAnnotation);
-					} else {
-						found.add(sourceLineAnnotation);
-					}
-				}
+				ISourceLineAnnotation sourceLineAnnotation =
+					AnnotationFactory.createSourceLineRange(this, lastPC, getPC());
+				if(isDefaultOffset){
+                	foundDefault.add(sourceLineAnnotation);
+                } else {
+                	found.add(sourceLineAnnotation);
+                }
 			}
 
 		}
@@ -155,8 +149,10 @@ public class SwitchFallthrough extends OpcodeStackDetector implements StatelessD
 				if (potentiallyDeadFields.contains(f) && potentiallyDeadFieldsFromBeforeFallthrough.contains(f)){
 					// killed store
 					priority = HIGH_PRIORITY;
-					bugAccumulator.accumulateBug(new BugInstance(this, "SF_DEAD_STORE_DUE_TO_SWITCH_FALLTHROUGH", priority)
-					.addClassAndMethod(this).addField(f), this);
+					bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+							new BugInstance(this, "SF_DEAD_STORE_DUE_TO_SWITCH_FALLTHROUGH", priority), this)
+							.add(AnnotationFactory.createField(f)), 
+							AnnotationFactory.createSourceLine(this));
 
 				}
 				potentiallyDeadFields.add(f);
@@ -173,9 +169,10 @@ public class SwitchFallthrough extends OpcodeStackDetector implements StatelessD
 			if (dead.cardinality() > 0) {
 				int register = dead.nextSetBit(0);
 				priority = HIGH_PRIORITY;
-				deadStore =  LocalVariableAnnotation.getLocalVariableAnnotation(getMethod(), register, getPC()-1, getPC());
-				bugAccumulator.accumulateBug(new BugInstance(this, "SF_DEAD_STORE_DUE_TO_SWITCH_FALLTHROUGH_TO_THROW", priority)
-				.addClassAndMethod(this).add(deadStore), this);
+				deadStore =  AnnotationFactory.createVariable(getMethod(), register, getPC()-1, getPC());
+				bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+						new BugInstance(this, "SF_DEAD_STORE_DUE_TO_SWITCH_FALLTHROUGH_TO_THROW", priority), this)
+						.add(deadStore), AnnotationFactory.createSourceLine(this));
 			}}
 			clearAll();
 		}
@@ -189,9 +186,10 @@ public class SwitchFallthrough extends OpcodeStackDetector implements StatelessD
 			if (potentiallyDeadStores.get(register) && (potentiallyDeadStoresFromBeforeFallthrough.get(register))){
 				// killed store
 				priority = HIGH_PRIORITY;
-				deadStore =  LocalVariableAnnotation.getLocalVariableAnnotation(getMethod(), register, getPC()-1, getPC());
-				bugAccumulator.accumulateBug(new BugInstance(this, "SF_DEAD_STORE_DUE_TO_SWITCH_FALLTHROUGH", priority)
-				.addClassAndMethod(this).add(deadStore), this);
+				deadStore =  AnnotationFactory.createVariable(getMethod(), register, getPC()-1, getPC());
+				bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+						new BugInstance(this, "SF_DEAD_STORE_DUE_TO_SWITCH_FALLTHROUGH", priority), this)
+						.add(deadStore), AnnotationFactory.createSourceLine(this));
 
 			}
 			potentiallyDeadStores.set(register);
@@ -244,8 +242,8 @@ public class SwitchFallthrough extends OpcodeStackDetector implements StatelessD
 		if (LOOK_IN_SOURCE_FOR_FALLTHRU_COMMENT) {
 			BufferedReader r = null;
 			try {
-				SourceLineAnnotation srcLine
-					= SourceLineAnnotation.fromVisitedInstructionRange(this, lastPC, getPC());
+				ISourceLineAnnotation srcLine
+					= AnnotationFactory.createSourceLineRange(this, lastPC, getPC());
 				SourceFinder sourceFinder = AnalysisContext.currentAnalysisContext().getSourceFinder();
 				SourceFile sourceFile = sourceFinder.findSourceFile(srcLine.getPackageName(), srcLine.getSourceFile());
 

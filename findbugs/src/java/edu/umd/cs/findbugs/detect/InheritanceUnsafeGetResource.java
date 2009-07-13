@@ -32,6 +32,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 //import edu.umd.cs.findbugs.ba.ch.Subtypes;
 import edu.umd.cs.findbugs.ba.ch.Subtypes2;
@@ -100,10 +101,9 @@ public class InheritanceUnsafeGetResource extends BytecodeScanningDetector imple
 				else {
 					priority = adjustPriority(priority);
 				}
-				bugReporter.reportBug(new BugInstance(this, "UI_INHERITANCE_UNSAFE_GETRESOURCE", 
-						priority)
-				.addClassAndMethod(this)
-				.addSourceLine(this));
+				bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "UI_INHERITANCE_UNSAFE_GETRESOURCE", 
+						priority), this)
+				.add(AnnotationFactory.createSourceLine(this)));
 				reportedForThisClass = true;
 
 			} else if (state == 1

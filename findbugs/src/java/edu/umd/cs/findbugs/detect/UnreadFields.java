@@ -46,11 +46,12 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.DeepSubtypeAnalysis;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.OpcodeStack;
-import edu.umd.cs.findbugs.ProgramPoint;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
+import edu.umd.cs.findbugs.ba.ProgramPoint;
 import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XField;
@@ -63,7 +64,6 @@ import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.DescriptorFactory;
 import edu.umd.cs.findbugs.classfile.FieldDescriptor;
 import edu.umd.cs.findbugs.classfile.Global;
-import edu.umd.cs.findbugs.classfile.analysis.ClassInfo;
 import edu.umd.cs.findbugs.util.Bag;
 import edu.umd.cs.findbugs.util.ClassName;
 import edu.umd.cs.findbugs.util.MultiMap;
@@ -103,7 +103,7 @@ public class UnreadFields extends OpcodeStackDetector  {
 	 *   * written only
 	 *   * written null and read
 	 */
-	Map<XField,SourceLineAnnotation> fieldAccess = new HashMap<XField, SourceLineAnnotation>();
+	Map<XField,ISourceLineAnnotation> fieldAccess = new HashMap<XField, ISourceLineAnnotation>();
 	Set<XField> writtenNonNullFields = new HashSet<XField>();
 	Set<String> calledFromConstructors = new HashSet<String>();
 	Set<XField> writtenInConstructorFields = new HashSet<XField>();
@@ -469,13 +469,11 @@ public class UnreadFields extends OpcodeStackDetector  {
                     }
 				}				
 				bugAccumulator.accumulateBug(
-						new BugInstance(this, 
+						DetectorUtil.addClassAndMethod(new BugInstance(this, 
 						"ST_WRITE_TO_STATIC_FROM_INSTANCE_METHOD",
-						priority)
-						.addClassAndMethod(this)
-						.addField(f), 
-					this);
-						
+						priority), this)
+						.add(AnnotationFactory.createField(f)), 
+						AnnotationFactory.createSourceLine(this));
 				}
 			}
 
@@ -612,7 +610,7 @@ public class UnreadFields extends OpcodeStackDetector  {
 			if (writtenFields.contains(f))	
 				fieldAccess.remove(f);
 			else if (!fieldAccess.containsKey(f))
-				fieldAccess.put(f, SourceLineAnnotation.fromVisitedInstruction(this));
+				fieldAccess.put(f, AnnotationFactory.createSourceLine(this));
 		} else if ((seen == PUTFIELD || seen == PUTSTATIC) && !selfAssignment) {
 			XField f = XFactory.createReferencedXField(this);
 			OpcodeStack.Item item = null;
@@ -633,7 +631,7 @@ public class UnreadFields extends OpcodeStackDetector  {
 			if (writtingNonNull && readFields.contains(f))
 				fieldAccess.remove(f);
 			else if (!fieldAccess.containsKey(f))
-				fieldAccess.put(f, SourceLineAnnotation.fromVisitedInstruction(this));
+				fieldAccess.put(f, AnnotationFactory.createSourceLine(this));
 			
 			boolean isConstructor = getMethodName().equals("<init>") || getMethodName().equals("<clinit>");
 			if (getMethod().isStatic() == f.isStatic()
@@ -788,7 +786,6 @@ public class UnreadFields extends OpcodeStackDetector  {
 		notInitializedInConstructors.removeAll(assumeReflective);
 		
 		for (XField f : notInitializedInConstructors) {
-			String fieldName = f.getName();
 			String className = f.getClassName();
 			String fieldSignature = f.getSignature();
 			if (f.isResolved()
@@ -800,15 +797,13 @@ public class UnreadFields extends OpcodeStackDetector  {
 				  bugReporter.reportBug(new BugInstance(this,
 						"UWF_FIELD_NOT_INITIALIZED_IN_CONSTRUCTOR",
 						priority)
-						.addClass(className)
-						.addField(f));
+				  		.add(AnnotationFactory.createClass(className))
+						.add(AnnotationFactory.createField(f)));
 			}
 		}
 
 
 		for (XField f : readOnlyFields) {
-			String fieldName = f.getName();
-			String className = f.getClassName();
 			String fieldSignature = f.getSignature();
 			if (f.isResolved()
 					&& !fieldsOfNativeClasses.contains(f)) {
@@ -823,9 +818,6 @@ public class UnreadFields extends OpcodeStackDetector  {
 
 		}
 		for (XField f : nullOnlyFields) {
-			String fieldName = f.getName();
-			String className = f.getClassName();
-			String fieldSignature = f.getSignature();
 			if (DEBUG) {
 				System.out.println("Null only: " + f);
 				System.out.println("   : " + assumedNonNull.containsKey(f));
@@ -859,22 +851,22 @@ public class UnreadFields extends OpcodeStackDetector  {
 					priority--;
 				}
 				for (ProgramPoint p : assumedNonNullAt)
-					bugAccumulator.accumulateBug(new BugInstance(this,
+					bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this,
 							"NP_UNWRITTEN_FIELD",
-							npPriority)
-							.addClassAndMethod(p.method)
-							.addField(f), 
-						p.getSourceLineAnnotation());
+							npPriority), p.method.getMethodDescriptor())
+							.add(AnnotationFactory.createField(f)), 
+							AnnotationFactory.createSourceLine(p));
 							
 			} else {
 				if (f.isStatic()) priority++;
 				if (f.isFinal()) priority++;
 				if (fieldsOfSerializableOrNativeClassed.contains(f)) priority++;
 			}
-			if (!readOnlyFields.contains(f)) 
-				bugReporter.reportBug(
-						addClassFieldAndAccess(new BugInstance(this,"UWF_NULL_FIELD",priority), f).lowerPriorityIfDeprecated()
-					);
+			if (!readOnlyFields.contains(f)) {
+	            BugInstance instance = new BugInstance(this,"UWF_NULL_FIELD",priority);
+	            DetectorUtil.lowerPriorityIfDeprecated(instance);
+	            bugReporter.reportBug(addClassFieldAndAccess(instance, f));
+            }
 		}
 
 		for (XField f : writeOnlyFields) {
@@ -929,9 +921,11 @@ public class UnreadFields extends OpcodeStackDetector  {
 												ProgramPoint p = threadLocalAssignedInConstructor.get(of);
 												int priority = p == null ? NORMAL_PRIORITY : HIGH_PRIORITY;
 												BugInstance bug = new BugInstance(this, "SIC_THREADLOCAL_DEADLY_EMBRACE", priority)
-												   .addClass(className).addField(of);
+													.add(AnnotationFactory.createClass(className))
+												   	.add(AnnotationFactory.createField(of));
 												if (p != null)
-													bug.addMethod(p.method).add(p.getSourceLineAnnotation());
+													bug.add(AnnotationFactory.createMethod(p.method))
+														.add(AnnotationFactory.createSourceLine(p));
 												bugReporter.reportBug(bug);
 											}
 										}
@@ -973,7 +967,7 @@ public class UnreadFields extends OpcodeStackDetector  {
 
 						
 						bugReporter.reportBug(new BugInstance(this, bug, priority)
-								.addClass(className));
+							.add(AnnotationFactory.createClass(className)));
 						
 					}
 				}
@@ -985,11 +979,13 @@ public class UnreadFields extends OpcodeStackDetector  {
 								NORMAL_PRIORITY), f));
 				} else if (fieldsOfSerializableOrNativeClassed.contains(f)) {
 					// ignore it
-				} else if (!writtenFields.contains(f))
-					bugReporter.reportBug(new BugInstance(this, "UUF_UNUSED_FIELD", NORMAL_PRIORITY)
-							.addClass(className)
-							.addField(f).lowerPriorityIfDeprecated());
-				else if (f.getName().toLowerCase().indexOf("guardian") < 0) {
+				} else if (!writtenFields.contains(f)) {
+	                BugInstance bugInstance = new BugInstance(this, "UUF_UNUSED_FIELD", NORMAL_PRIORITY)
+	                		.add(AnnotationFactory.createClass(className))
+							.add(AnnotationFactory.createField(f));
+	                DetectorUtil.lowerPriorityIfDeprecated(bugInstance);
+	                bugReporter.reportBug(bugInstance);
+                } else if (f.getName().toLowerCase().indexOf("guardian") < 0) {
 					int priority = NORMAL_PRIORITY;
 					if (f.isStatic()) priority++;
 					if (f.isFinal()) priority++;
@@ -1007,7 +1003,8 @@ public class UnreadFields extends OpcodeStackDetector  {
 		if (writtenNonNullFields.contains(f) && readFields.contains(f)) 
 			throw new IllegalArgumentException("No information for fields that are both read and written nonnull");
 
-		instance.addClass(f.getClassName()).addField(f);
+		instance.add(AnnotationFactory.createClass(f.getClassName()))
+			.add(AnnotationFactory.createField(f));
 		if (fieldAccess.containsKey(f))
 			instance.add(fieldAccess.get(f));
 		return instance;

@@ -26,6 +26,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 /**
  * Find comparisons involving values computed with bitwise
@@ -157,7 +158,7 @@ public class IncompatMask extends BytecodeScanningDetector implements StatelessD
 				bug = new BugInstance(this, "BIT_SIGNED_CHECK_HIGH_BIT", (seen == IFLE || seen == IFGT) ? HIGH_PRIORITY : NORMAL_PRIORITY);
 			else
 				bug = new BugInstance(this, "BIT_SIGNED_CHECK", NORMAL_PRIORITY);
-			bugReporter.reportBug(bug.addClassAndMethod(this).addSourceLine(this));
+			bugReporter.reportBug(DetectorUtil.addClassAndMethod(bug, this).add(AnnotationFactory.createSourceLine(this)));
 		}
 		state = 0;
 		return;
@@ -207,12 +208,11 @@ public class IncompatMask extends BytecodeScanningDetector implements StatelessD
 
 		if (dif != 0) {
 			// System.out.println("Match at offset " + getPC());
-			BugInstance bug = new BugInstance(this, t, HIGH_PRIORITY)
-					.addClassAndMethod(this);
+			BugInstance bug = DetectorUtil.addClassAndMethod(new BugInstance(this, t, HIGH_PRIORITY), this);
 			if (!t.equals("BIT_AND_ZZ"))
 					bug.addString("0x"+Long.toHexString(arg0)).addString("0x"+Long.toHexString(arg1));
 			
-			bug.addSourceLine(this);
+			bug.add(AnnotationFactory.createSourceLine(this));
 			bugReporter.reportBug(bug);
 		}
 		state = 0;

@@ -60,11 +60,12 @@ public class PutfieldScanner {
 
 		@Override
 		public void sawOpcode(int seen) {
-			if (seen == PUTFIELD && getXFieldOperand().equals(targetField) 
-					&& stack.getStackItem(1).getRegisterNumber() == 0)
-				putfields.put(getPC(), new OpcodeStack.Item(stack.getStackItem(0)));
-				
-			
+			if (seen == PUTFIELD) {
+	            XField xFieldOperand = getXFieldOperand();
+				if (xFieldOperand != null && xFieldOperand.equals(targetField) && stack.getStackItem(1).getRegisterNumber() == 0) {
+	                putfields.put(getPC(), new OpcodeStack.Item(stack.getStackItem(0)));
+                }
+            }
 		}
 
 		@Override

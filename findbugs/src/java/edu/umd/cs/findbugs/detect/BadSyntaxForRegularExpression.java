@@ -26,6 +26,7 @@ import java.util.regex.PatternSyntaxException;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.OpcodeStack;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 
 public class BadSyntaxForRegularExpression 
@@ -60,11 +61,9 @@ extends OpcodeStackDetector {
 			  }
 		}
 
-	   bugReporter.reportBug(new BugInstance(this, "RE_POSSIBLE_UNINTENDED_PATTERN", priority)
-								.addClassAndMethod(this)
-								.addCalledMethod(this)
-								.addSourceLine(this)
-				);
+	   bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "RE_POSSIBLE_UNINTENDED_PATTERN", priority), this)
+								.add(AnnotationFactory.createCalledMethod(this))
+								.add(AnnotationFactory.createSourceLine(this)));
 	}
 
 	private void sawRegExPattern(int stackDepth) {
@@ -76,11 +75,10 @@ extends OpcodeStackDetector {
 		if (stack.getStackDepth() < stackDepth) return;
 		OpcodeStack.Item it = stack.getStackItem(stackDepth);
 		if (it.getSpecialKind() == OpcodeStack.Item.FILE_SEPARATOR_STRING && (flags & Pattern.LITERAL) == 0) {
-			  bugReporter.reportBug(new BugInstance(this, "RE_CANT_USE_FILE_SEPARATOR_AS_REGULAR_EXPRESSION", 
-					  HIGH_PRIORITY)
-									  .addClassAndMethod(this)
-									  .addCalledMethod(this)
-									  .addSourceLine(this)
+			  bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "RE_CANT_USE_FILE_SEPARATOR_AS_REGULAR_EXPRESSION", 
+					  HIGH_PRIORITY), this)
+									  .add(AnnotationFactory.createCalledMethod(this))
+									  .add(AnnotationFactory.createSourceLine(this))
 					  );
 			  return;
 		}
@@ -90,13 +88,12 @@ extends OpcodeStackDetector {
 		try {
 			Pattern.compile(regex, flags);
 		} catch (PatternSyntaxException e) {
-		  bugReporter.reportBug(new BugInstance(this, "RE_BAD_SYNTAX_FOR_REGULAR_EXPRESSION", 
-				HIGH_PRIORITY)
-								.addClassAndMethod(this)
-								.addCalledMethod(this)
+		  bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "RE_BAD_SYNTAX_FOR_REGULAR_EXPRESSION", 
+				HIGH_PRIORITY), this)
+								.add(AnnotationFactory.createCalledMethod(this))
 								.addString(regex)
 								.addInt(flags)
-								.addSourceLine(this)
+								.add(AnnotationFactory.createSourceLine(this))
 				);
 		}
 	}

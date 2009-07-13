@@ -34,12 +34,13 @@ import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.FieldAnnotation;
 import edu.umd.cs.findbugs.FieldWarningSuppressor;
 import edu.umd.cs.findbugs.FilterBugReporter;
-import edu.umd.cs.findbugs.MethodAnnotation;
+import edu.umd.cs.findbugs.IClassAnnotation;
 import edu.umd.cs.findbugs.MethodWarningSuppressor;
 import edu.umd.cs.findbugs.NonReportingDetector;
 import edu.umd.cs.findbugs.PackageWarningSuppressor;
 import edu.umd.cs.findbugs.ParameterWarningSuppressor;
 import edu.umd.cs.findbugs.SuppressionMatcher;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.bcel.BCELUtil;
 import edu.umd.cs.findbugs.visitclass.AnnotationVisitor;
@@ -138,24 +139,24 @@ public class NoteSuppressedWarnings
 	
 	private void suppressWarning(int parameter, String pattern) {
 		String className = getDottedClassName();
-		ClassAnnotation clazz = new ClassAnnotation(className);
+		IClassAnnotation clazz = new ClassAnnotation(className);
 		suppressionMatcher.addSuppressor(new ParameterWarningSuppressor(pattern, clazz,
-					MethodAnnotation.fromVisitedMethod(this), parameter));
+					AnnotationFactory.createMethod(this), parameter));
 		
 	}
 
 	private void suppressWarning(String pattern) {
 		String className = getDottedClassName();
-		ClassAnnotation clazz = new ClassAnnotation(className);
+		IClassAnnotation clazz = new ClassAnnotation(className);
 		if (className.endsWith("package-info") && recursiveDetector == null)
 			suppressionMatcher.addPackageSuppressor(new PackageWarningSuppressor(pattern,
 					getPackageName().replace('/', '.')));
 		else if (visitingMethod())
 			suppressionMatcher.addSuppressor(new MethodWarningSuppressor(pattern, clazz,
-					MethodAnnotation.fromVisitedMethod(this)));
+					AnnotationFactory.createMethod(this)));
 		else if (visitingField())
 			suppressionMatcher.addSuppressor(new FieldWarningSuppressor(pattern, clazz,
-					FieldAnnotation.fromVisitedField(this)));
+					AnnotationFactory.createField(this)));
 		else
 			suppressionMatcher.addSuppressor(new ClassWarningSuppressor(pattern, clazz));
 	}

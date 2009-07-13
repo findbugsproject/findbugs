@@ -32,6 +32,7 @@ import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.ClassContext;
 
@@ -117,8 +118,9 @@ public class InefficientToArray extends BytecodeScanningDetector implements Stat
 					String clsName = getDottedClassConstantOperand();
 					JavaClass cls = Repository.lookupClass(clsName);
 					if (cls.implementationOf(collectionClass))
-						bugAccumulator.accumulateBug(new BugInstance(this, "ITA_INEFFICIENT_TO_ARRAY", LOW_PRIORITY)
-								.addClassAndMethod(this), this);
+						bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+								new BugInstance(this, "ITA_INEFFICIENT_TO_ARRAY", LOW_PRIORITY), this), 
+								AnnotationFactory.createSourceLine(this));
 
 				} catch (ClassNotFoundException cnfe) {
 					bugReporter.reportMissingClass(cnfe);

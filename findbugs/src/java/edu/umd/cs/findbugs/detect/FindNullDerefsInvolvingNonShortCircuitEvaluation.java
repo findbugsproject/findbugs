@@ -31,8 +31,9 @@ import org.apache.bcel.generic.InstructionHandle;
 import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.OpcodeStack;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
 import edu.umd.cs.findbugs.ba.DataflowAnalysisException;
@@ -133,27 +134,35 @@ public class FindNullDerefsInvolvingNonShortCircuitEvaluation extends OpcodeStac
 				}
 
 				if (unconditionalDeref.isUnconditionallyDereferenced(value)) {
-					SourceLineAnnotation tested = SourceLineAnnotation.fromVisitedInstruction(getClassContext(), getMethod(),
-					        produced);
+					ISourceLineAnnotation tested = AnnotationFactory.createSourceLine(getClassContext(), getMethod(),
+					        produced.getHandle());
 					BugAnnotation variableAnnotation = ValueNumberSourceInfo.findAnnotationFromValueNumber(getMethod(), produced,
 					        value, valueNumberFact, "VALUE_OF");
 					Set<Location> unconditionalDerefLocationSet = unconditionalDeref.getUnconditionalDerefLocationSet(value);
 
 					BugInstance bug;
 					if (unconditionalDerefLocationSet.size() > 1) {
-						bug = new BugInstance(this, "NP_GUARANTEED_DEREF", NORMAL_PRIORITY).addClassAndMethod(this);
-						bug.addOptionalAnnotation(variableAnnotation);
-						bug.addSourceLine(tested).describe("SOURCE_LINE_KNOWN_NULL");
+						bug = DetectorUtil.addClassAndMethod(new BugInstance(this, "NP_GUARANTEED_DEREF", NORMAL_PRIORITY), this);
+						if(variableAnnotation != null){
+							bug.add(variableAnnotation);
+						}
+						bug.add(tested).describe("SOURCE_LINE_KNOWN_NULL");
 						for (Location dereferenced : unconditionalDerefLocationSet)
-							bug.addSourceLine(getClassContext(), getMethod(), dereferenced).describe("SOURCE_LINE_DEREF");
+							bug.add(AnnotationFactory.createSourceLine(
+									getClassContext(), getMethod(), dereferenced.getHandle()))
+									.describe("SOURCE_LINE_DEREF");
 
 					} else {
-						bug = new BugInstance(this, "NP_NULL_ON_SOME_PATH", NORMAL_PRIORITY).addClassAndMethod(this);
-						bug.addOptionalAnnotation(variableAnnotation);
+						bug = DetectorUtil.addClassAndMethod(new BugInstance(this, "NP_NULL_ON_SOME_PATH", NORMAL_PRIORITY), this);
+						if(variableAnnotation != null){
+							bug.add(variableAnnotation);
+						}
 						for (Location dereferenced : unconditionalDerefLocationSet)
-							bug.addSourceLine(getClassContext(), getMethod(), dereferenced).describe("SOURCE_LINE_DEREF");
+							bug.add(AnnotationFactory.createSourceLine(
+									getClassContext(), getMethod(), dereferenced.getHandle()))
+									.describe("SOURCE_LINE_DEREF");
 
-						bug.addSourceLine(tested).describe("SOURCE_LINE_KNOWN_NULL");
+						bug.add(tested).describe("SOURCE_LINE_KNOWN_NULL");
 
 					}
 
@@ -173,8 +182,9 @@ public class FindNullDerefsInvolvingNonShortCircuitEvaluation extends OpcodeStac
 	Location findLocation(CFG cfg, int pc) {
 		for (Iterator<Location> i = cfg.locationIterator(); i.hasNext();) {
 			Location loc = i.next();
-			if (loc.getHandle().getPosition() == pc)
-				return loc;
+			if (loc.getHandle().getPosition() == pc) {
+	            return loc;
+            }
 		}
 		return null;
 	}
@@ -183,8 +193,9 @@ public class FindNullDerefsInvolvingNonShortCircuitEvaluation extends OpcodeStac
 	Location findLocation(CFG cfg, InstructionHandle handle) {
 		for (Iterator<Location> i = cfg.locationIterator(); i.hasNext();) {
 			Location loc = i.next();
-			if (loc.getHandle() == handle)
-				return loc;
+			if (loc.getHandle() == handle) {
+	            return loc;
+            }
 		}
 		return null;
 	}
@@ -192,10 +203,6 @@ public class FindNullDerefsInvolvingNonShortCircuitEvaluation extends OpcodeStac
 	private boolean nullGuaranteesBranch(int seen, OpcodeStack.Item item) {
 		return item.getSpecialKind() == OpcodeStack.Item.ZERO_MEANS_NULL && seen == IAND
 		        || item.getSpecialKind() == OpcodeStack.Item.NONZERO_MEANS_NULL && seen == IOR;
-	}
-
-	private void emitWarning() {
-		System.out.println("Warn about " + getMethodName()); // TODO
 	}
 
 }

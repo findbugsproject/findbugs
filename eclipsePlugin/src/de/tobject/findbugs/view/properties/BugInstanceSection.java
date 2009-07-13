@@ -63,7 +63,7 @@ import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugPattern;
 import edu.umd.cs.findbugs.I18N;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 
 /**
  * @author Andrei
@@ -278,11 +278,11 @@ public class BugInstanceSection extends AbstractPropertySection {
 		for (int i = 0; i < index; i++) {
 			theAnnotation = theIterator.next();
 		}
-		if (!(theAnnotation instanceof SourceLineAnnotation)) {
+		if (!(theAnnotation instanceof ISourceLineAnnotation)) {
 			// return the line from our initial marker
 			return marker.getAttribute(IMarker.LINE_NUMBER, EditorUtil.DEFAULT_LINE_IN_EDITOR);
 		}
-		SourceLineAnnotation sla = (SourceLineAnnotation) theAnnotation;
+		ISourceLineAnnotation sla = (ISourceLineAnnotation) theAnnotation;
 		int startLine = sla.getStartLine();
 		return startLine <= 0? EditorUtil.DEFAULT_LINE_IN_EDITOR : startLine;
 	}

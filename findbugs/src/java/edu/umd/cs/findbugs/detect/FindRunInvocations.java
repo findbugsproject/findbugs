@@ -27,6 +27,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.Hierarchy;
 
 public class FindRunInvocations extends BytecodeScanningDetector implements StatelessDetector {
@@ -51,26 +52,29 @@ public class FindRunInvocations extends BytecodeScanningDetector implements Stat
 	}
 
 	@Override
-		 public void visit(Code obj) {
+	public void visit(Code obj) {
 		alreadySawStart = false;
 		super.visit(obj);
 		bugAccumulator.reportAccumulatedBugs();
 	}
 
 	@Override
-		 public void sawOpcode(int seen) {
+	public void sawOpcode(int seen) {
 		if (alreadySawStart) return;
 		if ((seen == INVOKEVIRTUAL || seen == INVOKEINTERFACE)
 				&& getSigConstantOperand().equals("()V")
 				&& isThread(getDottedClassConstantOperand())
 		) {
-			if (getNameConstantOperand().equals("start"))
+			if (getNameConstantOperand().equals("start")) {
 				alreadySawStart = true;
-			else if (amVisitingMainMethod() && getPC() == getCode().getLength()-4  && !getDottedClassConstantOperand().equals("java.lang.Thread")) 
+			} else if (amVisitingMainMethod() && getPC() == getCode().getLength()-4  
+					&& !getDottedClassConstantOperand().equals("java.lang.Thread")) {
 				return;
-			else if (getNameConstantOperand().equals("run"))
-				bugAccumulator.accumulateBug(new BugInstance(this, "RU_INVOKE_RUN", NORMAL_PRIORITY)
-						.addClassAndMethod(this), this);
+			} else if (getNameConstantOperand().equals("run")) {
+				bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+						new BugInstance(this, "RU_INVOKE_RUN", NORMAL_PRIORITY), this), 
+						AnnotationFactory.createSourceLine(this));
+			}
 		}
 	}
 }

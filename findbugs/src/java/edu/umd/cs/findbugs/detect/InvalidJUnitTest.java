@@ -29,12 +29,12 @@ import org.apache.bcel.classfile.Method;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
+import edu.umd.cs.findbugs.IMethodAnnotation;
 import edu.umd.cs.findbugs.Lookup;
-import edu.umd.cs.findbugs.MethodAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.XClass;
-import edu.umd.cs.findbugs.ba.XMethod;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.Global;
@@ -71,7 +71,7 @@ public class InvalidJUnitTest extends BytecodeScanningDetector {
 			if ((jClass.getAccessFlags() & ACC_ABSTRACT) == 0) {
 				if (!hasTestMethods(jClass)) {
 					bugReporter.reportBug( new BugInstance( this, "IJU_NO_TESTS", LOW_PRIORITY)
-							.addClass(jClass));
+						.add(AnnotationFactory.createClass(jClass.getClassName())));
 				}
 			}
 			directChildOfTestCase = "junit.framework.TestCase".equals(jClass.getSuperclassName());
@@ -152,15 +152,14 @@ public class InvalidJUnitTest extends BytecodeScanningDetector {
 	@Override
 	public void visit(Method obj) {
 		if (getMethodName().equals("suite") && !obj.isStatic())
-			bugReporter.reportBug(new BugInstance(this, "IJU_SUITE_NOT_STATIC",
-					NORMAL_PRIORITY).addClassAndMethod(this));
+			bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "IJU_SUITE_NOT_STATIC",
+					NORMAL_PRIORITY), this));
 
 		if (getMethodName().equals("suite") && obj.getSignature().startsWith("()") && obj.isStatic())  {
 			if ((!obj.getSignature().equals("()Ljunit/framework/Test;") 
 					&& !obj.getSignature().equals("()Ljunit/framework/TestSuite;"))
 					|| !obj.isPublic())
-				bugReporter.reportBug( new BugInstance( this, "IJU_BAD_SUITE_METHOD", NORMAL_PRIORITY)
-				.addClassAndMethod(this));
+				bugReporter.reportBug( DetectorUtil.addClassAndMethod(new BugInstance( this, "IJU_BAD_SUITE_METHOD", NORMAL_PRIORITY), this));
 
 		}
 	}
@@ -188,10 +187,12 @@ public class InvalidJUnitTest extends BytecodeScanningDetector {
 				Method superMethod = Lookup.findImplementation(we, getMethodName(), "()V");
 				Code superCode = superMethod.getCode();
 				if (superCode != null && superCode.getCode().length > 3)
-				bugReporter.reportBug(new BugInstance(this, getMethodName()
+				bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, getMethodName()
 						.equals("setUp") ? "IJU_SETUP_NO_SUPER"
-						: "IJU_TEARDOWN_NO_SUPER", NORMAL_PRIORITY)
-						.addClassAndMethod(this).addMethod(we,superMethod).describe(MethodAnnotation.METHOD_OVERRIDDEN).addSourceLine(this, offset));
+						: "IJU_TEARDOWN_NO_SUPER", NORMAL_PRIORITY), this)
+						.add(AnnotationFactory.createMethod(we, superMethod))
+						.describe(IMethodAnnotation.METHOD_OVERRIDDEN)
+						.add(AnnotationFactory.createSourceLine(this, offset)));
 			}
 		}
 	}

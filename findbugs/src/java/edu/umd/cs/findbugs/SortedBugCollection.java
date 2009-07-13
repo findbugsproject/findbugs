@@ -20,7 +20,6 @@
 package edu.umd.cs.findbugs;
 
 import java.awt.GraphicsEnvironment;
-import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
@@ -753,8 +752,8 @@ public class SortedBugCollection implements BugCollection {
 	public static class BugInstanceComparator implements Comparator<BugInstance> {
 		private BugInstanceComparator() {}
 		public int compare(BugInstance lhs, BugInstance rhs) {
-			ClassAnnotation lca = lhs.getPrimaryClass();
-			ClassAnnotation rca = rhs.getPrimaryClass();
+			IClassAnnotation lca = lhs.getPrimaryClass();
+			IClassAnnotation rca = rhs.getPrimaryClass();
 			if (lca == null || rca == null)
 				throw new IllegalStateException("null class annotation: " + lca + "," + rca);
 			int cmp = lca.getClassName().compareTo(rca.getClassName());
@@ -1230,22 +1229,19 @@ public class SortedBugCollection implements BugCollection {
 		}
 		return  in;
 	}
-	/* (non-Javadoc)
-     * @see edu.umd.cs.findbugs.BugCollection#reinitializeCloud()
-     */
+
     public Cloud reinitializeCloud() {
     	userAnnotationPlugin = null;
     	Cloud cloud = getCloud();
-    	cloud.bugsPopulated();
+    	if(cloud != null) {
+	        cloud.bugsPopulated();
+        }
     	return cloud;
     }
-	/* (non-Javadoc)
-     * @see edu.umd.cs.findbugs.BugCollection#setMinimalXML(boolean)
-     */
+
     public void setMinimalXML(boolean minimalXML) {
 	   this.minimalXML = minimalXML;
 	    
     }
 }
 
-// vim:ts=4

@@ -17,7 +17,8 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.DeepSubtypeAnalysis;
 import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
 import edu.umd.cs.findbugs.ba.ClassContext;
@@ -128,20 +129,17 @@ public class FindNonSerializableValuePassedToWriteObject implements Detector {
 				}
 
 				if (isSerializable < 0.9) {
-					SourceLineAnnotation sourceLineAnnotation = SourceLineAnnotation
-							.fromVisitedInstruction(classContext, methodGen,
-									sourceFile, handle);
+					ISourceLineAnnotation sourceLineAnnotation = AnnotationFactory.createSourceLine(methodGen, sourceFile, handle);
 
 					bugReporter
-							.reportBug(new BugInstance(
+							.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(
 									this,
 									"DMI_NONSERIALIZABLE_OBJECT_WRITTEN",
 									isSerializable < 0.15 ? HIGH_PRIORITY
 											: isSerializable > 0.5 ? LOW_PRIORITY
-													: NORMAL_PRIORITY)
-									.addClassAndMethod(methodGen, sourceFile)
-									.addClass(DeepSubtypeAnalysis.getComponentClass(refSig))
-									.addSourceLine(sourceLineAnnotation)
+													: NORMAL_PRIORITY), methodGen, sourceFile)
+									.add(AnnotationFactory.createClass(DeepSubtypeAnalysis.getComponentClass(refSig)))
+									.add(sourceLineAnnotation)
 									);
 				}
 			} catch (ClassNotFoundException e) {

@@ -27,8 +27,10 @@ import org.apache.bcel.classfile.Code;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
+import edu.umd.cs.findbugs.ITypeAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
 import edu.umd.cs.findbugs.TypeAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 /* Look for sequences of the form:
  *   ICONST_1
@@ -136,11 +138,10 @@ public class VarArgsProblems extends BytecodeScanningDetector implements
 					if (getNameConstantOperand().equals("asList") 
 							&& getClassConstantOperand().equals("java/util/Arrays"))
 							priority = HIGH_PRIORITY;
-					bugReporter.reportBug( new BugInstance( this, "VA_PRIMITIVE_ARRAY_PASSED_TO_OBJECT_VARARG", priority)
-							.addClassAndMethod(this)
-							.addType(primitiveArraySig).describe(TypeAnnotation.FOUND_ROLE)
-							.addCalledMethod(this)
-							.addSourceLine(this));
+					bugReporter.reportBug( DetectorUtil.addClassAndMethod(new BugInstance( this, "VA_PRIMITIVE_ARRAY_PASSED_TO_OBJECT_VARARG", priority), this)
+							.add(new TypeAnnotation(primitiveArraySig)).describe(ITypeAnnotation.FOUND_ROLE)
+							.add(AnnotationFactory.createCalledMethod(this))
+							.add(AnnotationFactory.createSourceLine(this)));
 				}
 				state = SEEN_NOTHING;
 				break;

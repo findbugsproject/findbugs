@@ -27,6 +27,7 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.OpcodeStack;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import edu.umd.cs.findbugs.visitclass.PreorderVisitor;
 
@@ -61,11 +62,10 @@ public class LostLoggerDueToWeakReference extends OpcodeStackDetector {
 			sawGetLogger = -1;
 			loggerEscaped = loggerImported = false;
 			super.visit(code); // make callbacks to sawOpcode for all opcodes
-			if (false) {
-				System.out.println(getFullyQualifiedMethodName());
-				System.out.printf("%d %s %s\n", sawGetLogger, loggerEscaped, loggerImported);
-
-			}
+//			if (false) {
+//				System.out.println(getFullyQualifiedMethodName());
+//				System.out.printf("%d %s %s\n", sawGetLogger, loggerEscaped, loggerImported);
+//			}
 			if (sawGetLogger >= 0 && !loggerEscaped && !loggerImported)
 				bugAccumulator.reportAccumulatedBugs();
 			else 
@@ -97,10 +97,11 @@ public class LostLoggerDueToWeakReference extends OpcodeStackDetector {
 				int priority = HIGH_PRIORITY;
 				if (getMethod().isStatic() && getMethodName().equals("main") 
 						&& getMethodSig().equals("([Ljava/lang/String;)V"))
-					priority = NORMAL_PRIORITY;;
+					priority = NORMAL_PRIORITY;
 				bugAccumulator.accumulateBug(
-						new BugInstance(this, "LG_LOST_LOGGER_DUE_TO_WEAK_REFERENCE", priority)
-						.addClassAndMethod(this), this);
+						DetectorUtil.addClassAndMethod(
+								new BugInstance(this, "LG_LOST_LOGGER_DUE_TO_WEAK_REFERENCE", priority), this), 
+								AnnotationFactory.createSourceLine(this));
 				break;
 			}
 			checkForImport();
@@ -158,10 +159,6 @@ public class LostLoggerDueToWeakReference extends OpcodeStackDetector {
 		if (item.getSignature().endsWith("Logger;"))
 			loggerEscaped = true;
 		
-	}
-
-	private void emitWarning() {
-		System.out.println("Warn about " + getMethodName()); // TODO
 	}
 
 }

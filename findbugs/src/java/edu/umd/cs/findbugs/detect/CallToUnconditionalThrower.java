@@ -33,16 +33,15 @@ import org.apache.bcel.generic.InvokeInstruction;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.MethodAnnotation;
+import edu.umd.cs.findbugs.IMethodAnnotation;
 import edu.umd.cs.findbugs.Priorities;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.BasicBlock;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.DataflowAnalysisException;
-import edu.umd.cs.findbugs.ba.Edge;
-import edu.umd.cs.findbugs.ba.EdgeTypes;
 import edu.umd.cs.findbugs.ba.Hierarchy2;
 import edu.umd.cs.findbugs.ba.Location;
 import edu.umd.cs.findbugs.ba.SignatureConverter;
@@ -135,10 +134,10 @@ public class CallToUnconditionalThrower extends PreorderVisitor implements Detec
 			}
 			boolean newResult = foundThrower && !foundNonThrower;
 			if (newResult)
-				bugReporter.reportBug(new BugInstance(this, "UNKNOWN", Priorities.NORMAL_PRIORITY)
-				    .addClassAndMethod(classContext.getJavaClass(), method)
-					.addMethod(primaryXMethod).describe(MethodAnnotation.METHOD_CALLED)
-					.addSourceLine(classContext, method, loc));
+				bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "UNKNOWN", Priorities.NORMAL_PRIORITY), classContext.getJavaClass(), method)
+					.add(AnnotationFactory.createMethod(primaryXMethod))
+					.describe(IMethodAnnotation.METHOD_CALLED)
+					.add(AnnotationFactory.createSourceLine(classContext, method, loc.getHandle())));
 
 		}
 

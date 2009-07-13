@@ -22,7 +22,7 @@ package edu.umd.cs.findbugs.filter;
 import java.io.IOException;
 
 import edu.umd.cs.findbugs.BugInstance;
-import edu.umd.cs.findbugs.ClassAnnotation;
+import edu.umd.cs.findbugs.IClassAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.xml.XMLAttributeList;
 import edu.umd.cs.findbugs.xml.XMLOutput;
@@ -42,7 +42,7 @@ public class ClassMatcher implements Matcher {
 	}
 
 	public boolean match(BugInstance bugInstance) {
-		ClassAnnotation primaryClassAnnotation = bugInstance.getPrimaryClass();
+		IClassAnnotation primaryClassAnnotation = bugInstance.getPrimaryClass();
 		String bugClassName = primaryClassAnnotation.getClassName();
 		boolean result =  className.match(bugClassName);
 		if (DEBUG) System.out.println("Matching " + bugClassName + " with " + className + ", result = " + result);

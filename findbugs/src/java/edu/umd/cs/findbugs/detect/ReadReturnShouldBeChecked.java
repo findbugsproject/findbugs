@@ -26,8 +26,8 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.ch.Subtypes2;
 
 public class ReadReturnShouldBeChecked extends BytecodeScanningDetector
@@ -150,22 +150,20 @@ public class ReadReturnShouldBeChecked extends BytecodeScanningDetector
 		if ((seen == POP) || (seen == POP2)) {
 
 			if (sawRead) {
-				accumulator.accumulateBug(new BugInstance(this, "RR_NOT_CHECKED",
-						recentCallToAvailable ? LOW_PRIORITY : NORMAL_PRIORITY)
-						.addClassAndMethod(this).addCalledMethod(lastCallClass,
-								lastCallMethod, lastCallSig, false),
-							   SourceLineAnnotation.fromVisitedInstruction(getClassContext(), this, locationOfCall));
+				accumulator.accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "RR_NOT_CHECKED",
+						recentCallToAvailable ? LOW_PRIORITY : NORMAL_PRIORITY), this).
+						add(AnnotationFactory.createCalledMethod(lastCallClass, lastCallMethod, lastCallSig, false)),
+						AnnotationFactory.createSourceLine(this, locationOfCall));
 
 
 			} else if (sawSkip) {
 
-				accumulator.accumulateBug(new BugInstance(this, "SR_NOT_CHECKED",
+				accumulator.accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "SR_NOT_CHECKED",
 						(wasBufferedInputStream ? HIGH_PRIORITY
 								: recentCallToAvailable ? LOW_PRIORITY
-										: NORMAL_PRIORITY)).addClassAndMethod(
-						this).addCalledMethod(lastCallClass, lastCallMethod,
-						lastCallSig, false),
-						SourceLineAnnotation.fromVisitedInstruction(getClassContext(), this, locationOfCall));
+										: NORMAL_PRIORITY)), this)
+						.add(AnnotationFactory.createCalledMethod(lastCallClass, lastCallMethod, lastCallSig, false)),
+						AnnotationFactory.createSourceLine(this, locationOfCall));
 			}
 		}
 		sawRead = false;

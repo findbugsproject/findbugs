@@ -27,6 +27,7 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XMethod;
 
@@ -106,10 +107,11 @@ public class ConfusionBetweenInheritedAndOuterMethod extends BytecodeScanningDet
 					priority++;
 				}
 
-				bugAccumulator.accumulateBug(new BugInstance(this, "IA_AMBIGUOUS_INVOCATION_OF_INHERITED_OR_OUTER_METHOD", priority)
-						.addClassAndMethod(this)
-						  .addMethod(invokedMethod).describe("METHOD_INHERITED")
-						.addMethod(alternativeMethod).describe("METHOD_ALTERNATIVE_TARGET"), this);
+				bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "IA_AMBIGUOUS_INVOCATION_OF_INHERITED_OR_OUTER_METHOD", priority), this)
+						.add(AnnotationFactory.createMethod(invokedMethod))
+						.describe("METHOD_INHERITED")
+						.add(AnnotationFactory.createMethod(alternativeMethod))
+						.describe("METHOD_ALTERNATIVE_TARGET"), AnnotationFactory.createSourceLine(this));
 				break;
 			}
 		}

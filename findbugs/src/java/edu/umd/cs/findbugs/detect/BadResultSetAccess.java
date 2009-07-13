@@ -26,6 +26,7 @@ import java.util.Set;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.OpcodeStack;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import edu.umd.cs.findbugs.visitclass.PreorderVisitor;
 
@@ -88,11 +89,10 @@ public class BadResultSetAccess extends OpcodeStackDetector {
 
 
 						if ("I".equals(item.getSignature()) && item.couldBeZero()) {
-							bugReporter.reportBug(new BugInstance(this, 
+							bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, 
 									clsConstant.equals("java/sql/PreparedStatement") ? "SQL_BAD_PREPARED_STATEMENT_ACCESS" : "SQL_BAD_RESULTSET_ACCESS", 
-											item.mustBeZero() ? HIGH_PRIORITY : NORMAL_PRIORITY)
-									.addClassAndMethod(this)
-									.addSourceLine(this));
+											item.mustBeZero() ? HIGH_PRIORITY : NORMAL_PRIORITY), this)
+									.add(AnnotationFactory.createSourceLine(this)));
 						}
 					}
 				}

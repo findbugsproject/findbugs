@@ -24,6 +24,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class FindFloatMath extends BytecodeScanningDetector implements StatelessDetector {
 	private BugReporter bugReporter;
@@ -42,10 +43,9 @@ public class FindFloatMath extends BytecodeScanningDetector implements Stateless
 			if (getFullyQualifiedMethodName().indexOf("float") == -1
 					&& getFullyQualifiedMethodName().indexOf("Float") == -1
 					&& getFullyQualifiedMethodName().indexOf("FLOAT") == -1)
-				bugReporter.reportBug(new BugInstance(this, "FL_MATH_USING_FLOAT_PRECISION",
-						LOW_PRIORITY)
-						.addClassAndMethod(this)
-						.addSourceLine(this));
+				bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "FL_MATH_USING_FLOAT_PRECISION",
+						LOW_PRIORITY), this)
+						.add(AnnotationFactory.createSourceLine(this)));
 			break;
 		case FCMPG:
 		case FCMPL:
@@ -57,10 +57,9 @@ public class FindFloatMath extends BytecodeScanningDetector implements Stateless
 					&& getFullyQualifiedMethodName().indexOf("Float") == -1
 					&& getFullyQualifiedMethodName().indexOf("FLOAT") == -1)
 
-				bugReporter.reportBug(new BugInstance(this, "FL_MATH_USING_FLOAT_PRECISION",
-						NORMAL_PRIORITY)
-						.addClassAndMethod(this)
-						.addSourceLine(this));
+				bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "FL_MATH_USING_FLOAT_PRECISION",
+						NORMAL_PRIORITY), this)
+						.add(AnnotationFactory.createSourceLine(this)));
 			break;
 		default:
 			break;

@@ -36,7 +36,9 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.FieldAnnotation;
+import edu.umd.cs.findbugs.IFieldAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.XClass;
@@ -44,6 +46,7 @@ import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XField;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
+import edu.umd.cs.findbugs.classfile.FieldDescriptor;
 import edu.umd.cs.findbugs.classfile.Global;
 
 public class FindMaskedFields extends BytecodeScanningDetector {
@@ -59,7 +62,7 @@ public class FindMaskedFields extends BytecodeScanningDetector {
 		BugInstance bug;
 		XField maskingField, maskedField;
 		RememberedBug(BugInstance bug, 
-				FieldAnnotation maskingField, FieldAnnotation maskedField) {
+				IFieldAnnotation maskingField, IFieldAnnotation maskedField) {
 			this.bug = bug;
 			this.maskingField = XFactory.createXField(maskingField);
 			this.maskedField = XFactory.createXField(maskedField);
@@ -100,7 +103,6 @@ public class FindMaskedFields extends BytecodeScanningDetector {
 			} catch (CheckedAnalysisException e) {
 				break;
 			}
-			XClass superClass = c;
 			for (XField fld : c.getXFields()) {
 				if (!fld.isStatic() && (fld.isPublic() || fld.isProtected())) {
 					fieldName = fld.getName();
@@ -117,7 +119,7 @@ public class FindMaskedFields extends BytecodeScanningDetector {
 					if (classFields.containsKey(fieldName)) {
 						Field maskingField = classFields.get(fieldName);
 						String mClassName = getDottedClassName();
-						FieldAnnotation fa = new FieldAnnotation(mClassName, maskingField.getName(), maskingField.getSignature(),
+						IFieldAnnotation fa = new FieldAnnotation(mClassName, maskingField.getName(), maskingField.getSignature(),
 						        maskingField.isStatic());
 						int priority = NORMAL_PRIORITY;
 						if (maskingField.isStatic() || maskingField.isFinal())
@@ -132,16 +134,22 @@ public class FindMaskedFields extends BytecodeScanningDetector {
 						if (fld.isSynthetic() || fld.getName().indexOf('$') >= 0)
 							priority++;
 
-						FieldAnnotation maskedFieldAnnotation = FieldAnnotation.fromFieldDescriptor(fld.getFieldDescriptor());
-						BugInstance bug = new BugInstance(this, "MF_CLASS_MASKS_FIELD", priority).addClass(this).addField(fa)
-						        .describe("FIELD_MASKING").addField(maskedFieldAnnotation).describe("FIELD_MASKED");
+						FieldDescriptor fieldDescriptor = fld.getFieldDescriptor();
+						IFieldAnnotation maskedFieldAnnotation = new FieldAnnotation(
+								fieldDescriptor.getClassDescriptor().getDottedClassName(),
+								fieldDescriptor.getName(),
+								fieldDescriptor.getSignature(),
+								fieldDescriptor.isStatic());
+						BugInstance bug = new BugInstance(this, "MF_CLASS_MASKS_FIELD", priority)
+							.add(AnnotationFactory.createClass(getDottedClassName()))
+							.add(fa).describe("FIELD_MASKING")
+						    .add(maskedFieldAnnotation).describe("FIELD_MASKED");
 						rememberedBugs.add(new RememberedBug(bug, fa, maskedFieldAnnotation));
 
 					}
 				}
 			}
 		}
-
 
 		super.visit(obj);
 	}
@@ -183,13 +191,11 @@ public class FindMaskedFields extends BytecodeScanningDetector {
 				// TODO: we could distinguish between obscuring a field in the same class
 				// vs. obscuring a field in a superclass.  Not sure how important that is.
 				if (f != null) {
-					FieldAnnotation fa
-							= FieldAnnotation.fromBCELField(getDottedClassName(), f);
+					IFieldAnnotation fa = new FieldAnnotation(getDottedClassName(), f.getName(), f.getSignature(), f.isStatic());
 					if (true || var.getStartPC() > 0)
-						bugReporter.reportBug(new BugInstance(this, "MF_METHOD_MASKS_FIELD", LOW_PRIORITY)
-								.addClassAndMethod(this)
-								.addField(fa)
-								.addSourceLine(this, var.getStartPC() - 1));
+						bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "MF_METHOD_MASKS_FIELD", LOW_PRIORITY), this)
+								.add(fa)
+								.add(AnnotationFactory.createSourceLine(this, var.getStartPC() - 1)));
 				}
 			}
 		}

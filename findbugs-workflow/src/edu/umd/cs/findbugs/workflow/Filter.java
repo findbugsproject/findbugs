@@ -37,12 +37,13 @@ import org.dom4j.DocumentException;
 import edu.umd.cs.findbugs.AppVersion;
 import edu.umd.cs.findbugs.BugCategory;
 import edu.umd.cs.findbugs.BugCollection;
-import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugPattern;
 import edu.umd.cs.findbugs.BugRanker;
 import edu.umd.cs.findbugs.DetectorFactoryCollection;
 import edu.umd.cs.findbugs.ExcludingHashesBugReporter;
 import edu.umd.cs.findbugs.I18N;
+import edu.umd.cs.findbugs.BugInstance;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.PackageStats;
 import edu.umd.cs.findbugs.Project;
 import edu.umd.cs.findbugs.SortedBugCollection;
@@ -62,27 +63,27 @@ import edu.umd.cs.findbugs.filter.Matcher;
 public class Filter {
 	static class FilterCommandLine extends CommandLine {
 		/**
-		 * 
+		 *
 		 */
 		public static final long MILLISECONDS_PER_DAY = 24*60*60*1000L;
 		Pattern className,bugPattern;
 		public boolean notSpecified = false;
 		public boolean not = false;
 		long first;
-		String firstAsString; 
+		String firstAsString;
 		long after;
-		String afterAsString;  
+		String afterAsString;
 		long before;
-		String beforeAsString; 
+		String beforeAsString;
 		int maxRank = Integer.MAX_VALUE;
 
 		long last;
-		String lastAsString; 
+		String lastAsString;
 		String fixedAsString; // alternate way to specify 'last'
 		long present;
-		String presentAsString; 
+		String presentAsString;
 		long absent;
-		String absentAsString; 
+		String absentAsString;
 		String annotation;
 		public boolean activeSpecified = false;
 		public boolean active = false;
@@ -92,7 +93,7 @@ public class Filter {
 
 		public boolean hasLocal = false;
 		public boolean hasLocalSpecified = false;
-		
+
 		public boolean applySuppression = false;
 		public boolean applySuppressionSpecified = false;
 
@@ -121,13 +122,13 @@ public class Filter {
 
 		public boolean withMessagesSpecified = false;
 		public boolean withMessages = false;
-		
-		private List<Matcher> includeFilter = new LinkedList<Matcher>();
-		private List<Matcher> excludeFilter = new LinkedList<Matcher>();
+
+		private final List<Matcher> includeFilter = new LinkedList<Matcher>();
+		private final List<Matcher> excludeFilter = new LinkedList<Matcher>();
 		HashSet<String> excludedInstanceHashes = new HashSet<String>();
 		Set<String> designationKey = new HashSet<String>();
 		Set<String> categoryKey = new HashSet<String>();
-		
+
 		int priority = 3;
 
 		FilterCommandLine() {
@@ -153,7 +154,7 @@ public class Filter {
 			addSwitchWithOptionalExtraPart("-hasLocal", "truth", "allow only warnings that are annotated with a local variable");
 			addSwitchWithOptionalExtraPart("-active", "truth", "allow only warnings alive in the last sequence number");
 			addSwitch("-applySuppression",  "exclude warnings that match the suppression filter");
-			
+
 			addSwitchWithOptionalExtraPart("-introducedByChange", "truth",
 					"allow only warnings introduced by a change of an existing class");
 			addSwitchWithOptionalExtraPart("-removedByChange", "truth",
@@ -164,30 +165,38 @@ public class Filter {
 			"allow only warnings removed by removal of a class");
 			addOption("-priority", "level", "allow only warnings with this priority or higher");
 			addOption("-maxRank", "rank", "allow only warnings with this rank or lower");
-			
+
 			addOption("-class", "pattern", "allow only bugs whose primary class name matches this pattern");
 			addOption("-bugPattern", "pattern", "allow only bugs whose type matches this pattern");
 			addOption("-category", "category", "allow only warnings with a category that starts with this string");
 			addOption("-designation", "designation", "allow only warnings with this designation (e.g., -designation SHOULD_FIX,MUST_FIX)");
 			addSwitch("-hashChanged", "recomputed instance hash is different than stored instance hash");
 			addSwitch("-dontUpdateStats", "used when withSource is specified to only update bugs, not the class and package stats");
-			
+
 		}
 
-		static long getVersionNum(Map<String, AppVersion> versions, 
-				SortedMap<Long, AppVersion> timeStamps , String val, 
+		static long getVersionNum(Map<String, AppVersion> versions,
+				SortedMap<Long, AppVersion> timeStamps , String val,
 				boolean roundToLaterVersion, long currentSeqNum) {
 			long numVersions = currentSeqNum+1;
-			if (val == null) return -1;
-			if (val.equals("last") || val.equals("lastVersion")) return numVersions -1;
+			if (val == null) {
+                return -1;
+            }
+			if (val.equals("last") || val.equals("lastVersion")) {
+                return numVersions -1;
+            }
 
 			AppVersion v = versions.get(val);
-			if (v != null) return v.getSequenceNumber();
+			if (v != null) {
+                return v.getSequenceNumber();
+            }
 			try {
 				long time = 0;
-				if (val.endsWith("daysAgo")) 
-					time = System.currentTimeMillis() - MILLISECONDS_PER_DAY * Integer.parseInt(val.substring(0, val.length() - 7));
-				else time = Date.parse(val);
+				if (val.endsWith("daysAgo")) {
+                    time = System.currentTimeMillis() - MILLISECONDS_PER_DAY * Integer.parseInt(val.substring(0, val.length() - 7));
+                } else {
+                    time = Date.parse(val);
+                }
 				return getAppropriateSeq(timeStamps, time, roundToLaterVersion);
 			} catch (Exception e) {
 				try {
@@ -209,11 +218,15 @@ public class Filter {
 		static private long getAppropriateSeq(SortedMap<Long, AppVersion> timeStamps, long when, boolean roundToLaterVersion) {
 			if (roundToLaterVersion) {
 				SortedMap<Long, AppVersion> geq = timeStamps.tailMap(when);
-				if (geq.isEmpty()) return Long.MAX_VALUE;
+				if (geq.isEmpty()) {
+                    return Long.MAX_VALUE;
+                }
 				return geq.get(geq.firstKey()).getSequenceNumber();
 			} else {
 				SortedMap<Long, AppVersion> leq = timeStamps.headMap(when);
-				if (leq.isEmpty()) return Long.MIN_VALUE;
+				if (leq.isEmpty()) {
+                    return Long.MIN_VALUE;
+                }
 				return leq.get(leq.lastKey()).getSequenceNumber();
 			}
 		}
@@ -242,88 +255,124 @@ public class Filter {
 			absent = getVersionNum(versions, timeStamps, absentAsString, true,  v.getSequenceNumber());
 
 			long fixed = getVersionNum(versions, timeStamps, fixedAsString, true,  v.getSequenceNumber());
-			if (fixed >= 0) last = fixed - 1; // fixed means last on previous sequence (ok if -1)
+			if (fixed >= 0) {
+                last = fixed - 1; // fixed means last on previous sequence (ok if -1)
+            }
 		}
 
 		boolean accept(BugInstance bug) {
 			boolean result = evaluate(bug);
-			if (not) return !result;
+			if (not) {
+                return !result;
+            }
 			return result;
 		}
 		boolean evaluate(BugInstance bug) {
 
 
-			for(Matcher m : includeFilter)
-				if (!m.match(bug)) return false;
-			for(Matcher m : excludeFilter)
-				if (m.match(bug)) return false;
-			if (excludedInstanceHashes.contains(bug.getInstanceHash())) return false;
-			if (annotation != null && bug.getAnnotationText().indexOf(annotation) == -1)
-				return false;
-			if (bug.getPriority() > priority)
-				return false;
-			if (firstAsString != null && bug.getFirstVersion() != first)
-				return false;
-			if (afterAsString != null && bug.getFirstVersion() <= after)
-				return false;
-			if (beforeAsString != null && bug.getFirstVersion() >= before)
-				return false;
-			if ((lastAsString != null || fixedAsString != null) && (last < 0 || bug.getLastVersion() != last))
-				return false;
-			if (presentAsString != null && !bugLiveAt(bug, present))
-				return false;
-			if (absentAsString != null && bugLiveAt(bug, absent))
-				return false;
+			for(Matcher m : includeFilter) {
+                if (!m.match(bug)) {
+                    return false;
+                }
+            }
+			for(Matcher m : excludeFilter) {
+                if (m.match(bug)) {
+                    return false;
+                }
+            }
+			if (excludedInstanceHashes.contains(bug.getInstanceHash())) {
+                return false;
+            }
+			if (annotation != null && bug.getAnnotationText().indexOf(annotation) == -1) {
+                return false;
+            }
+			if (bug.getPriority() > priority) {
+                return false;
+            }
+			if (firstAsString != null && bug.getFirstVersion() != first) {
+                return false;
+            }
+			if (afterAsString != null && bug.getFirstVersion() <= after) {
+                return false;
+            }
+			if (beforeAsString != null && bug.getFirstVersion() >= before) {
+                return false;
+            }
+			if ((lastAsString != null || fixedAsString != null) && (last < 0 || bug.getLastVersion() != last)) {
+                return false;
+            }
+			if (presentAsString != null && !bugLiveAt(bug, present)) {
+                return false;
+            }
+			if (absentAsString != null && bugLiveAt(bug, absent)) {
+                return false;
+            }
 
-			if (hasFieldSpecified && (hasField != (bug.getPrimaryField() != null)))
-					return false;
-			if (hasLocalSpecified && (hasLocal != (bug.getPrimaryLocalVariableAnnotation() != null)))
-					return false;
+			if (hasFieldSpecified && (hasField != (bug.getPrimaryField() != null))) {
+                return false;
+            }
+			if (hasLocalSpecified && (hasLocal != (bug.getPrimaryLocalVariableAnnotation() != null))) {
+                return false;
+            }
 
-			if (maxRank < Integer.MAX_VALUE &&  BugRanker.findRank(bug) > maxRank)
-				return false;
+			if (maxRank < Integer.MAX_VALUE &&  BugRanker.findRank(bug) > maxRank) {
+                return false;
+            }
 
-			if (activeSpecified && active == bug.isDead())
-				return false;
+			if (activeSpecified && active == bug.isDead()) {
+                return false;
+            }
 			if (removedByChangeSpecified
-					&& bug.isRemovedByChangeOfPersistingClass() != removedByChange)
-				return false;
+					&& bug.isRemovedByChangeOfPersistingClass() != removedByChange) {
+                return false;
+            }
 			if (introducedByChangeSpecified
-					&& bug.isIntroducedByChangeOfExistingClass() != introducedByChange)
-				return false;
-			if (newCodeSpecified && newCode != (!bug.isIntroducedByChangeOfExistingClass() && bug.getFirstVersion() != 0))
-				return false;
-			if (removedCodeSpecified && removedCode != (!bug.isRemovedByChangeOfPersistingClass() && bug.isDead()))
-				return false;
+					&& bug.isIntroducedByChangeOfExistingClass() != introducedByChange) {
+                return false;
+            }
+			if (newCodeSpecified && newCode != (!bug.isIntroducedByChangeOfExistingClass() && bug.getFirstVersion() != 0)) {
+                return false;
+            }
+			if (removedCodeSpecified && removedCode != (!bug.isRemovedByChangeOfPersistingClass() && bug.isDead())) {
+                return false;
+            }
 
-			if (bugPattern != null && !bugPattern.matcher(bug.getType()).find())
-					return false;
-			if (className != null && !className.matcher(bug.getPrimaryClass().getClassName()).find())
-					return false;
+			if (bugPattern != null && !bugPattern.matcher(bug.getType()).find()) {
+                return false;
+            }
+			if (className != null && !className.matcher(bug.getPrimaryClass().getClassName()).find()) {
+                return false;
+            }
 
 			BugPattern thisBugPattern = bug.getBugPattern();
-			if (!categoryKey.isEmpty() && thisBugPattern != null && !categoryKey.contains(thisBugPattern.getCategory()))
-				return false;
-			if (!designationKey.isEmpty() && !designationKey.contains(bug.getUserDesignationKey()))
-				return false;
+			if (!categoryKey.isEmpty() && thisBugPattern != null && !categoryKey.contains(thisBugPattern.getCategory())) {
+                return false;
+            }
+			if (!designationKey.isEmpty() && !designationKey.contains(bug.getUserDesignationKey())) {
+                return false;
+            }
 
-			
+
 			if (hashChangedSpecified) {
-				if (bug.isInstanceHashConsistent()  == hashChanged) 
-					return false;
+				if (bug.isInstanceHashConsistent()  == hashChanged) {
+                    return false;
+                }
 			}
-			if (applySuppressionSpecified && applySuppression 
-					&& suppressionFilter.match(bug))
-				return false;
-			SourceLineAnnotation primarySourceLineAnnotation = bug.getPrimarySourceLineAnnotation();
-			
+			if (applySuppressionSpecified && applySuppression
+					&& suppressionFilter.match(bug)) {
+                return false;
+            }
+			ISourceLineAnnotation primarySourceLineAnnotation = bug.getPrimarySourceLineAnnotation();
+
 			if (knownSourceSpecified) {
-				if (primarySourceLineAnnotation.isUnknown() == knownSource)
-					return false;
+				if (primarySourceLineAnnotation.isUnknown() == knownSource) {
+                    return false;
+                }
 			}
 			if (withSourceSpecified) {
-				if (sourceSearcher.findSource(primarySourceLineAnnotation) != withSource) 
-					return false;
+				if (sourceSearcher.findSource(primarySourceLineAnnotation) != withSource) {
+                    return false;
+                }
 			}
 			return true;
 		}
@@ -331,10 +380,10 @@ public class Filter {
 
 	    private void addDesignationKey(String argument) {
 	    	I18N i18n = I18N.instance();
-			
+
 		    for(String x : argument.split("[,|]")) {
 				for (String designationKey : UserDesignation.getKeys()) {
-					if (designationKey.equals(x) 
+					if (designationKey.equals(x)
 							|| i18n.getUserDesignation(designationKey).equals(x)) {
 						this.designationKey.add(designationKey);
 						break;
@@ -345,7 +394,7 @@ public class Filter {
 	    }
 	    private void addCategoryKey(String argument) {
 	    	I18N i18n = I18N.instance();
-			
+
 		    for(String x : argument.split("[,|]")) {
 				for (BugCategory category : i18n.getBugCategoryObjects()) {
 					if (category.getAbbrev().equals(x) || category.getCategory().equals(x)) {
@@ -356,20 +405,23 @@ public class Filter {
 			}
 	    }
 		private boolean bugLiveAt(BugInstance bug, long now) {
-			if (now < bug.getFirstVersion())
-				return false;
-			if (bug.isDead() && bug.getLastVersion() < now)
-				return false;
+			if (now < bug.getFirstVersion()) {
+                return false;
+            }
+			if (bug.isDead() && bug.getLastVersion() < now) {
+                return false;
+            }
 			return true;
 		}
 
 		@Override
 		protected void handleOption(String option, String optionExtraPart) throws IOException {
 			option = option.substring(1);
-			if (optionExtraPart.length() == 0)
-				setField(option, true);
-			else
-				setField(option, Boolean.parseBoolean(optionExtraPart));
+			if (optionExtraPart.length() == 0) {
+                setField(option, true);
+            } else {
+                setField(option, Boolean.parseBoolean(optionExtraPart));
+            }
 			setField(option+"Specified", true);
 		}
 
@@ -392,35 +444,33 @@ public class Filter {
 			}
 
 
-			else if (option.equals("-maxRank")) 
-				maxRank = Integer.parseInt(argument);
-			
-			else if (option.equals("-first")) 
-				firstAsString = argument;
-			else if (option.equals("-last")) 
-				lastAsString = argument;
-			else if (option.equals("-fixed")) 
-				fixedAsString = argument;
-			else if (option.equals("-after")) 
-				afterAsString = argument;
-			else if (option.equals("-before")) 
-				beforeAsString = argument;
-			else if (option.equals("-present")) 
-				presentAsString = argument;
-			else if (option.equals("-absent")) 
-				absentAsString = argument;
-
-			else if (option.equals("-category"))
-				addCategoryKey(argument);
-			else if (option.equals("-designation"))
-				addDesignationKey(argument);
-			else if (option.equals("-class"))
-					className = Pattern.compile(argument.replace(',', '|'));
-			else if (option.equals("-bugPattern"))
-					bugPattern = Pattern.compile(argument);
-			else if (option.equals("-annotation"))
-				annotation = argument;
-			else if (option.equals("-excludeBugs")) {
+			else if (option.equals("-maxRank")) {
+                maxRank = Integer.parseInt(argument);
+            } else if (option.equals("-first")) {
+                firstAsString = argument;
+            } else if (option.equals("-last")) {
+                lastAsString = argument;
+            } else if (option.equals("-fixed")) {
+                fixedAsString = argument;
+            } else if (option.equals("-after")) {
+                afterAsString = argument;
+            } else if (option.equals("-before")) {
+                beforeAsString = argument;
+            } else if (option.equals("-present")) {
+                presentAsString = argument;
+            } else if (option.equals("-absent")) {
+                absentAsString = argument;
+            } else if (option.equals("-category")) {
+                addCategoryKey(argument);
+            } else if (option.equals("-designation")) {
+                addDesignationKey(argument);
+            } else if (option.equals("-class")) {
+                className = Pattern.compile(argument.replace(',', '|'));
+            } else if (option.equals("-bugPattern")) {
+                bugPattern = Pattern.compile(argument);
+            } else if (option.equals("-annotation")) {
+                annotation = argument;
+            } else if (option.equals("-excludeBugs")) {
 				try {
 					ExcludingHashesBugReporter.addToExcludedInstanceHashes(excludedInstanceHashes, argument);
 				} catch (DocumentException e) {
@@ -438,7 +488,9 @@ public class Filter {
 				} catch (FilterException e) {
 					throw new IllegalArgumentException("Error processing include file: " + argument, e);
 				}
-			} else throw new IllegalArgumentException("can't handle command line argument of " + option);
+			} else {
+                throw new IllegalArgumentException("can't handle command line argument of " + option);
+            }
 		}
 
 
@@ -446,10 +498,12 @@ public class Filter {
 	}
 	public static int parsePriority(String argument) {
 		int i = " HMLE".indexOf(argument);
-		if (i == -1)
-			i = " 1234".indexOf(argument);
-		if (i == -1)
-			throw new IllegalArgumentException("Bad priority: " + argument);
+		if (i == -1) {
+            i = " 1234".indexOf(argument);
+        }
+		if (i == -1) {
+            throw new IllegalArgumentException("Bad priority: " + argument);
+        }
 		return i;
 	}
 
@@ -457,54 +511,61 @@ public class Filter {
 
 	public static void main(String[] args) throws Exception {
 		DetectorFactoryCollection df = DetectorFactoryCollection.instance();
-		
+
 		final FilterCommandLine commandLine = new FilterCommandLine();
 
 		int argCount = commandLine.parse(args, 0, 2, "Usage: " + Filter.class.getName()
 				+ " [options] [<orig results> [<new results]] ");
 		SortedBugCollection origCollection = new SortedBugCollection();
 
-		if (argCount == args.length)
-			origCollection.readXML(System.in);
-		else
-			origCollection.readXML(args[argCount++]);
+		if (argCount == args.length) {
+            origCollection.readXML(System.in);
+        } else {
+            origCollection.readXML(args[argCount++]);
+        }
 		boolean verbose = argCount < args.length;
 		SortedBugCollection resultCollection = origCollection.createEmptyCollectionWithMetadata();
 		Project project = resultCollection.getProject();
 		int passed = 0;
 		int dropped = 0;
 		resultCollection.setWithMessages(commandLine.withMessages);
-		if (commandLine.hashChangedSpecified)
-			origCollection.computeBugHashes();
+		if (commandLine.hashChangedSpecified) {
+            origCollection.computeBugHashes();
+        }
 		commandLine.adjustFilter(project, resultCollection);
 		resultCollection.getProjectStats().clearBugCounts();
 		if (commandLine.className != null) {
 			resultCollection.getProjectStats().purgeClassesThatDontMatch(commandLine.className);
 		}
 		sourceSearcher = new SourceSearcher(project);
-		for (BugInstance bug : origCollection.getCollection())
-			if (commandLine.accept(bug)) {
+		for (BugInstance bug : origCollection.getCollection()) {
+            if (commandLine.accept(bug)) {
 				resultCollection.add(bug, false);
-				if (!bug.isDead() )
-					resultCollection.getProjectStats().addBug(bug);
+				if (!bug.isDead() ) {
+                    resultCollection.getProjectStats().addBug(bug);
+                }
 				passed++;
-			} else
-				dropped++;
+			} else {
+                dropped++;
+            }
+        }
 
-		
-		
-		if (verbose)
-			System.out.println(passed + " warnings passed through, " + dropped
+
+
+		if (verbose) {
+            System.out.println(passed + " warnings passed through, " + dropped
 				+ " warnings dropped");
+        }
 		if (commandLine.withSourceSpecified && commandLine.withSource && !commandLine.dontUpdateStats) {
 			for(PackageStats stats : resultCollection.getProjectStats().getPackageStats()) {
 				Iterator<ClassStats> i = stats.getClassStats().iterator();
 				while (i.hasNext()) {
 					String className = i.next().getName();
-					if (sourceSearcher.sourceNotFound.contains(className) || !sourceSearcher.sourceFound.contains(className) 
+					if (sourceSearcher.sourceNotFound.contains(className) || !sourceSearcher.sourceFound.contains(className)
 							&& !sourceSearcher.findSource(SourceLineAnnotation.createReallyUnknown(className)
-									)) 
-						i.remove();
+									)) {
+                        i.remove();
+                    }
 				}
 			}
 			resultCollection.getProjectStats().recomputeFromClassStats();

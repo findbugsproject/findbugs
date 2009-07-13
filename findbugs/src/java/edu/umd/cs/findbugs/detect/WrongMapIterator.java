@@ -28,8 +28,9 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
-import edu.umd.cs.findbugs.MethodAnnotation;
+import edu.umd.cs.findbugs.IMethodAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
@@ -223,11 +224,12 @@ public class WrongMapIterator extends BytecodeScanningDetector implements   Stat
 				if (((seen == INVOKEINTERFACE) || (seen == INVOKEVIRTUAL))
 				&&  ("get".equals(getNameConstantOperand()))
 				&&  ("(Ljava/lang/Object;)Ljava/lang/Object;".equals(getSigConstantOperand()))) {
-					MethodAnnotation ma = MethodAnnotation.fromVisitedMethod(this);
+					IMethodAnnotation ma = AnnotationFactory.createMethod(this);
 					bugAccumulator.accumulateBug(
 						new BugInstance(this, "WMI_WRONG_MAP_ITERATOR", NORMAL_PRIORITY)
-														.addClass(this)
-														.addMethod(ma),this);
+							.add(AnnotationFactory.createClass(getDottedClassName()))
+							.add(ma), 
+							AnnotationFactory.createSourceLine(this));
 					state = SAW_NOTHING;
 				}
 			break;

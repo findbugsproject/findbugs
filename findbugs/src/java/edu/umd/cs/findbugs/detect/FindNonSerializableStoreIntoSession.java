@@ -18,7 +18,8 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.DeepSubtypeAnalysis;
 import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
 import edu.umd.cs.findbugs.ba.ClassContext;
@@ -124,19 +125,17 @@ public class FindNonSerializableStoreIntoSession implements Detector {
 				double isSerializable = DeepSubtypeAnalysis.isDeepSerializable(refSig);
 
 				if (isSerializable < 0.9) {
-					SourceLineAnnotation sourceLineAnnotation = SourceLineAnnotation
-							.fromVisitedInstruction(classContext, methodGen,
-									sourceFile, handle);
+					ISourceLineAnnotation sourceLineAnnotation = AnnotationFactory.createSourceLine(methodGen, sourceFile, handle);
 
 					bugAccumulator
-							.accumulateBug(new BugInstance(
+							.accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(
 									this,
 									"J2EE_STORE_OF_NON_SERIALIZABLE_OBJECT_INTO_SESSION",
 									isSerializable < 0.15 ? HIGH_PRIORITY
 											: isSerializable > 0.5 ? LOW_PRIORITY
-													: NORMAL_PRIORITY)
-									.addClassAndMethod(methodGen, sourceFile)
-									.addClass(DeepSubtypeAnalysis.getComponentClass(refSig)), sourceLineAnnotation);
+													: NORMAL_PRIORITY), methodGen, sourceFile)
+									.add(AnnotationFactory.createClass(DeepSubtypeAnalysis.getComponentClass(refSig))), 
+									sourceLineAnnotation);
 									
 				}
 			} catch (ClassNotFoundException e) {

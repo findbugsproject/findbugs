@@ -23,8 +23,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
 
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.Project;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.ba.SourceFinder;
 
 /**
@@ -40,7 +40,7 @@ public class SourceSearcher {
 	}
 
 	
-	public boolean findSource(SourceLineAnnotation srcLine) {
+	public boolean findSource(ISourceLineAnnotation srcLine) {
 		if (srcLine == null) return false;
 		String cName = srcLine.getClassName();
 		if (sourceFound.contains(cName)) return true;
@@ -50,7 +50,7 @@ public class SourceSearcher {
 		return result;
 	}
 	
-	public boolean findSource0(SourceLineAnnotation srcLine) {
+	public boolean findSource0(ISourceLineAnnotation srcLine) {
 		if (srcLine == null) return false;
 		String cName = srcLine.getClassName();
 		if (sourceFound.contains(cName)) return true;

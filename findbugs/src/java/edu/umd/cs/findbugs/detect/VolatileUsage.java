@@ -25,6 +25,7 @@ import java.util.Set;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.XField;
@@ -80,8 +81,9 @@ public class VolatileUsage extends BytecodeScanningDetector {
 				int priority = LOW_PRIORITY;
 				if (initializationWrites.contains(f) && !otherWrites.contains(f))
 					priority = NORMAL_PRIORITY;
-				bugReporter.reportBug(new BugInstance(this, "VO_VOLATILE_REFERENCE_TO_ARRAY", priority).addClass(
-				        f.getClassDescriptor()).addField(f));
+				bugReporter.reportBug(new BugInstance(this, "VO_VOLATILE_REFERENCE_TO_ARRAY", priority)
+					.add(AnnotationFactory.createClass(f.getClassDescriptor()))
+					.add(AnnotationFactory.createField(f)));
 			}
 	}
 

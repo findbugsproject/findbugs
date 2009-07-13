@@ -28,8 +28,8 @@ import org.apache.bcel.classfile.Method;
 
 import edu.umd.cs.findbugs.ba.AbstractDataflow;
 import edu.umd.cs.findbugs.ba.CFG;
-import edu.umd.cs.findbugs.ba.SignatureParser;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
+import edu.umd.cs.findbugs.signature.SignatureParser;
 
 public class ValueNumberDataflow extends AbstractDataflow<ValueNumberFrame, ValueNumberAnalysis> {
 	public ValueNumberDataflow(CFG cfg, ValueNumberAnalysis analysis) {

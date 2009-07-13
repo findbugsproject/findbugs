@@ -28,10 +28,12 @@ import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.LocalVariableAnnotation;
-import edu.umd.cs.findbugs.MethodAnnotation;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ILocalVariableAnnotation;
+import edu.umd.cs.findbugs.IMethodAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.TypeAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
 import edu.umd.cs.findbugs.ba.ClassContext;
@@ -157,10 +159,10 @@ public class FindBadCast2 implements Detector {
 			System.out.println("Checking " + methodName);
 		}
 
-		Set<SourceLineAnnotation> haveInstanceOf = new HashSet<SourceLineAnnotation>();
-		Set<SourceLineAnnotation> haveCast = new HashSet<SourceLineAnnotation>();
-		Set<SourceLineAnnotation> haveMultipleInstanceOf = new HashSet<SourceLineAnnotation>();
-		Set<SourceLineAnnotation> haveMultipleCast = new HashSet<SourceLineAnnotation>();
+		Set<ISourceLineAnnotation> haveInstanceOf = new HashSet<ISourceLineAnnotation>();
+		Set<ISourceLineAnnotation> haveCast = new HashSet<ISourceLineAnnotation>();
+		Set<ISourceLineAnnotation> haveMultipleInstanceOf = new HashSet<ISourceLineAnnotation>();
+		Set<ISourceLineAnnotation> haveMultipleCast = new HashSet<ISourceLineAnnotation>();
 		for (Iterator<Location> i = cfg.locationIterator(); i.hasNext();) {
 			Location location = i.next();
 			InstructionHandle handle = location.getHandle();
@@ -169,8 +171,7 @@ public class FindBadCast2 implements Detector {
 			if (!(ins instanceof CHECKCAST) && !(ins instanceof INSTANCEOF))
 				continue;
 
-			SourceLineAnnotation sourceLineAnnotation = SourceLineAnnotation
-					.fromVisitedInstruction(classContext, methodGen, sourceFile, handle);
+			ISourceLineAnnotation sourceLineAnnotation = AnnotationFactory.createSourceLine(methodGen, sourceFile, handle);
 			if (ins instanceof CHECKCAST) {
 				if (!haveCast.add(sourceLineAnnotation))
 					haveMultipleCast.add(sourceLineAnnotation);
@@ -241,13 +242,11 @@ public class FindBadCast2 implements Detector {
 			String castSig = castType.getSignature();
 
 			if (operandType.equals(NullType.instance()) || operandNullness.isDefinitelyNull()) {
-				SourceLineAnnotation sourceLineAnnotation = SourceLineAnnotation
-				.fromVisitedInstruction(classContext, methodGen, sourceFile, handle);
+				ISourceLineAnnotation sourceLineAnnotation = AnnotationFactory.createSourceLine(methodGen, sourceFile, handle);
 				assert castSig.length() > 1;
-				if (!isCast) accumulator.accumulateBug(new BugInstance(this,
-						"NP_NULL_INSTANCEOF", split ? LOW_PRIORITY : NORMAL_PRIORITY)
-						.addClassAndMethod(methodGen, sourceFile)
-						.addType(castSig), sourceLineAnnotation);
+				if (!isCast) accumulator.accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this,
+						"NP_NULL_INSTANCEOF", split ? LOW_PRIORITY : NORMAL_PRIORITY), methodGen, sourceFile)
+						.add(new TypeAnnotation(castSig)), sourceLineAnnotation);
 				continue;
 
 			}
@@ -272,8 +271,7 @@ public class FindBadCast2 implements Detector {
 			}
 
 
-			SourceLineAnnotation sourceLineAnnotation = SourceLineAnnotation
-			.fromVisitedInstruction(classContext, methodGen, sourceFile, handle);
+			ISourceLineAnnotation sourceLineAnnotation = AnnotationFactory.createSourceLine(methodGen, sourceFile, handle);
 
 			if (refSig2.charAt(0) != 'L' || castSig2.charAt(0) != 'L') {
 				if ( castSig2.charAt(0) == '[' && (refSig2.equals("Ljava/io/Serializable;") 
@@ -285,12 +283,10 @@ public class FindBadCast2 implements Detector {
 				int priority = HIGH_PRIORITY;
 				if (split && (castSig2.endsWith("Error;") || castSig2.endsWith("Exception;")))
 					priority = LOW_PRIORITY;
-				bugReporter.reportBug(
-						new BugInstance(this,
-						isCast ? "BC_IMPOSSIBLE_CAST" : "BC_IMPOSSIBLE_INSTANCEOF",  priority)
-						.addClassAndMethod(methodGen, sourceFile)
-						.addFoundAndExpectedType(refType, castType)
-						.addSourceLine(sourceLineAnnotation));
+				
+				BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, isCast ? "BC_IMPOSSIBLE_CAST" : "BC_IMPOSSIBLE_INSTANCEOF",  priority), methodGen, sourceFile);
+				DetectorUtil.addFoundAndExpectedType(bugInstance, refType, castType);
+				bugReporter.reportBug(bugInstance.add(sourceLineAnnotation));
 				continue;
 			}
 
@@ -326,12 +322,12 @@ public class FindBadCast2 implements Detector {
 				boolean upcast = Repository.instanceOf(refJavaClass,
 						castJavaClass);
 				if (upcast || refType.equals(castType)) {
-					if (!isCast)
-						accumulator.accumulateBug(new BugInstance(this,
-								"BC_VACUOUS_INSTANCEOF", NORMAL_PRIORITY)
-								.addClassAndMethod(methodGen, sourceFile)
-								.addFoundAndExpectedType(refType, castType)
-								,sourceLineAnnotation);
+					if (!isCast) {
+	                    BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this,
+								"BC_VACUOUS_INSTANCEOF", NORMAL_PRIORITY), methodGen, sourceFile);
+	                    DetectorUtil.addFoundAndExpectedType(bugInstance, refType, castType);
+	                    accumulator.accumulateBug(bugInstance, sourceLineAnnotation);
+                    }
 				} else {
 					boolean downcast = Repository.instanceOf(castJavaClass,
 							refJavaClass);
@@ -375,14 +371,14 @@ public class FindBadCast2 implements Detector {
 						System.out.println("  score: " + rank);
 					}
 					if (!downcast && completeInformation || operandTypeIsExact) {
-						BugAnnotation source = BugInstance.getSourceForTopStackValue(classContext, method, location);
+						BugAnnotation source = AnnotationFactory.createSourceForTopStackValue(classContext, method, location);
 						String bugPattern;
 						if (isCast) {
 							if (downcast && operandTypeIsExact)  {
 							  if (refSig.equals("[Ljava/lang/Object;") 
-									&& source instanceof MethodAnnotation
-									&& ((MethodAnnotation)source).getMethodName().equals("toArray")
-									&& ((MethodAnnotation)source).getMethodSignature().equals("()[Ljava/lang/Object;"))
+									&& source instanceof IMethodAnnotation
+									&& ((IMethodAnnotation)source).getMethodName().equals("toArray")
+									&& ((IMethodAnnotation)source).getMethodSignature().equals("()[Ljava/lang/Object;"))
 								bugPattern = "BC_IMPOSSIBLE_DOWNCAST_OF_TOARRAY";
 							  else
 									bugPattern = "BC_IMPOSSIBLE_DOWNCAST";
@@ -392,16 +388,15 @@ public class FindBadCast2 implements Detector {
 							bugPattern = "BC_IMPOSSIBLE_INSTANCEOF";
 
 					
-						bugReporter.reportBug(new BugInstance(this,
+						BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this,
 								bugPattern,
-								isCast ? HIGH_PRIORITY : NORMAL_PRIORITY)
-								.addClassAndMethod(methodGen, sourceFile)
-
-								.addFoundAndExpectedType(refType, castType)
+								isCast ? HIGH_PRIORITY : NORMAL_PRIORITY), methodGen, sourceFile);
+						DetectorUtil.addFoundAndExpectedType(bugInstance, refType, castType);						
+						bugReporter.reportBug(bugInstance
 								.addOptionalUniqueAnnotations(variable, source)
-								.addSourceLine(sourceLineAnnotation));
+								.add(sourceLineAnnotation));
 					}
-					else if (isCast && rank < 0.9 && variable instanceof LocalVariableAnnotation
+					else if (isCast && rank < 0.9 && variable instanceof ILocalVariableAnnotation
 							&& !valueNumber.hasFlag(ValueNumber.ARRAY_VALUE)
 							&& !valueNumber.hasFlag(ValueNumber.RETURN_VALUE)) {
 
@@ -457,14 +452,10 @@ public class FindBadCast2 implements Detector {
 							else if (castToAbstractCollection)
 								bug = "BC_BAD_CAST_TO_ABSTRACT_COLLECTION";
 
-							BugInstance bugInstance = new BugInstance(this, bug, priority)
-									.addClassAndMethod(methodGen, sourceFile)
-									.addFoundAndExpectedType(refType, castType)
-									 .addOptionalAnnotation(variable);
-
-							accumulator.accumulateBug(bugInstance,
-									sourceLineAnnotation
-									);
+							BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, bug, priority), methodGen, sourceFile);
+							DetectorUtil.addFoundAndExpectedType(bugInstance, refType, castType);									
+							bugInstance.add(variable);							
+							accumulator.accumulateBug(bugInstance, sourceLineAnnotation);
 						}
 
 					}

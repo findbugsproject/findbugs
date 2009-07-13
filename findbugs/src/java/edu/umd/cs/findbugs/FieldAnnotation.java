@@ -21,25 +21,10 @@ package edu.umd.cs.findbugs;
 
 import java.io.IOException;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.Field;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.FieldInstruction;
-import org.apache.bcel.generic.GETFIELD;
-import org.apache.bcel.generic.GETSTATIC;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.PUTFIELD;
-import org.apache.bcel.generic.PUTSTATIC;
-
 import edu.umd.cs.findbugs.ba.AnalysisContext;
-import edu.umd.cs.findbugs.ba.SignatureConverter;
 import edu.umd.cs.findbugs.ba.SourceInfoMap;
-import edu.umd.cs.findbugs.ba.XField;
-import edu.umd.cs.findbugs.classfile.FieldDescriptor;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
-import edu.umd.cs.findbugs.visitclass.DismantleBytecode;
-import edu.umd.cs.findbugs.visitclass.PreorderVisitor;
+import edu.umd.cs.findbugs.signature.SignatureConverter;
 import edu.umd.cs.findbugs.xml.XMLAttributeList;
 import edu.umd.cs.findbugs.xml.XMLOutput;
 
@@ -49,22 +34,13 @@ import edu.umd.cs.findbugs.xml.XMLOutput;
  * @author David Hovemeyer
  * @see BugAnnotation
  */
-public class FieldAnnotation extends PackageMemberAnnotation {
+public class FieldAnnotation extends PackageMemberAnnotation implements IFieldAnnotation {
 	private static final long serialVersionUID = 1L;
 
-	public static final String DEFAULT_ROLE = "FIELD_DEFAULT";
-
-	public static final String DID_YOU_MEAN_ROLE = "FIELD_DID_YOU_MEAN";
-	public static final String VALUE_OF_ROLE="FIELD_VALUE_OF";
-	public static final String LOADED_FROM_ROLE = VALUE_OF_ROLE;
-	public static final String STORED_ROLE = "FIELD_STORED";
-	public static final String INVOKED_ON_ROLE="FIELD_INVOKED_ON";
-	public static final String ARGUMENT_ROLE="FIELD_ARGUMENT";
-
-	private String fieldName;
-	private String fieldSig;
+	private final String fieldName;
+	private final String fieldSig;
 	private String fieldSourceSig;
-	private boolean isStatic;
+	private final boolean isStatic;
 
 	/**
 	 * Constructor.
@@ -77,99 +53,18 @@ public class FieldAnnotation extends PackageMemberAnnotation {
 		super(className, DEFAULT_ROLE);
 		if (fieldSig.indexOf(".") >= 0) {
 			assert false : "signatures should not be dotted: " + fieldSig;
-			fieldSig = fieldSig.replace('.','/');
+		fieldSig = fieldSig.replace('.','/');
 		}
 		this.fieldName = fieldName;
 		this.fieldSig = fieldSig;
 		this.isStatic = isStatic;
 	}
-	
+
 	public FieldAnnotation(@DottedClassName String className, String fieldName, String fieldSig, String fieldSourceSig, boolean isStatic) {
 		this(className, fieldName, fieldSig, isStatic);
 		this.fieldSourceSig = fieldSourceSig;
 	}
-	/**
-	 * Constructor.
-	 *
-	 * @param className the name of the class containing the field
-	 * @param fieldName the name of the field
-	 * @param fieldSig  the type signature of the field
-	 * @param accessFlags accessFlags for the field
-	 */
-	public FieldAnnotation(@DottedClassName String className, String fieldName, String fieldSig, int accessFlags) {
-		this(className, fieldName, fieldSig, (accessFlags & Constants.ACC_STATIC) != 0);
-	}
-	/**
-	 * Factory method. Class name, field name, and field signatures are taken from
-	 * the given visitor, which is visiting the field.
-	 *
-	 * @param visitor the visitor which is visiting the field
-	 * @return the FieldAnnotation object
-	 */
-	public static FieldAnnotation fromVisitedField(PreorderVisitor visitor) {
-		return new FieldAnnotation(visitor.getDottedClassName(),
-				visitor.getFieldName(), visitor.getFieldSig(),
-				visitor.getFieldIsStatic());
-	}
 
-	/**
-	 * Factory method. Class name, field name, and field signatures are taken from
-	 * the given visitor, which is visiting a reference to the field
-	 * (i.e., a getfield or getstatic instruction).
-	 *
-	 * @param visitor the visitor which is visiting the field reference
-	 * @return the FieldAnnotation object
-	 */
-	public static FieldAnnotation fromReferencedField(DismantleBytecode visitor) {
-		String className = visitor.getDottedClassConstantOperand();
-		return new FieldAnnotation(className,
-				visitor.getNameConstantOperand(),
-				visitor.getSigConstantOperand(), visitor.getRefFieldIsStatic());
-	}
-
-	/**
-	 * Factory method. Construct from class name and BCEL Field object.
-	 *
-	 * @param className the name of the class which defines the field
-	 * @param field     the BCEL Field object
-	 * @return the FieldAnnotation
-	 */
-	public static FieldAnnotation fromBCELField(@DottedClassName String className, Field field) {
-		return new FieldAnnotation(className, field.getName(), field.getSignature(), field.isStatic());
-	}
-	/**
-	 * Factory method. Construct from class name and BCEL Field object.
-	 *
-	 * @param jClass the class which defines the field
-	 * @param field     the BCEL Field object
-	 * @return the FieldAnnotation
-	 */
-	public static FieldAnnotation fromBCELField(JavaClass jClass, Field field) {
-		return new FieldAnnotation(jClass.getClassName(), field.getName(), field.getSignature(), field.isStatic());
-	}
-
-	/**
-	 * Factory method.  Construct from a FieldDescriptor.
-	 * 
-	 * @param fieldDescriptor the FieldDescriptor
-	 * @return the FieldAnnotation
-	 */
-	public static FieldAnnotation fromFieldDescriptor(FieldDescriptor fieldDescriptor) {
-		return new FieldAnnotation(
-				fieldDescriptor.getClassDescriptor().getDottedClassName(),
-				fieldDescriptor.getName(),
-				fieldDescriptor.getSignature(),
-				fieldDescriptor.isStatic());
-	}
-
-	public static FieldAnnotation fromXField(XField fieldDescriptor) {
-		return new FieldAnnotation(
-				fieldDescriptor.getClassName(),
-				fieldDescriptor.getName(),
-				fieldDescriptor.getSignature(),
-				fieldDescriptor.getSourceSignature(),
-				fieldDescriptor.isStatic());
-	}
 	/**
 	 * Get the field name.
 	 */
@@ -191,81 +86,56 @@ public class FieldAnnotation extends PackageMemberAnnotation {
 		return isStatic;
 	}
 
-	/**
-	 * Is the given instruction a read of a field?
-	 *
-	 * @param ins the Instruction to check
-	 * @param cpg ConstantPoolGen of the method containing the instruction
-	 * @return the Field if the instruction is a read of a field, null otherwise
-	 */
-	public static FieldAnnotation isRead(Instruction ins, ConstantPoolGen cpg) {
-		if (ins instanceof GETFIELD || ins instanceof GETSTATIC) {
-			FieldInstruction fins = (FieldInstruction) ins;
-			String className = fins.getClassName(cpg);
-			return new FieldAnnotation(className, fins.getName(cpg), fins.getSignature(cpg), fins instanceof GETSTATIC);
-		} else
-			return null;
-	}
-
-	/**
-	 * Is the instruction a write of a field?
-	 *
-	 * @param ins the Instruction to check
-	 * @param cpg ConstantPoolGen of the method containing the instruction
-	 * @return the Field if instruction is a write of a field, null otherwise
-	 */
-	public static FieldAnnotation isWrite(Instruction ins, ConstantPoolGen cpg) {
-		if (ins instanceof PUTFIELD || ins instanceof PUTSTATIC) {
-			FieldInstruction fins = (FieldInstruction) ins;
-			String className = fins.getClassName(cpg);
-			return new FieldAnnotation(className, fins.getName(cpg), fins.getSignature(cpg), fins instanceof PUTSTATIC);
-		} else
-			return null;
-	}
-
 	public void accept(BugAnnotationVisitor visitor) {
 		visitor.visitFieldAnnotation(this);
 	}
 
 	@Override
-	protected String formatPackageMember(String key, ClassAnnotation primaryClass) {
-		if (key.equals("") || key.equals("hash"))
+	protected String formatPackageMember(String key, IClassAnnotation primaryClass) {
+		if (key.equals("") || key.equals("hash")) {
 			return className + "." + fieldName;
-		else if (key.equals("givenClass")) {
+		} else if (key.equals("givenClass")) {
 			String primaryClassName = primaryClass.getClassName();
-			if (className.equals(primaryClassName)) 
+			if (className.equals(primaryClassName)) {
 				return getNameInClass(primaryClass);
-			else return shorten(primaryClass.getPackageName(), className) + "." + fieldName;
+			}
+			return shorten(primaryClass.getPackageName(), className) + "." + fieldName;
 		}
-		else if (key.equals("name"))
+		else if (key.equals("name")) {
 			return fieldName;
-		else if (key.equals("fullField")) {
+		} else if (key.equals("fullField")) {
 			SignatureConverter converter = new SignatureConverter(fieldSig);
 			StringBuilder result = new StringBuilder();
-			if (isStatic)
+			if (isStatic) {
 				result.append("static ");
+			}
 			result.append(converter.parseNext());
 			result.append(' ');
 			result.append(className);
 			result.append('.');
 			result.append(fieldName);
 			return result.toString();
-		} else
+		} else {
 			throw new IllegalArgumentException("unknown key " + key);
+		}
 	}
 
 	/**
 	 * @param primaryClass
 	 * @return
 	 */
-	private String getNameInClass(ClassAnnotation primaryClass) {
-		if (primaryClass == null)
+	private String getNameInClass(IClassAnnotation primaryClass) {
+		if (primaryClass == null) {
 			return   className + "." + fieldName;
+		}
 		String givenPackageName = primaryClass.getPackageName();
 		String thisPackageName = this.getPackageName();
-		if (thisPackageName.equals(givenPackageName))
-			if (thisPackageName.length() == 0) return fieldName;
-			else return className.substring(thisPackageName.length() + 1) +"." + fieldName;
+		if (thisPackageName.equals(givenPackageName)) {
+			if (thisPackageName.length() == 0) {
+				return fieldName;
+			}
+			return className.substring(thisPackageName.length() + 1) +"." + fieldName;
+		}
 		return   className + "." + fieldName;
 	}
 
@@ -276,47 +146,56 @@ public class FieldAnnotation extends PackageMemberAnnotation {
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof FieldAnnotation))
+		if (!(o instanceof IFieldAnnotation)) {
 			return false;
-		FieldAnnotation other = (FieldAnnotation) o;
-		return className.equals(other.className)
-				&& fieldName.equals(other.fieldName)
-				&& fieldSig.equals(other.fieldSig)
-				&& isStatic == other.isStatic;
+		}
+		IFieldAnnotation other = (IFieldAnnotation) o;
+		return className.equals(other.getClassName())
+		&& fieldName.equals(other.getFieldName())
+		&& fieldSig.equals(other.getFieldSignature())
+		&& isStatic == other.isStatic();
 	}
 
 	public int compareTo(BugAnnotation o) {
-		if (!(o instanceof FieldAnnotation)) // BugAnnotations must be Comparable with any type of BugAnnotation
+		if (!(o instanceof IFieldAnnotation)) {
 			return this.getClass().getName().compareTo(o.getClass().getName());
-		FieldAnnotation other = (FieldAnnotation) o;
+		}
+		IFieldAnnotation other = (IFieldAnnotation) o;
 		int cmp;
-		cmp = className.compareTo(other.className);
-		if (cmp != 0)
+		cmp = className.compareTo(other.getClassName());
+		if (cmp != 0) {
 			return cmp;
-		cmp = fieldName.compareTo(other.fieldName);
-		if (cmp != 0)
+		}
+		cmp = fieldName.compareTo(other.getFieldName());
+		if (cmp != 0) {
 			return cmp;
-		return fieldSig.compareTo(other.fieldSig);
+		}
+		return fieldSig.compareTo(other.getFieldSignature());
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.umd.cs.findbugs.PackageMemberAnnotation#getSourceLines()
+	/**
+	 * @return never null, at least "unknown" source line info
 	 */
 	@Override
-	public SourceLineAnnotation getSourceLines() {
+	public ISourceLineAnnotation getSourceLines() {
 		if (sourceLines == null) {
+			/*
+			 * TODO Andrei: should move out from this class, because 1) it is already too late to get
+			 * the info after AnalysisContext is gone 2) this code belongs to other module (factory).
+			 */
 			// Create source line annotation for field on demand
 			AnalysisContext currentAnalysisContext = AnalysisContext.currentAnalysisContext();
-			if (currentAnalysisContext == null)
+			if (currentAnalysisContext == null) {
 				sourceLines = new SourceLineAnnotation(className, sourceFileName, -1, -1, -1, -1);
-			else {
-			SourceInfoMap.SourceLineRange fieldLine = currentAnalysisContext
-				.getSourceInfoMap()
-				.getFieldLine(className, fieldName);
-			if (fieldLine == null) 	sourceLines = new SourceLineAnnotation(
-					className, sourceFileName, -1, -1, -1, -1);
-			else sourceLines = new SourceLineAnnotation(
-					className, sourceFileName, fieldLine.getStart(), fieldLine.getEnd(), -1, -1);
+			} else {
+				SourceInfoMap.SourceLineRange fieldLine = currentAnalysisContext
+				.getSourceInfoMap().getFieldLine(className, fieldName);
+				if (fieldLine == null) {
+					sourceLines = new SourceLineAnnotation(className, sourceFileName, -1, -1, -1, -1);
+				} else {
+					sourceLines = new SourceLineAnnotation(className, sourceFileName,
+							fieldLine.getStart().intValue(), fieldLine.getEnd().intValue(), -1, -1);
+				}
 			}
 		}
 		return sourceLines;
@@ -334,18 +213,22 @@ public class FieldAnnotation extends PackageMemberAnnotation {
 
 	public void writeXML(XMLOutput xmlOutput, boolean addMessages, boolean isPrimary) throws IOException {
 		XMLAttributeList attributeList = new XMLAttributeList()
-			.addAttribute("classname", getClassName())
-			.addAttribute("name", getFieldName())
-			.addAttribute("signature", getFieldSignature());
-		if (fieldSourceSig != null)
+		.addAttribute("classname", getClassName())
+		.addAttribute("name", getFieldName())
+		.addAttribute("signature", getFieldSignature());
+		if (fieldSourceSig != null) {
 			attributeList.addAttribute("sourceSignature", fieldSourceSig);
+		}
 		attributeList.addAttribute("isStatic", String.valueOf(isStatic()));
-		if (isPrimary) attributeList.addAttribute("primary", "true");
+		if (isPrimary) {
+			attributeList.addAttribute("primary", "true");
+		}
 
 
 		String role = getDescription();
-		if (!role.equals(DEFAULT_ROLE))
+		if (!role.equals(DEFAULT_ROLE)) {
 			attributeList.addAttribute("role", role);
+		}
 
 		xmlOutput.openTag(ELEMENT_NAME, attributeList);
 		getSourceLines().writeXML(xmlOutput, addMessages, false);
@@ -357,5 +240,3 @@ public class FieldAnnotation extends PackageMemberAnnotation {
 		xmlOutput.closeTag(ELEMENT_NAME);
 	}
 }
-
-// vim:ts=4

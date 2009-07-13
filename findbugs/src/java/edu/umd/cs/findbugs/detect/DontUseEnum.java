@@ -26,8 +26,10 @@ import org.apache.bcel.classfile.Method;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
+import edu.umd.cs.findbugs.ILocalVariableAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.LocalVariableAnnotation;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.bcel.PreorderDetector;
 
 public class DontUseEnum extends PreorderDetector {
@@ -42,8 +44,9 @@ public class DontUseEnum extends PreorderDetector {
 	@Override
 	public void visit(Method obj) {
 		if (isReservedName(obj.getName())) {
-			BugInstance bug = new BugInstance(this, "NM_FUTURE_KEYWORD_USED_AS_MEMBER_IDENTIFIER", isVisible(obj) ? HIGH_PRIORITY : NORMAL_PRIORITY)
-			.addClassAndMethod(this);
+			BugInstance bug = DetectorUtil.addClassAndMethod(
+					new BugInstance(this, "NM_FUTURE_KEYWORD_USED_AS_MEMBER_IDENTIFIER", 
+							isVisible(obj) ? HIGH_PRIORITY : NORMAL_PRIORITY), this);
 			bugReporter.reportBug(bug);
 		}
 	}
@@ -61,8 +64,10 @@ public class DontUseEnum extends PreorderDetector {
 	@Override
 	public void visit(Field obj) {
 		if (isReservedName(obj.getName())) {
-			BugInstance bug = new BugInstance(this, "NM_FUTURE_KEYWORD_USED_AS_MEMBER_IDENTIFIER", isVisible(obj) ? HIGH_PRIORITY : NORMAL_PRIORITY)
-			.addClass(this).addField(this);
+			BugInstance bug = new BugInstance(this, "NM_FUTURE_KEYWORD_USED_AS_MEMBER_IDENTIFIER", 
+					isVisible(obj) ? HIGH_PRIORITY : NORMAL_PRIORITY)
+				.add(AnnotationFactory.createClass(getDottedClassName()))
+				.add(AnnotationFactory.createField(this));
 			bugReporter.reportBug(bug);
 		}
 	}
@@ -70,10 +75,12 @@ public class DontUseEnum extends PreorderDetector {
 	@Override
 	public void visit(LocalVariable obj) {
 		if (isReservedName(obj.getName())) {
-			LocalVariableAnnotation var = new LocalVariableAnnotation(obj.getName(), obj.getIndex(), obj.getStartPC());
-			SourceLineAnnotation source = SourceLineAnnotation.fromVisitedInstruction(getClassContext(), this, obj.getStartPC());
-			BugInstance bug = new BugInstance(this, "NM_FUTURE_KEYWORD_USED_AS_IDENTIFIER", NORMAL_PRIORITY)
-			.addClassAndMethod(this).add(var).add(source);
+			int startPC = obj.getStartPC();
+			ILocalVariableAnnotation var = new LocalVariableAnnotation(obj.getName(), obj.getIndex(), startPC);
+			ISourceLineAnnotation source = AnnotationFactory.createSourceLineRange(this, startPC, startPC);
+			BugInstance bug = DetectorUtil.addClassAndMethod(
+					new BugInstance(this, "NM_FUTURE_KEYWORD_USED_AS_IDENTIFIER", NORMAL_PRIORITY), this)
+					.add(var).add(source);
 			bugReporter.reportBug(bug);
 		}
 	}

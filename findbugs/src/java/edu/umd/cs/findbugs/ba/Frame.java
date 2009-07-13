@@ -33,6 +33,7 @@ import org.apache.bcel.generic.InvokeInstruction;
 import org.apache.bcel.generic.StackConsumer;
 
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.signature.SignatureParser;
 
 /**
  * Generic class for representing a Java stack frame as a dataflow value. A

@@ -25,6 +25,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 import org.apache.bcel.Constants;
 import org.apache.bcel.classfile.Code;
@@ -97,8 +98,10 @@ public class FindUselessControlFlow extends BytecodeScanningDetector implements 
 					if (branchLineNumber +1 == targetLineNumber || branchLineNumber  == targetLineNumber && nextLine == branchLineNumber+1) priority = HIGH_PRIORITY;
 					else if (branchLineNumber +2 < Math.max(targetLineNumber, nextLine)) priority = LOW_PRIORITY;
 				} else priority = LOW_PRIORITY;
-				bugAccumulator.accumulateBug(new BugInstance(this, priority == HIGH_PRIORITY ? "UCF_USELESS_CONTROL_FLOW_NEXT_LINE" : "UCF_USELESS_CONTROL_FLOW", priority)
-						.addClassAndMethod(this), this);
+				bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+						new BugInstance(this, priority == HIGH_PRIORITY ? 
+								"UCF_USELESS_CONTROL_FLOW_NEXT_LINE" : "UCF_USELESS_CONTROL_FLOW", priority), this), 
+						AnnotationFactory.createSourceLine(this));
 			}
 		}
 	}

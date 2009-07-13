@@ -26,8 +26,10 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.FieldAnnotation;
+import edu.umd.cs.findbugs.IFieldAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class FindSpinLoop extends BytecodeScanningDetector implements StatelessDetector {
 	private static final boolean DEBUG = SystemProperties.getBoolean("findspinloop.debug");
@@ -35,7 +37,7 @@ public class FindSpinLoop extends BytecodeScanningDetector implements StatelessD
 	int stage = 0;
 	int start;
 	private BugReporter bugReporter;
-	private FieldAnnotation lastFieldSeen;
+	private IFieldAnnotation lastFieldSeen;
 
 	public FindSpinLoop(BugReporter bugReporter) {
 		this.bugReporter = bugReporter;
@@ -65,13 +67,13 @@ public class FindSpinLoop extends BytecodeScanningDetector implements StatelessD
 			break;
 		case GETSTATIC:
 			if (DEBUG) System.out.println("   getfield in stage " + stage);
-			lastFieldSeen = FieldAnnotation.fromReferencedField(this);
+			lastFieldSeen = AnnotationFactory.createReferencedField(this);
 			start = getPC();
 			stage = 2;
 			break;
 		case GETFIELD:
 			if (DEBUG) System.out.println("   getfield in stage " + stage);
-			lastFieldSeen = FieldAnnotation.fromReferencedField(this);
+			lastFieldSeen = AnnotationFactory.createReferencedField(this);
 			if (stage == 1 || stage == 2 ) {
 				stage = 2;
 			} else
@@ -84,11 +86,9 @@ public class FindSpinLoop extends BytecodeScanningDetector implements StatelessD
 		case IFNONNULL:
 			if (DEBUG) System.out.println("   conditional branch in stage " + stage + " to " + getBranchTarget());
 			if (stage == 2 && getBranchTarget() == start) {
-				bugReporter.reportBug(new BugInstance(this, "SP_SPIN_ON_FIELD", NORMAL_PRIORITY)
-						.addClassAndMethod(this)
-						.addReferencedField(lastFieldSeen)
-						.addSourceLine(this, start)
-						);
+				bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "SP_SPIN_ON_FIELD", NORMAL_PRIORITY), this)
+						.add(lastFieldSeen)
+						.add(AnnotationFactory.createSourceLine(this, start)));
 				stage = 0;
 			} else if (getBranchTarget() < getPC())
 				stage = 0;

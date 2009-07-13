@@ -39,10 +39,12 @@ import org.apache.bcel.classfile.Method;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
+import edu.umd.cs.findbugs.ITypeAnnotation;
+import edu.umd.cs.findbugs.TypeAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.ClassContext;
-import edu.umd.cs.findbugs.ba.SignatureParser;
 import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XMethod;
@@ -53,6 +55,7 @@ import edu.umd.cs.findbugs.classfile.Global;
 import edu.umd.cs.findbugs.props.AbstractWarningProperty;
 import edu.umd.cs.findbugs.props.PriorityAdjustment;
 import edu.umd.cs.findbugs.props.WarningPropertySet;
+import edu.umd.cs.findbugs.signature.SignatureParser;
 import edu.umd.cs.findbugs.visitclass.PreorderVisitor;
 
 public class Naming extends PreorderVisitor implements Detector {
@@ -171,10 +174,13 @@ public class Naming extends PreorderVisitor implements Detector {
 					if (!m.getName().equals(m2.getName()) && m.getName().equalsIgnoreCase(m2.getName())) {
 						String pattern = m3 != null ? "NM_VERY_CONFUSING_INTENTIONAL" : "NM_VERY_CONFUSING";
 
-						BugInstance bug = new BugInstance(this, pattern, priority).addClass(m.getClassName()).addMethod(m)
-						        .addClass(m2.getClassName()).addMethod(m2);
+						BugInstance bug = new BugInstance(this, pattern, priority)
+							.add(AnnotationFactory.createClass(m.getClassName()))
+							.add(AnnotationFactory.createMethod(m))
+						    .add(AnnotationFactory.createClass(m2.getClassName()))
+						    .add(AnnotationFactory.createMethod(m2));
 						if (m3 != null)
-							bug.addMethod(m3);
+							bug.add(AnnotationFactory.createMethod(m3));
 						propertySet.decorateBugInstance(bug);
 						bugReporter.reportBug(bug);
 					} else if (!m.getSignature().equals(m2.getSignature())
@@ -188,10 +194,15 @@ public class Naming extends PreorderVisitor implements Detector {
 							String p = s.next();
 							String p2 = s2.next();
 							if (!p.equals(p2)) {
-								BugInstance bug = new BugInstance(this, pattern, priority).addClass(m.getClassName())
-								        .addMethod(m).addClass(m2.getClassName()).addMethod(m2).addFoundAndExpectedType(p, p2);
+								BugInstance bug = new BugInstance(this, pattern, priority)
+									.add(AnnotationFactory.createClass(m.getClassName()))
+								    .add(AnnotationFactory.createMethod(m))
+								    .add(AnnotationFactory.createClass(m2.getClassName()))
+								    .add(AnnotationFactory.createMethod(m2))
+								    .add(new TypeAnnotation(p, ITypeAnnotation.FOUND_ROLE))
+								    .add(new TypeAnnotation(p2, ITypeAnnotation.EXPECTED_ROLE));								    
 								if (m3 != null)
-									bug.addMethod(m3);
+									bug.add(AnnotationFactory.createMethod(m3));
 								propertySet.decorateBugInstance(bug);
 								bugReporter.reportBug(bug);
 
@@ -226,8 +237,11 @@ public class Naming extends PreorderVisitor implements Detector {
 					mm1 = m2;
 					mm2 = m;
 				}
-				bugReporter.reportBug(new BugInstance(this, "NM_CONFUSING", LOW_PRIORITY).addClass(mm1.getClassName()).addMethod(
-				        mm1).addClass(mm2.getClassName()).addMethod(mm2));
+				bugReporter.reportBug(new BugInstance(this, "NM_CONFUSING", LOW_PRIORITY)
+					.add(AnnotationFactory.createClass(mm1.getClassName()))
+					.add(AnnotationFactory.createMethod(mm1))
+					.add(AnnotationFactory.createClass(mm2.getClassName()))
+					.add(AnnotationFactory.createMethod(mm2)));
 				return true;
 			}
 		}
@@ -278,13 +292,15 @@ public class Naming extends PreorderVisitor implements Detector {
 		String superClassName = obj.getSuperclassName();
 		if (!name.equals("java.lang.Object")) {
 			if (sameSimpleName(superClassName, name)) {
-				bugReporter.reportBug(new BugInstance(this, "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", HIGH_PRIORITY).addClass(name)
-				        .addClass(superClassName));
+				bugReporter.reportBug(new BugInstance(this, "NM_SAME_SIMPLE_NAME_AS_SUPERCLASS", HIGH_PRIORITY)
+					.add(AnnotationFactory.createClass(name))
+					.add(AnnotationFactory.createClass(superClassName)));
 			}
 			for (String interfaceName : obj.getInterfaceNames())
 				if (sameSimpleName(interfaceName, name)) {
-					bugReporter.reportBug(new BugInstance(this, "NM_SAME_SIMPLE_NAME_AS_INTERFACE", NORMAL_PRIORITY).addClass(
-					        name).addClass(interfaceName));
+					bugReporter.reportBug(new BugInstance(this, "NM_SAME_SIMPLE_NAME_AS_INTERFACE", NORMAL_PRIORITY)
+					.add(AnnotationFactory.createClass(name))
+					.add(AnnotationFactory.createClass(interfaceName)));
 				}
 		}
 		if (obj.isInterface())
@@ -350,13 +366,15 @@ public class Naming extends PreorderVisitor implements Detector {
 	        int priority = classIsPublicOrProtected ? NORMAL_PRIORITY
 			        : LOW_PRIORITY;
 	      
-	        bugReporter.reportBug(new BugInstance(this, "NM_CLASS_NAMING_CONVENTION", priority).addClass(this));
+	        bugReporter.reportBug(new BugInstance(this, "NM_CLASS_NAMING_CONVENTION", priority)
+	        	.add(AnnotationFactory.createClass(getDottedClassName())));
         }
 		if (name.endsWith("Exception")) {
 			// Does it ultimately inherit from Throwable?
 			if(!mightInheritFromException(DescriptorFactory.createClassDescriptor(obj))) {
 				// It doens't, so the name is misleading
-				bugReporter.reportBug(new BugInstance(this, "NM_CLASS_NOT_EXCEPTION", NORMAL_PRIORITY).addClass(this));
+				bugReporter.reportBug(new BugInstance(this, "NM_CLASS_NOT_EXCEPTION", NORMAL_PRIORITY)
+					.add(AnnotationFactory.createClass(getDottedClassName())));
 			}
 		}
 
@@ -386,8 +404,9 @@ public class Naming extends PreorderVisitor implements Detector {
 		}
 		if (badFieldName(obj)) {
 			bugReporter.reportBug(new BugInstance(this, "NM_FIELD_NAMING_CONVENTION", classIsPublicOrProtected
-			        && (obj.isPublic() || obj.isProtected())  && !hasBadFieldNames ? NORMAL_PRIORITY : LOW_PRIORITY).addClass(this).addVisitedField(
-			        this));
+			        && (obj.isPublic() || obj.isProtected())  && !hasBadFieldNames ? NORMAL_PRIORITY : LOW_PRIORITY)
+			.add(AnnotationFactory.createClass(getDottedClassName()))
+			.add(AnnotationFactory.createField(this)));
 		}
 	}
 
@@ -480,13 +499,14 @@ public class Naming extends PreorderVisitor implements Detector {
 				if (realVoidConstructor != null)
 					priority = LOW_PRIORITY;
 
-				bugReporter.reportBug(new BugInstance(this, "NM_METHOD_CONSTRUCTOR_CONFUSION", priority).addClassAndMethod(this)
-				        .lowerPriorityIfDeprecated());
+				BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "NM_METHOD_CONSTRUCTOR_CONFUSION", priority), this);
+				DetectorUtil.lowerPriorityIfDeprecated(bugInstance);
+				bugReporter.reportBug(bugInstance);
 				return;
 			}
 		} else if (badMethodName(mName))
-			bugReporter.reportBug(new BugInstance(this, "NM_METHOD_NAMING_CONVENTION", classIsPublicOrProtected
-			        && (obj.isPublic() || obj.isProtected()) && !hasBadMethodNames ? NORMAL_PRIORITY : LOW_PRIORITY).addClassAndMethod(this));
+			bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "NM_METHOD_NAMING_CONVENTION", classIsPublicOrProtected
+			        && (obj.isPublic() || obj.isProtected()) && !hasBadMethodNames ? NORMAL_PRIORITY : LOW_PRIORITY), this));
 		
 
 		if (obj.isAbstract())
@@ -495,18 +515,21 @@ public class Naming extends PreorderVisitor implements Detector {
 			return;
 
 		if (mName.equals("equal") && sig.equals("(Ljava/lang/Object;)Z")) {
-			bugReporter.reportBug(new BugInstance(this, "NM_BAD_EQUAL", HIGH_PRIORITY).addClassAndMethod(this)
-			        .lowerPriorityIfDeprecated());
+			BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "NM_BAD_EQUAL", HIGH_PRIORITY), this);
+			DetectorUtil.lowerPriorityIfDeprecated(bugInstance);
+			bugReporter.reportBug(bugInstance);
 			return;
 		}
 		if (mName.equals("hashcode") && sig.equals("()I")) {
-			bugReporter.reportBug(new BugInstance(this, "NM_LCASE_HASHCODE", HIGH_PRIORITY).addClassAndMethod(this)
-			        .lowerPriorityIfDeprecated());
+			BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "NM_LCASE_HASHCODE", HIGH_PRIORITY), this);
+			DetectorUtil.lowerPriorityIfDeprecated(bugInstance);
+			bugReporter.reportBug(bugInstance);
 			return;
 		}
 		if (mName.equals("tostring") && sig.equals("()Ljava/lang/String;")) {
-			bugReporter.reportBug(new BugInstance(this, "NM_LCASE_TOSTRING", HIGH_PRIORITY).addClassAndMethod(this)
-			        .lowerPriorityIfDeprecated());
+			BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "NM_LCASE_TOSTRING", HIGH_PRIORITY), this);
+			DetectorUtil.lowerPriorityIfDeprecated(bugInstance);
+			bugReporter.reportBug(bugInstance);
 			return;
 		}
 

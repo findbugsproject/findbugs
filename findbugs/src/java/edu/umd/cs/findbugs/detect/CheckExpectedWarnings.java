@@ -26,12 +26,13 @@ import edu.umd.cs.findbugs.BugPattern;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector2;
 import edu.umd.cs.findbugs.DetectorFactory;
-import edu.umd.cs.findbugs.MethodAnnotation;
+import edu.umd.cs.findbugs.IMethodAnnotation;
 import edu.umd.cs.findbugs.NonReportingDetector;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.annotations.ExpectWarning;
 import edu.umd.cs.findbugs.annotations.NoWarning;
 import edu.umd.cs.findbugs.ba.XClass;
+import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XMethod;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
@@ -99,9 +100,9 @@ public class CheckExpectedWarnings implements Detector2, NonReportingDetector {
 			
 			for (Iterator<BugInstance> i = bugCollection.iterator(); i.hasNext(); ){
 				BugInstance warning = i.next();
-				MethodAnnotation method = warning.getPrimaryMethod();
+				IMethodAnnotation method = warning.getPrimaryMethod();
 				if (method != null) {
-					MethodDescriptor methodDesc = method.toXMethod().getMethodDescriptor();
+					MethodDescriptor methodDesc = XFactory.toXMethod(method).getMethodDescriptor();
 					Collection<BugInstance> warnings = warningsByMethod.get(methodDesc);
 					if (warnings == null) {
 						warnings = new LinkedList<BugInstance>();
@@ -165,10 +166,10 @@ public class CheckExpectedWarnings implements Detector2, NonReportingDetector {
 					System.out.println("  *** Found " + count + " " + bugCode + " warnings");
 				}
 				if (expectWarnings && count == 0 && possibleBugCodes.contains(bugCode)) {
-					reporter.reportBug(new BugInstance(this, "FB_MISSING_EXPECTED_WARNING", NORMAL_PRIORITY).addClassAndMethod(xmethod.getMethodDescriptor()).
+					reporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "FB_MISSING_EXPECTED_WARNING", NORMAL_PRIORITY), xmethod.getMethodDescriptor()).
 							addString(bugCode));
 				} else if (!expectWarnings && count > 0) {
-					reporter.reportBug(new BugInstance(this, "FB_UNEXPECTED_WARNING", NORMAL_PRIORITY).addClassAndMethod(xmethod.getMethodDescriptor()).
+					reporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "FB_UNEXPECTED_WARNING", NORMAL_PRIORITY), xmethod.getMethodDescriptor()).
 							addString(bugCode));
 				}
 			}

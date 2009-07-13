@@ -22,7 +22,7 @@ package edu.umd.cs.findbugs.filter;
 import java.io.IOException;
 
 import edu.umd.cs.findbugs.BugInstance;
-import edu.umd.cs.findbugs.LocalVariableAnnotation;
+import edu.umd.cs.findbugs.ILocalVariableAnnotation;
 import edu.umd.cs.findbugs.xml.XMLAttributeList;
 import edu.umd.cs.findbugs.xml.XMLOutput;
 
@@ -43,7 +43,7 @@ public class LocalMatcher implements Matcher {
 		return "Local(name="+name+")";
 	}
 	public boolean match(BugInstance bugInstance) {
-		LocalVariableAnnotation localAnnotation = bugInstance.getPrimaryLocalVariableAnnotation();
+		ILocalVariableAnnotation localAnnotation = bugInstance.getPrimaryLocalVariableAnnotation();
 		if(localAnnotation == null) {
 			return false;
 		}

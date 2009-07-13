@@ -30,8 +30,8 @@ import org.apache.bcel.classfile.JavaClass;
 import org.apache.bcel.classfile.Method;
 import org.apache.bcel.generic.ObjectType;
 
-import edu.umd.cs.findbugs.FieldAnnotation;
-import edu.umd.cs.findbugs.MethodAnnotation;
+import edu.umd.cs.findbugs.IFieldAnnotation;
+import edu.umd.cs.findbugs.IMethodAnnotation;
 import edu.umd.cs.findbugs.annotations.CheckForNull;
 import edu.umd.cs.findbugs.classfile.analysis.MethodInfo;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
@@ -180,7 +180,7 @@ public class DescriptorFactory {
 		}
 
 	}
-	public MethodDescriptor getMethodDescriptor(MethodAnnotation ma) {
+	public MethodDescriptor getMethodDescriptor(IMethodAnnotation ma) {
 		return getMethodDescriptor(ClassName.toSlashedClassName(ma.getClassName()), ma.getMethodName(), ma.getMethodSignature(), ma.isStatic());
 	}
 	/**
@@ -205,7 +205,7 @@ public class DescriptorFactory {
 		return getFieldDescriptor(className, ma.getName(), ma.getSignature(), ma.isStatic());
 
 	}
-	public FieldDescriptor getFieldDescriptor(FieldAnnotation ma) {
+	public FieldDescriptor getFieldDescriptor(IFieldAnnotation ma) {
 		return getFieldDescriptor(ClassName.toSlashedClassName(ma.getClassName()), ma.getFieldName(), ma.getFieldSignature(), ma.isStatic());
 	}
 	/**

@@ -25,6 +25,7 @@ import java.util.List;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.ba.XField;
 import edu.umd.cs.findbugs.ba.XMethod;
@@ -56,8 +57,7 @@ public class InstantiateStaticClass extends BytecodeScanningDetector {
 					return;
 
 				if (isStaticOnlyClass(xClass))
-					bugReporter.reportBug(new BugInstance(this, "ISC_INSTANTIATE_STATIC_CLASS", LOW_PRIORITY).addClassAndMethod(
-					        this).addSourceLine(this));
+					bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "ISC_INSTANTIATE_STATIC_CLASS", LOW_PRIORITY), this).add(AnnotationFactory.createSourceLine(this)));
 			}
 		} catch (ClassNotFoundException cnfe) {
 			bugReporter.reportMissingClass(cnfe);

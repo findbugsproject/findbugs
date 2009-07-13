@@ -190,7 +190,7 @@ public class XDocsBugReporter extends TextUIBugReporter {
 
 		element.addAttribute("message", xmlEscape(bugInstance.getMessage()));
 
-		SourceLineAnnotation line =
+		ISourceLineAnnotation line =
 				bugInstance.getPrimarySourceLineAnnotation();
 		if (line == null) {
 			element.addAttribute("line", "0");

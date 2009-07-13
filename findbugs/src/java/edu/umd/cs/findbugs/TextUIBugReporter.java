@@ -121,7 +121,7 @@ public abstract class TextUIBugReporter extends AbstractBugReporter {
 			outputStream.print(last);
 			outputStream.print(" ");
 		}
-		SourceLineAnnotation line =
+		ISourceLineAnnotation line =
 				bugInstance.getPrimarySourceLineAnnotation();
 		if (line == null)
 			outputStream.println(bugInstance.getMessage().replace('\n', ' '));
@@ -222,8 +222,8 @@ public abstract class TextUIBugReporter extends AbstractBugReporter {
 	protected void checkBugInstance(BugInstance bugInstance) {
 		for (Iterator<BugAnnotation> i = bugInstance.annotationIterator(); i.hasNext();) {
 			BugAnnotation bugAnnotation = i.next();
-			if (bugAnnotation instanceof PackageMemberAnnotation) {
-				PackageMemberAnnotation pkgMember = (PackageMemberAnnotation) bugAnnotation;
+			if (bugAnnotation instanceof IPackageMemberAnnotation) {
+				IPackageMemberAnnotation pkgMember = (IPackageMemberAnnotation) bugAnnotation;
 				if (pkgMember.getSourceLines() == null) {
 					throw new IllegalStateException("Package member " + pkgMember +
 							" reported without source lines!");

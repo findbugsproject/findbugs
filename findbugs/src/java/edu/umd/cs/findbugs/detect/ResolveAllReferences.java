@@ -22,6 +22,7 @@ import org.apache.bcel.classfile.Method;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.XClass;
@@ -140,8 +141,9 @@ public class ResolveAllReferences extends PreorderVisitor implements Detector {
 			if (co instanceof ConstantClass) {
 				String ref = getClassName(obj, i);
 				if ((ref.startsWith("java") || ref.startsWith("org.w3c.dom")) && !defined.contains(ref))
-					bugReporter.reportBug(new BugInstance(this, "VR_UNRESOLVABLE_REFERENCE", NORMAL_PRIORITY)
-							.addClass(obj).addString(ref));
+					bugReporter.reportBug(
+						new BugInstance(this, "VR_UNRESOLVABLE_REFERENCE", NORMAL_PRIORITY)
+							.add(AnnotationFactory.createClass(obj.getClassName())).addString(ref));
 
 
 			} else if (co instanceof ConstantFieldref) {
@@ -168,7 +170,8 @@ public class ResolveAllReferences extends PreorderVisitor implements Detector {
 					JavaClass target = Repository.lookupClass(className);
 					if (! find(target, name, signature))
 						bugReporter.reportBug(new BugInstance(this, "VR_UNRESOLVABLE_REFERENCE", NORMAL_PRIORITY)
-							.addClass(obj).addString(getMemberName(target.getClassName(), name,
+							.add(AnnotationFactory.createClass(obj.getClassName()))
+							.addString(getMemberName(target.getClassName(), name,
 									signature)));
 
 				} catch (ClassNotFoundException e) {

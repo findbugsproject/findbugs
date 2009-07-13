@@ -58,7 +58,7 @@ public class CbeckMustOverrideSuperAnnotation extends OpcodeStackDetector {
 		sawCallToSuper = false;
 		super.visit(code);
 		if (!sawCallToSuper)
-			bugReporter.reportBug(new BugInstance(this, "TESTING", NORMAL_PRIORITY).addClassAndMethod(this));
+			bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "TESTING", NORMAL_PRIORITY), this));
 	}
 
 	/*

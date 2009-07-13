@@ -33,7 +33,6 @@ import org.apache.bcel.generic.Type;
 
 import edu.umd.cs.findbugs.OpcodeStack;
 import edu.umd.cs.findbugs.Priorities;
-import edu.umd.cs.findbugs.ProgramPoint;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.OpcodeStack.Item;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;

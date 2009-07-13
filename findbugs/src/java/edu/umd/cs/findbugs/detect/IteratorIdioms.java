@@ -69,7 +69,7 @@ public class IteratorIdioms extends BytecodeScanningDetector implements  Statele
 			super.visit(obj);
 			if (!sawNoSuchElement)
 
-				bugReporter.reportBug(new BugInstance(this, "IT_NO_SUCH_ELEMENT", sawCall ? LOW_PRIORITY : NORMAL_PRIORITY).addClassAndMethod(this));
+				bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "IT_NO_SUCH_ELEMENT", sawCall ? LOW_PRIORITY : NORMAL_PRIORITY), this));
 		}
 	}
 

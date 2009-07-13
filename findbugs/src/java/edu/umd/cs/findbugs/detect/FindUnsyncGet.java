@@ -30,7 +30,8 @@ import org.apache.bcel.classfile.Method;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
-import edu.umd.cs.findbugs.MethodAnnotation;
+import edu.umd.cs.findbugs.IMethodAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class FindUnsyncGet extends BytecodeScanningDetector {
 	String prevClassName = " none ";
@@ -38,8 +39,8 @@ public class FindUnsyncGet extends BytecodeScanningDetector {
 	static final int doNotConsider = ACC_PRIVATE | ACC_STATIC | ACC_NATIVE;
 
 	// Maps of property names to get and set methods
-	private HashMap<String, MethodAnnotation> getMethods = new HashMap<String, MethodAnnotation>();
-	private HashMap<String, MethodAnnotation> setMethods = new HashMap<String, MethodAnnotation>();
+	private HashMap<String, IMethodAnnotation> getMethods = new HashMap<String, IMethodAnnotation>();
+	private HashMap<String, IMethodAnnotation> setMethods = new HashMap<String, IMethodAnnotation>();
 
 	public FindUnsyncGet(BugReporter bugReporter) {
 		this.bugReporter = bugReporter;
@@ -54,13 +55,13 @@ public class FindUnsyncGet extends BytecodeScanningDetector {
 
 		// Report method pairs
 		for (String propName : commonProperties) {
-			MethodAnnotation getMethod = getMethods.get(propName);
-			MethodAnnotation setMethod = setMethods.get(propName);
+			IMethodAnnotation getMethod = getMethods.get(propName);
+			IMethodAnnotation setMethod = setMethods.get(propName);
 
 			bugReporter.reportBug(new BugInstance(this, "UG_SYNC_SET_UNSYNC_GET", NORMAL_PRIORITY)
-					.addClass(prevClassName)
-					.addMethod(getMethod)
-					.addMethod(setMethod));
+				.add(AnnotationFactory.createClass(prevClassName))
+				.add(getMethod)
+				.add(setMethod));
 		}
 		getMethods.clear();
 		setMethods.clear();
@@ -96,12 +97,12 @@ public class FindUnsyncGet extends BytecodeScanningDetector {
 				&& !isSynchronized
 		// && returnValueIsRef
 		) {
-			getMethods.put(name.substring(3), MethodAnnotation.fromVisitedMethod(this));
+			getMethods.put(name.substring(3), AnnotationFactory.createMethod(this));
 		} else if (name.startsWith("set")
 				&& isSynchronized
 		// && firstArgIsRef
 		) {
-			setMethods.put(name.substring(3), MethodAnnotation.fromVisitedMethod(this));
+			setMethods.put(name.substring(3), AnnotationFactory.createMethod(this));
 		}
 	}
 }

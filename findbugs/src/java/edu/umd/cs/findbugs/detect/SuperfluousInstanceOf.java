@@ -30,6 +30,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.visitclass.LVTHelper;
 
 /**
@@ -95,9 +96,8 @@ public class SuperfluousInstanceOf extends BytecodeScanningDetector implements S
 
 								if (clsSignature.charAt(0) != '[') {
 									if (org.apache.bcel.Repository.instanceOf( objSignature, clsSignature )) {
-										bugReporter.reportBug(new BugInstance(this, "SIO_SUPERFLUOUS_INSTANCEOF", LOW_PRIORITY)
-											.addClassAndMethod(this)
-											.addSourceLine(this));
+										bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "SIO_SUPERFLUOUS_INSTANCEOF", LOW_PRIORITY), this)
+											.add(AnnotationFactory.createSourceLine(this)));
 									}
 								}
 							}

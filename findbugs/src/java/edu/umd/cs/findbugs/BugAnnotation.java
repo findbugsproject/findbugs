@@ -28,9 +28,9 @@ import java.io.Serializable;
  * @see BugInstance
  */
 public interface BugAnnotation
-		extends Comparable<BugAnnotation>, XMLWriteableWithMessages, Serializable, Cloneable {
+extends Comparable<BugAnnotation>, XMLWriteableWithMessages, Serializable, Cloneable {
 	/**
-	 * XML tag for a formatted text message describing the annotation. 
+	 * XML tag for a formatted text message describing the annotation.
 	 */
 	public static final String MESSAGE_TAG = "Message";
 
@@ -51,7 +51,7 @@ public interface BugAnnotation
 	 * @param key how the annotation should be formatted
 	 * @param primaryClass The primary class for the bug; some bug annotation format msgs are simplified in relation to that class.
 	 */
-	public String format(String key, ClassAnnotation primaryClass);
+	public String format(String key, IClassAnnotation primaryClass);
 
 	/**
 	 * Get a description of this bug annotation.
@@ -70,8 +70,6 @@ public interface BugAnnotation
 	 * @return true if significant
 	 */
 	public boolean isSignificant();
-	
-	public String toString(ClassAnnotation primaryClass);
-}
 
-// vim:ts=4
+	public String toString(IClassAnnotation primaryClass);
+}

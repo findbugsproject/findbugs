@@ -48,9 +48,10 @@ import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.Priorities;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.TypeAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
@@ -239,11 +240,11 @@ public class DontIgnoreResultOfPutIfAbsent implements Detector {
     									pattern = "UNKNOWN";
     								Type type = typeDataflow.getAnalysis().getFactAtLocation(location).getTopValue();
     	    						int priority = getPriorityForBeingMutable(type);
-									BugInstance bugInstance = new BugInstance(this,  pattern, priority)
-    											.addClassAndMethod(methodGen,sourceFileName)
-    											.addCalledMethod(methodGen, invoke).add(new TypeAnnotation(type)).add(ba);
-    								SourceLineAnnotation where = SourceLineAnnotation.fromVisitedInstruction(
-    										classContext, method, location);
+									BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this,  pattern, priority), methodGen, sourceFileName)
+    											.add(AnnotationFactory.createCalledMethod(methodGen.getConstantPool(), invoke))    											
+    											.add(new TypeAnnotation(type)).add(ba);
+    								ISourceLineAnnotation where = AnnotationFactory.createSourceLine(
+    										classContext, method, location.getHandle());
     								accumulator.accumulateBug(bugInstance, where);
     								isRetained = true;
     								break;
@@ -257,23 +258,21 @@ public class DontIgnoreResultOfPutIfAbsent implements Detector {
     								if (!valueSignature.startsWith("Ljava/util/concurrent/atomic/Atomic"))
     									priority = Priorities.HIGH_PRIORITY;
     							}
-    							BugInstance bugInstance = new BugInstance(this,  "TESTING", 
-										priority)
-											.addClassAndMethod(methodGen,sourceFileName)
-											.addCalledMethod(methodGen, invoke);
-								SourceLineAnnotation where = SourceLineAnnotation.fromVisitedInstruction(
-										classContext, method, location);
+    							BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this,  "TESTING", 
+										priority), methodGen, sourceFileName)
+											.add(AnnotationFactory.createCalledMethod(methodGen.getConstantPool(), invoke));
+								ISourceLineAnnotation where = AnnotationFactory.createSourceLine(
+										classContext, method, location.getHandle());
 								accumulator.accumulateBug(bugInstance, where);
     						}
     						
     					}
     				} else if (countOtherCalls) {
-    					BugInstance bugInstance = new BugInstance(this,  "TESTING2", 
-								Priorities.NORMAL_PRIORITY)
-									.addClassAndMethod(methodGen,sourceFileName)
-									.addCalledMethod(methodGen, invoke);
-						SourceLineAnnotation where = SourceLineAnnotation.fromVisitedInstruction(
-								classContext, method, location);
+    					BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this,  "TESTING2", 
+								Priorities.NORMAL_PRIORITY), methodGen, sourceFileName)
+									.add(AnnotationFactory.createCalledMethod(methodGen.getConstantPool(), invoke));
+						ISourceLineAnnotation where = AnnotationFactory.createSourceLine(
+								classContext, method, location.getHandle());
 						accumulator.accumulateBug(bugInstance, where);
 
     				}

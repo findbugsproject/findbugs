@@ -27,7 +27,10 @@ import org.apache.bcel.generic.InstructionHandle;
 
 import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.FieldAnnotation;
+import edu.umd.cs.findbugs.IFieldAnnotation;
+import edu.umd.cs.findbugs.ILocalVariableAnnotation;
 import edu.umd.cs.findbugs.LocalVariableAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.Location;
 import edu.umd.cs.findbugs.ba.XField;
 
@@ -51,14 +54,14 @@ public abstract class ValueNumberSourceInfo {
 	public static @CheckForNull BugAnnotation findAnnotationFromValueNumber(Method method,
 			Location location, ValueNumber valueNumber,
 			ValueNumberFrame vnaFrame, @CheckForNull String partialRole) {
-		LocalVariableAnnotation ann = ValueNumberSourceInfo.findLocalAnnotationFromValueNumber(
+		ILocalVariableAnnotation ann = ValueNumberSourceInfo.findLocalAnnotationFromValueNumber(
 				method, location, valueNumber, vnaFrame);
 		if (ann != null && partialRole != null) ann.setDescription("LOCAL_VARIABLE_"+partialRole);
 		
 		if (ann != null && ann.isSignificant()) {
 			return ann;
 		}
-		FieldAnnotation field = ValueNumberSourceInfo.findFieldAnnotationFromValueNumber(method,
+		IFieldAnnotation field = ValueNumberSourceInfo.findFieldAnnotationFromValueNumber(method,
 				location, valueNumber, vnaFrame);
 		if (field != null) {
 			if (partialRole != null) field.setDescription("FIELD_"+partialRole);
@@ -85,21 +88,21 @@ public abstract class ValueNumberSourceInfo {
 		return new LocalVariableAnnotation("?", -1, location.getHandle().getPosition());
 	}
 	
-	public static LocalVariableAnnotation findLocalAnnotationFromValueNumber(
+	public static ILocalVariableAnnotation findLocalAnnotationFromValueNumber(
 			Method method, Location location, ValueNumber valueNumber,
 			ValueNumberFrame vnaFrame) {
 
 		if (vnaFrame == null || vnaFrame.isBottom() || vnaFrame.isTop())
 			return null;
 
-		LocalVariableAnnotation localAnnotation = null;
+		ILocalVariableAnnotation localAnnotation = null;
 		for (int i = 0; i < vnaFrame.getNumLocals(); i++) {
 			if (valueNumber.equals(vnaFrame.getValue(i))) {
 				InstructionHandle handle = location.getHandle();
 				int position1 = handle.getPrev().getPosition();
 				int position2 = handle.getPosition();
-				localAnnotation = LocalVariableAnnotation
-				.getLocalVariableAnnotation(method, i, position1,
+				localAnnotation = AnnotationFactory
+				.createVariable(method, i, position1,
 						position2);
 				if (localAnnotation != null)
 					return localAnnotation;
@@ -108,14 +111,20 @@ public abstract class ValueNumberSourceInfo {
 		return null;
 	}
 
-	public static FieldAnnotation findFieldAnnotationFromValueNumber(
+	public static IFieldAnnotation findFieldAnnotationFromValueNumber(
 			Method method, Location location, ValueNumber valueNumber,
 			ValueNumberFrame vnaFrame) {
 		XField field = ValueNumberSourceInfo.findXFieldFromValueNumber(method, location, valueNumber,
 				vnaFrame);
-		if (field == null)
-			return null;
-		return FieldAnnotation.fromXField(field);
+		if (field == null) {
+	        return null;
+        }
+		return new FieldAnnotation(
+				field.getClassName(),
+				field.getName(),
+				field.getSignature(),
+				field.getSourceSignature(),
+				field.isStatic());
 	}
 
 	public static XField findXFieldFromValueNumber(Method method,

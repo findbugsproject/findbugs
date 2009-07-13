@@ -36,6 +36,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.ClassContext;
 
 public class UselessSubclassMethod extends BytecodeScanningDetector implements StatelessDetector {
@@ -92,8 +93,7 @@ public class UselessSubclassMethod extends BytecodeScanningDetector implements S
 			String curDetail = obj.getName() + obj.getSignature();
 			for (String infMethodDetail : interfaceMethods) {
 				if (curDetail.equals(infMethodDetail))
-					bugReporter.reportBug(new BugInstance(this, "USM_USELESS_ABSTRACT_METHOD", LOW_PRIORITY)
-					.addClassAndMethod(getClassContext().getJavaClass(), obj));
+					bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "USM_USELESS_ABSTRACT_METHOD", LOW_PRIORITY), getClassContext().getJavaClass(), obj));
 			}
 		}
 		super.visitMethod(obj);
@@ -129,9 +129,8 @@ public class UselessSubclassMethod extends BytecodeScanningDetector implements S
 					if ((superMethod == null) || accessModifiersAreDifferent(getMethod(), superMethod))
 						return;
 
-					bugReporter.reportBug( new BugInstance( this, "USM_USELESS_SUBCLASS_METHOD", LOW_PRIORITY )
-					.addClassAndMethod(this)
-					.addSourceLine(this, invokePC));
+					bugReporter.reportBug( DetectorUtil.addClassAndMethod(new BugInstance( this, "USM_USELESS_SUBCLASS_METHOD", LOW_PRIORITY ), this)
+						.add(AnnotationFactory.createSourceLine(this, invokePC)));
 				}
 			}
 		}

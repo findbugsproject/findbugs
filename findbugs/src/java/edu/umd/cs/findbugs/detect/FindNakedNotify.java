@@ -27,6 +27,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 //   2:   astore_1
 //   3:   monitorenter
@@ -59,9 +60,8 @@ public class FindNakedNotify extends BytecodeScanningDetector implements  Statel
 		stage = synchronizedMethod ? 1 : 0;
 		super.visit(obj);
 		if (synchronizedMethod && stage == 4)
-			bugReporter.reportBug(new BugInstance(this, "NN_NAKED_NOTIFY", NORMAL_PRIORITY)
-					.addClassAndMethod(this)
-					.addSourceLine(this, notifyPC));
+			bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "NN_NAKED_NOTIFY", NORMAL_PRIORITY), this)
+					.add(AnnotationFactory.createSourceLine(this, notifyPC)));
 	}
 
 	@Override
@@ -89,9 +89,8 @@ public class FindNakedNotify extends BytecodeScanningDetector implements  Statel
 			break;
 		case 4:
 			if (seen == MONITOREXIT) {
-				bugReporter.reportBug(new BugInstance(this, "NN_NAKED_NOTIFY", NORMAL_PRIORITY)
-						.addClassAndMethod(this)
-						.addSourceLine(this, notifyPC));
+				bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "NN_NAKED_NOTIFY", NORMAL_PRIORITY), this)
+						.add(AnnotationFactory.createSourceLine(this, notifyPC)));
 				stage = 5;
 			} else
 				stage = 0;

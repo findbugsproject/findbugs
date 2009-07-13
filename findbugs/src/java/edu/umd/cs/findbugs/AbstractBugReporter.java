@@ -149,7 +149,7 @@ public abstract class AbstractBugReporter implements BugReporter {
 
 			analysisUnderway = true;
 		}
-		ClassAnnotation primaryClass = bugInstance.getPrimaryClass();
+		IClassAnnotation primaryClass = bugInstance.getPrimaryClass();
 		if (primaryClass != null && !AnalysisContext.currentAnalysisContext().isApplicationClass(primaryClass.getClassName())) {
 			if(DEBUG) {
 				System.out.println("AbstractBugReporter: Filtering due to non-primary class");

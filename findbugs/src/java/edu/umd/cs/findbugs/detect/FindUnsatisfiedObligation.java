@@ -32,6 +32,9 @@ import org.apache.bcel.classfile.Constant;
 import org.apache.bcel.classfile.ConstantClass;
 import org.apache.bcel.classfile.ConstantNameAndType;
 import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.LineNumber;
+import org.apache.bcel.classfile.LineNumberTable;
+import org.apache.bcel.classfile.Method;
 import org.apache.bcel.generic.ConstantPoolGen;
 import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.InstructionHandle;
@@ -41,10 +44,13 @@ import org.apache.bcel.generic.Type;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.IntAnnotation;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.StringAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
+import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.BasicBlock;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.DataflowAnalysisException;
@@ -52,6 +58,7 @@ import edu.umd.cs.findbugs.ba.Edge;
 import edu.umd.cs.findbugs.ba.Location;
 import edu.umd.cs.findbugs.ba.Path;
 import edu.umd.cs.findbugs.ba.PathVisitor;
+import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XMethod;
 import edu.umd.cs.findbugs.ba.ch.Subtypes2;
@@ -110,22 +117,22 @@ public class FindUnsatisfiedObligation extends CFGDetector {
 	private static final boolean REPORT_OBLIGATION_SET = SystemProperties.getBoolean("oa.report.obligationset", true);
 
 	private final BugReporter bugReporter;
-	private ObligationPolicyDatabase database;
+	private final ObligationPolicyDatabase database;
 
 	public FindUnsatisfiedObligation(BugReporter bugReporter) {
 		this.bugReporter = bugReporter;
-		 IAnalysisCache analysisCache = Global.getAnalysisCache();
-			
+		IAnalysisCache analysisCache = Global.getAnalysisCache();
+
 		database = analysisCache.getDatabase(ObligationPolicyDatabase.class);
-		
+
 	}
 
 	@Override
-    public void visitClass(ClassDescriptor classDescriptor) throws CheckedAnalysisException {
+	public void visitClass(ClassDescriptor classDescriptor) throws CheckedAnalysisException {
 		IAnalysisCache analysisCache = Global.getAnalysisCache();
 
 		ObligationFactory factory = database.getFactory();
-			
+
 		JavaClass jclass = analysisCache.getClassAnalysis(JavaClass.class, classDescriptor);
 		for(Constant c : jclass.getConstantPool().getConstantPool()) {
 			if (c instanceof ConstantNameAndType) {
@@ -143,12 +150,13 @@ public class FindUnsatisfiedObligation extends CFGDetector {
 				}
 			}
 		}
-		if (DEBUG) 
+		if (DEBUG) {
 			System.out.println(classDescriptor + " isn't interesting for obligation analysis");
+		}
 	}
 	@Override
 	protected void visitMethodCFG(MethodDescriptor methodDescriptor, CFG cfg) throws CheckedAnalysisException {
-		
+
 		MethodChecker methodChecker = new MethodChecker(methodDescriptor, cfg);
 		methodChecker.analyzeMethod();
 	}
@@ -292,17 +300,7 @@ public class FindUnsatisfiedObligation extends CFGDetector {
 				}
 
 				// Apply the false-positive suppression heuristics
-				int leakCount;
-				try {
-					leakCount = getAdjustedLeakCount(state, id);
-				} catch (DataflowAnalysisException e) {
-					// ignore
-					continue;
-				} catch (ClassNotFoundException e) {
-					// ignore
-					continue;
-				}
-
+				int leakCount = getAdjustedLeakCount(state, id);
 				if (leakCount > 0) {
 					leakedObligationMap.put(obligation, state);
 				}
@@ -311,14 +309,14 @@ public class FindUnsatisfiedObligation extends CFGDetector {
 		}
 
 		private void reportWarning(Obligation obligation, State state) {
-			BugInstance bugInstance = new BugInstance(FindUnsatisfiedObligation.this, "OBL_UNSATISFIED_OBLIGATION", NORMAL_PRIORITY)
-				.addClassAndMethod(methodDescriptor).addClass(obligation.getClassName())
-				.describe("CLASS_REFTYPE");
+			BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(FindUnsatisfiedObligation.this, "OBL_UNSATISFIED_OBLIGATION", NORMAL_PRIORITY), methodDescriptor)
+			.add(AnnotationFactory.createClass(obligation.getClassName()))
+			.describe("CLASS_REFTYPE");
 
 			// Report how many instances of the obligation are remaining
 			bugInstance
-				.addInt(state.getObligationSet().getCount(obligation.getId()))
-				.describe(IntAnnotation.INT_OBLIGATIONS_REMAINING);
+			.addInt(state.getObligationSet().getCount(obligation.getId()))
+			.describe(IntAnnotation.INT_OBLIGATIONS_REMAINING);
 
 			// Add source line information
 			annotateWarningWithSourceLineInformation(state, obligation, bugInstance);
@@ -446,8 +444,8 @@ public class FindUnsatisfiedObligation extends CFGDetector {
 						if (balanced) {
 							if (DEBUG_FP) {
 								System.out.println("  Suppressing path because "
-									+ "a transfer appears to result in balanced "
-									+ "outstanding obligations");
+										+ "a transfer appears to result in balanced "
+										+ "outstanding obligations");
 							}
 
 							adjustedLeakCount = 0;
@@ -527,8 +525,8 @@ public class FindUnsatisfiedObligation extends CFGDetector {
 									}
 								} else if (DEBUG_FP) {
 									System.out.println(handle + " not a transfer " +
-										"of " + consumed + "->" + produced +
-										" because no instances of " + consumed);
+											"of " + consumed + "->" + produced +
+											" because no instances of " + consumed);
 									System.out.println("I see " + transferState.getObligationSet());
 								}
 							}
@@ -557,7 +555,7 @@ public class FindUnsatisfiedObligation extends CFGDetector {
 					// Could this happen?
 					if (DEBUG_FP) {
 						System.out.println("at " + handle + " in " + xmethod
-							+ " found " + prefixes.size() + " states which are prefixes of error state");
+								+ " found " + prefixes.size() + " states which are prefixes of error state");
 					}
 					return null;
 				}
@@ -581,8 +579,7 @@ public class FindUnsatisfiedObligation extends CFGDetector {
 		 * @return the adjusted leak count (positive if leaked obligation, negative if
 		 *          attempt to release an un-acquired obligation)
 		 */
-		private int getAdjustedLeakCount(
-			State state, int obligationId) throws DataflowAnalysisException, ClassNotFoundException {
+		private int getAdjustedLeakCount(State state, int obligationId) {
 
 			final Obligation obligation = database.getFactory().getObligationById(obligationId);
 			Path path = state.getPath();
@@ -591,26 +588,24 @@ public class FindUnsatisfiedObligation extends CFGDetector {
 
 			if (visitor.couldNotAnalyze()) {
 				return 0;
-			} else {
-				return visitor.getAdjustedLeakCount();
 			}
+			return visitor.getAdjustedLeakCount();
 		}
 
-		private boolean isPossibleInstanceOfObligationType(Subtypes2 subtypes2, ObjectType type, ObjectType obligationType) throws ClassNotFoundException {
+		private boolean isPossibleInstanceOfObligationType(Subtypes2 subtypes, ObjectType type, ObjectType obligationType) throws ClassNotFoundException {
 			//
 			// If we're tracking, e.g., InputStream obligations,
 			// and we see a FileInputStream reference being assigned
 			// to a field (or returned from a method),
 			// then the false-positive supressions heuristic should apply.
 			//
-
-			return subtypes2.isSubtype(type, obligationType);
+			return subtypes.isSubtype(type, obligationType);
 		}
 
 		private void reportPath(
-			final BugInstance bugInstance,
-			final Obligation obligation,
-			final State state) {
+				final BugInstance bugInstance,
+				final Obligation obligation,
+				final State state) {
 
 			Path path = state.getPath();
 
@@ -618,7 +613,7 @@ public class FindUnsatisfiedObligation extends CFGDetector {
 			// SourceLineAnnotations to the BugInstance.
 			PathVisitor visitor = new PathVisitor() {
 				boolean sawFirstCreation;
-				SourceLineAnnotation lastSourceLine;// = creationSourceLine;
+				ISourceLineAnnotation lastSourceLine;// = creationSourceLine;
 				BasicBlock curBlock;
 
 				public void visitBasicBlock(BasicBlock basicBlock) {
@@ -633,8 +628,8 @@ public class FindUnsatisfiedObligation extends CFGDetector {
 						if (i.hasNext()) {
 							State entryState = i.next();
 							if (entryState.getObligationSet().getCount(obligation.getId()) > 0) {
-								lastSourceLine = SourceLineAnnotation.forFirstLineOfMethod(methodDescriptor);
-								lastSourceLine.setDescription(SourceLineAnnotation.ROLE_OBLIGATION_CREATED_BY_WILLCLOSE_PARAMETER);
+								lastSourceLine = forFirstLineOfMethod(methodDescriptor);
+								lastSourceLine.setDescription(ISourceLineAnnotation.ROLE_OBLIGATION_CREATED_BY_WILLCLOSE_PARAMETER);
 								bugInstance.add(lastSourceLine);
 								sawFirstCreation = true;
 
@@ -653,18 +648,19 @@ public class FindUnsatisfiedObligation extends CFGDetector {
 						return;
 					}
 
-					SourceLineAnnotation sourceLine =
-						SourceLineAnnotation.fromVisitedInstruction(methodDescriptor, new Location(handle, curBlock));
+					ISourceLineAnnotation sourceLine =
+						AnnotationFactory.createSourceLine(methodDescriptor,
+								handle.getPosition());
 
 					boolean isInteresting = (sourceLine.getStartLine() > 0) &&
-						(lastSourceLine == null || !sourceLine.equals(lastSourceLine));
+					(lastSourceLine == null || !sourceLine.equals(lastSourceLine));
 
 					if (REPORT_PATH_DEBUG) {
 						System.out.println("  " + handle.getPosition() + " --> " + sourceLine + (isInteresting ? " **" : ""));
 					}
 					if (isInteresting) {
 						sourceLine.setDescription(
-							isCreation ? SourceLineAnnotation.ROLE_OBLIGATION_CREATED : SourceLineAnnotation.ROLE_PATH_CONTINUES);
+								isCreation ? ISourceLineAnnotation.ROLE_OBLIGATION_CREATED : ISourceLineAnnotation.ROLE_PATH_CONTINUES);
 						bugInstance.add(sourceLine);
 						lastSourceLine = sourceLine;
 						if (isCreation) {
@@ -694,9 +690,55 @@ public class FindUnsatisfiedObligation extends CFGDetector {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.umd.cs.findbugs.Detector#report()
+	/**
+	 * Make a best-effort attempt to
+	 * create a SourceLineAnnotation for the first line of a method.
+	 * 
+	 * @param methodDescriptor a method
+	 * @return SourceLineAnnotation describing the first line of the method
+	 *         (insofar as we can actually figure that out from the bytecode)
 	 */
+	private static ISourceLineAnnotation forFirstLineOfMethod(MethodDescriptor methodDescriptor) {
+		ISourceLineAnnotation result = null;
+
+		try {
+			Method m = Global.getAnalysisCache().getMethodAnalysis(Method.class, methodDescriptor);
+			XClass xclass = Global.getAnalysisCache().getClassAnalysis(XClass.class, methodDescriptor.getClassDescriptor());
+			LineNumberTable lnt = m.getLineNumberTable();
+			String sourceFile = xclass.getSource();
+			if (sourceFile != null && lnt != null) {
+				int firstLine = Integer.MAX_VALUE;
+				int bytecode = 0;
+				LineNumber[] entries = lnt.getLineNumberTable();
+				for (LineNumber entry : entries) {
+					if (entry.getLineNumber() < firstLine) {
+						firstLine = entry.getLineNumber();
+						bytecode = entry.getStartPC();
+					}
+				}
+				if (firstLine < Integer.MAX_VALUE) {
+
+					result = new SourceLineAnnotation(
+							methodDescriptor.getClassDescriptor().toDottedClassName(),
+							sourceFile,
+							firstLine,
+							firstLine,
+							bytecode,
+							bytecode);
+				}
+			}
+		} catch (CheckedAnalysisException e) {
+			// ignore
+		}
+
+		if (result == null) {
+			String className = methodDescriptor.getClassDescriptor().toDottedClassName();
+			String sourceFile = AnalysisContext.currentAnalysisContext().lookupSourceFile(className);
+			result = SourceLineAnnotation.createUnknown(className, sourceFile);
+		}
+		return result;
+	}
+
 	public void report() {
 		// Nothing to do here
 	}

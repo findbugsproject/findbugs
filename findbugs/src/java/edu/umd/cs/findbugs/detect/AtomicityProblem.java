@@ -24,6 +24,7 @@ import org.apache.bcel.classfile.Code;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.OpcodeStack;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.XMethod;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 
@@ -90,7 +91,7 @@ public class AtomicityProblem extends OpcodeStackDetector {
 				String methodName = getNameConstantOperand();
 				if (methodName.equals("put")) {
 					if((getPC() < lastQuestionableCheckTarget) && (lastQuestionableCheckTarget != -1)) {
-						bugReporter.reportBug(new BugInstance(this, "AT_CONCURRENTHASHMAP_GET_PUT", priority).addClassAndMethod(this).addSourceLine(this));
+						bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "AT_CONCURRENTHASHMAP_GET_PUT", priority), this).add(AnnotationFactory.createSourceLine(this)));
 					}
 				}
 			}

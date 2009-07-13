@@ -36,6 +36,7 @@ import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.ByteCodePatternDetector;
 import edu.umd.cs.findbugs.JavaVersion;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.bcp.ByteCodePattern;
 import edu.umd.cs.findbugs.ba.bcp.ByteCodePatternMatch;
@@ -307,11 +308,10 @@ public @Deprecated class BCPMethodReturnCheck extends ByteCodePatternDetector  {
 			priority++;
 		// System.out.println("priority: " + priority);
 
-		bugReporter.reportBug(new BugInstance(this, "RV_RETURN_VALUE_IGNORED2",
-				priority)
-				.addClassAndMethod(methodGen, sourceFile)
-				.addCalledMethod(methodGen, inv)
-				.addSourceLine(classContext, methodGen, sourceFile, call));
+		bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "RV_RETURN_VALUE_IGNORED2",
+				priority), methodGen, sourceFile)
+				.add(AnnotationFactory.createCalledMethod(methodGen.getConstantPool(), inv))
+				.add(AnnotationFactory.createSourceLine(methodGen, sourceFile, call)));
 	}
 
 	public static String extractPackageName(String className) {

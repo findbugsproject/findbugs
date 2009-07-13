@@ -29,6 +29,7 @@ import org.apache.bcel.classfile.JavaClass;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.ClassContext;
 
 public class XMLFactoryBypass extends BytecodeScanningDetector  {
@@ -94,9 +95,8 @@ public class XMLFactoryBypass extends BytecodeScanningDetector  {
 				JavaClass[] infs = newCls.getAllInterfaces();
 				for (JavaClass inf : infs) {
 					if (xmlInterfaces.contains(inf.getClassName())) {
-						bugReporter.reportBug(new BugInstance(this, "XFB_XML_FACTORY_BYPASS", LOW_PRIORITY)
-								.addClassAndMethod(this)
-								.addSourceLine(this));
+						bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "XFB_XML_FACTORY_BYPASS", LOW_PRIORITY), this)
+								.add(AnnotationFactory.createSourceLine(this)));
 						rejectedXMLClasses.remove(newClsName);
 					}
 				}

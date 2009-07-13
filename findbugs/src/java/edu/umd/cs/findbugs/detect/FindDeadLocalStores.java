@@ -19,19 +19,15 @@
 
 package edu.umd.cs.findbugs.detect;
 
-import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 import org.apache.bcel.Constants;
 import org.apache.bcel.classfile.ConstantClass;
 import org.apache.bcel.classfile.Field;
 import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.LocalVariable;
-import org.apache.bcel.classfile.LocalVariableTable;
 import org.apache.bcel.classfile.Method;
 import org.apache.bcel.generic.ACONST_NULL;
 import org.apache.bcel.generic.ALOAD;
@@ -65,10 +61,15 @@ import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.FieldAnnotation;
 import edu.umd.cs.findbugs.FindBugsAnalysisFeatures;
-import edu.umd.cs.findbugs.LocalVariableAnnotation;
+import edu.umd.cs.findbugs.BugInstance;
+import edu.umd.cs.findbugs.IFieldAnnotation;
+import edu.umd.cs.findbugs.ILocalVariableAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.TypeAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
 import edu.umd.cs.findbugs.ba.ClassContext;
@@ -78,7 +79,6 @@ import edu.umd.cs.findbugs.ba.LiveLocalStoreAnalysis;
 import edu.umd.cs.findbugs.ba.Location;
 import edu.umd.cs.findbugs.ba.type.TypeDataflow;
 import edu.umd.cs.findbugs.ba.type.TypeFrame;
-import edu.umd.cs.findbugs.props.PriorityAdjustment;
 import edu.umd.cs.findbugs.props.WarningProperty;
 import edu.umd.cs.findbugs.props.WarningPropertySet;
 import edu.umd.cs.findbugs.props.WarningPropertyUtil;
@@ -262,7 +262,7 @@ public class FindDeadLocalStores implements Detector {
 				// Is store alive?
 				boolean storeLive = llsaDataflow.getAnalysis().isStoreAlive(liveStoreSet, local);
 
-				LocalVariableAnnotation lvAnnotation = LocalVariableAnnotation.getLocalVariableAnnotation(method, location, ins);
+				ILocalVariableAnnotation lvAnnotation = AnnotationFactory.createVariable(method, location, ins);
 
 				
 				String sourceFileName = javaClass.getSourceFileName();
@@ -272,8 +272,7 @@ public class FindDeadLocalStores implements Detector {
 				}
 					
 				
-				SourceLineAnnotation sourceLineAnnotation = SourceLineAnnotation.fromVisitedInstruction(classContext,
-						methodGen, sourceFileName, location.getHandle());
+				ISourceLineAnnotation sourceLineAnnotation = AnnotationFactory.createSourceLine(methodGen, sourceFileName, location.getHandle());
 
 				if (DEBUG) {
 					System.out.println("    Store at " + sourceLineAnnotation.getStartLine() + "@" +
@@ -316,17 +315,17 @@ public class FindDeadLocalStores implements Detector {
 
 					int priority = storeLive ? LOW_PRIORITY : NORMAL_PRIORITY;
 					if (shadowedField != null) priority--;
-					pendingBugReportAboutOverwrittenParameter = new BugInstance(this, "IP_PARAMETER_IS_DEAD_BUT_OVERWRITTEN",
-							priority).addClassAndMethod(methodGen,
-									sourceFileName).add(lvAnnotation);
+					pendingBugReportAboutOverwrittenParameter = DetectorUtil.addClassAndMethod(new BugInstance(this, "IP_PARAMETER_IS_DEAD_BUT_OVERWRITTEN",
+							priority), methodGen, sourceFileName).add(lvAnnotation);
 					
 					if (shadowedField != null)
 						pendingBugReportAboutOverwrittenParameter
-							.addField(FieldAnnotation.fromBCELField(classContext.getJavaClass(), shadowedField))
-							.describe(FieldAnnotation.DID_YOU_MEAN_ROLE);
+							.add(fromBCELField(classContext.getJavaClass(), shadowedField))
+							.describe(IFieldAnnotation.DID_YOU_MEAN_ROLE);
 					
-					pendingBugReportAboutOverwrittenParameter.addSourceLine(classContext, methodGen,
-											sourceFileName, location.getHandle());
+					pendingBugReportAboutOverwrittenParameter.add(
+							AnnotationFactory.createSourceLine(methodGen,
+											sourceFileName, location.getHandle()));
 					complainedAbout.set(local);
 				}
 
@@ -391,10 +390,10 @@ public class FindDeadLocalStores implements Detector {
 					if (foundDeadClassInitialization) {
 						if (classContext.getJavaClass().getSuperclassName().equals(
 								"org.apache.axis.client.Stub")) continue;
-						BugInstance bugInstance = new BugInstance(this,  "DLS_DEAD_STORE_OF_CLASS_LITERAL", 
-								Priorities.NORMAL_PRIORITY).addClassAndMethod(
-										methodGen,
-										sourceFileName).add(lvAnnotation).addType(initializationOf);
+						BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(
+								this, "DLS_DEAD_STORE_OF_CLASS_LITERAL", Priorities.NORMAL_PRIORITY), methodGen, sourceFileName)
+							.add(lvAnnotation)
+							.add(new TypeAnnotation(initializationOf));
 						accumulator.accumulateBug(bugInstance, sourceLineAnnotation);
 						continue;
 					}
@@ -515,14 +514,12 @@ public class FindDeadLocalStores implements Detector {
 				 
 
 					// Report the warning
-					BugInstance bugInstance = new BugInstance(this, storeOfNull ? "DLS_DEAD_LOCAL_STORE_OF_NULL"
-							: "DLS_DEAD_LOCAL_STORE", NORMAL_PRIORITY).addClassAndMethod(
-									methodGen,
-									sourceFileName).add(lvAnnotation);
+					BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, storeOfNull ? "DLS_DEAD_LOCAL_STORE_OF_NULL"
+							: "DLS_DEAD_LOCAL_STORE", NORMAL_PRIORITY), methodGen, sourceFileName).add(lvAnnotation);
 
 					if (shadowedField != null)
-						bugInstance.addField(FieldAnnotation.fromBCELField(classContext.getJavaClass(), shadowedField))
-						.describe(FieldAnnotation.DID_YOU_MEAN_ROLE);
+						bugInstance.add(fromBCELField(classContext.getJavaClass(), shadowedField))
+						.describe(IFieldAnnotation.DID_YOU_MEAN_ROLE);
 					
 					// If in relaxed reporting mode, encode heuristic
 					// information.
@@ -568,7 +565,7 @@ public class FindDeadLocalStores implements Detector {
 	entryLoop:
 		for (Iterator<? extends BugInstance> i = accumulator.uniqueBugs().iterator(); i.hasNext(); ) {
 			
-			for (SourceLineAnnotation annotation : accumulator.locations(i.next())) {
+			for (ISourceLineAnnotation annotation : accumulator.locations(i.next())) {
 				if (liveStoreSourceLineSet.get(annotation.getStartLine())) {
 					// This instruction can be a live store; don't report
 					// it as a warning.
@@ -619,25 +616,14 @@ public class FindDeadLocalStores implements Detector {
 	}
 
 	/**
-	 * Get the name of given local variable (if possible) and store it in the
-	 * HeuristicPropertySet.
-	 * 
-	 * @param lvt
-	 *            the LocalVariableTable
-	 * @param local
-	 *            index of the local
-	 * @param pc
-	 *            program counter value of the instruction
+	 * Factory method. Construct from class name and BCEL Field object.
+	 *
+	 * @param jClass the class which defines the field
+	 * @param field     the BCEL Field object
+	 * @return the FieldAnnotation
 	 */
-	private void checkLocalVariableName(LocalVariableTable lvt, int local, int pc, WarningPropertySet<DeadLocalStoreProperty> propertySet) {
-		if (lvt != null) {
-			LocalVariable lv = lvt.getLocalVariable(local, pc);
-			if (lv != null) {
-				String localName = lv.getName();
-				propertySet.setProperty(DeadLocalStoreProperty.LOCAL_NAME, localName);
-			}
-		}
-
+	private static IFieldAnnotation fromBCELField(JavaClass jClass, Field field) {
+		return new FieldAnnotation(jClass.getClassName(), field.getName(), field.getSignature(), field.isStatic());
 	}
 
 	/**
@@ -668,4 +654,4 @@ public class FindDeadLocalStores implements Detector {
 	}
 }
 
-//vim:ts=4
+

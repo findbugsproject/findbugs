@@ -3,10 +3,10 @@ package edu.umd.cs.findbugs;
 
 public class MethodWarningSuppressor extends ClassWarningSuppressor {
 
-	MethodAnnotation method;
+	IMethodAnnotation method;
 
 
-	public MethodWarningSuppressor(String bugPattern, ClassAnnotation clazz, MethodAnnotation method) {
+	public MethodWarningSuppressor(String bugPattern, IClassAnnotation clazz, IMethodAnnotation method) {
 		super(bugPattern, clazz);
 		this.method = method;
 		}
@@ -15,7 +15,7 @@ public class MethodWarningSuppressor extends ClassWarningSuppressor {
 
 		if (!super.match(bugInstance)) return false;
 
-	MethodAnnotation bugMethod = bugInstance.getPrimaryMethod();
+	IMethodAnnotation bugMethod = bugInstance.getPrimaryMethod();
 	if (bugMethod != null &&
 		!method.equals(bugMethod)) return false;
 	if (DEBUG)

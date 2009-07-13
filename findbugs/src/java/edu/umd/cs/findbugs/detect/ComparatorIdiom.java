@@ -26,6 +26,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.DeepSubtypeAnalysis;
 import edu.umd.cs.findbugs.Detector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.ch.Subtypes2;
 import edu.umd.cs.findbugs.util.ClassName;
@@ -75,7 +76,7 @@ public class ComparatorIdiom extends PreorderVisitor implements Detector {
 				bugReporter
 						.reportBug(new BugInstance(this,
 								"SE_COMPARATOR_SHOULD_BE_SERIALIZABLE",
-								priority).addClass(this));
+								priority).add(AnnotationFactory.createClass(getDottedClassName())));
 
 			}
 

@@ -33,6 +33,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.IntAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XField;
 
@@ -106,10 +107,12 @@ public class HugeSharedStringConstants extends BytecodeScanningDetector {
 			BugInstance bug = new BugInstance(this, "HSC_HUGE_SHARED_STRING_CONSTANT",
 					overhead > 20*SIZE_OF_HUGE_CONSTANT ? HIGH_PRIORITY : 
 						( overhead > 8*SIZE_OF_HUGE_CONSTANT ? NORMAL_PRIORITY : LOW_PRIORITY))
-						.addClass(className).addField(field).addInt(length).addInt(occursIn.size()).describe(IntAnnotation.INT_OCCURRENCES);
+						.add(AnnotationFactory.createClass(className))
+						.add(AnnotationFactory.createField(field))
+						.addInt(length).addInt(occursIn.size()).describe(IntAnnotation.INT_OCCURRENCES);
 			for (String c : occursIn)
 				if (!c.equals(className))
-					bug.addClass(c);
+					bug.add(AnnotationFactory.createClass(c));
 
 			bugReporter.reportBug(bug);
 

@@ -23,7 +23,8 @@ package edu.umd.cs.findbugs.filter;
 import java.io.IOException;
 
 import edu.umd.cs.findbugs.BugInstance;
-import edu.umd.cs.findbugs.MethodAnnotation;
+import edu.umd.cs.findbugs.IMethodAnnotation;
+import edu.umd.cs.findbugs.signature.SignatureUtil;
 import edu.umd.cs.findbugs.xml.XMLAttributeList;
 import edu.umd.cs.findbugs.xml.XMLOutput;
 
@@ -37,7 +38,7 @@ public class MethodMatcher extends MemberMatcher implements Matcher {
 	}
 
 	public boolean match(BugInstance bugInstance) {
-		MethodAnnotation methodAnnotation = bugInstance.getPrimaryMethod();
+		IMethodAnnotation methodAnnotation = bugInstance.getPrimaryMethod();
 		if (methodAnnotation == null)
 			return false;
 		if (!name.match(methodAnnotation.getMethodName()))

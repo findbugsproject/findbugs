@@ -36,6 +36,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.BasicBlock;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
@@ -43,7 +44,6 @@ import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.DataflowAnalysisException;
 import edu.umd.cs.findbugs.ba.PostDominatorsAnalysis;
 import edu.umd.cs.findbugs.ba.SignatureConverter;
-import edu.umd.cs.findbugs.ba.SignatureParser;
 import edu.umd.cs.findbugs.ba.heap.FieldSet;
 import edu.umd.cs.findbugs.ba.heap.LoadDataflow;
 import edu.umd.cs.findbugs.ba.heap.StoreDataflow;
@@ -51,6 +51,7 @@ import edu.umd.cs.findbugs.ba.type.TypeFrame;
 import edu.umd.cs.findbugs.ba.vna.ValueNumber;
 import edu.umd.cs.findbugs.ba.vna.ValueNumberDataflow;
 import edu.umd.cs.findbugs.ba.vna.ValueNumberFrame;
+import edu.umd.cs.findbugs.signature.SignatureParser;
 
 /**
  * Signal an infinite loop if either:
@@ -191,9 +192,8 @@ public @Deprecated class InfiniteRecursiveLoop2 implements Detector {
 
 		if (report) {
 			JavaClass javaClass = classContext.getJavaClass();
-			BugInstance warning = new BugInstance(this, "IL_INFINITE_RECURSIVE_LOOP", HIGH_PRIORITY)
-					.addClassAndMethod(javaClass, method)
-					.addSourceLine(classContext, method, thrower);
+			BugInstance warning = DetectorUtil.addClassAndMethod(new BugInstance(this, "IL_INFINITE_RECURSIVE_LOOP", HIGH_PRIORITY), javaClass, method)
+					.add(AnnotationFactory.createSourceLine(classContext, method, thrower));
 			bugReporter.reportBug(warning);
 		}
 	}
@@ -326,9 +326,8 @@ public @Deprecated class InfiniteRecursiveLoop2 implements Detector {
 			}
 			if (top.equals(next)) {
 				JavaClass javaClass = classContext.getJavaClass();
-				BugInstance warning = new BugInstance(this, "IL_CONTAINER_ADDED_TO_ITSELF", NORMAL_PRIORITY)
-					.addClassAndMethod(javaClass, method)
-					.addSourceLine(classContext, method, thrower);
+				BugInstance warning = DetectorUtil.addClassAndMethod(new BugInstance(this, "IL_CONTAINER_ADDED_TO_ITSELF", NORMAL_PRIORITY), javaClass, method)
+					.add(AnnotationFactory.createSourceLine(classContext, method, thrower));
 				bugReporter.reportBug(warning);
 			}
 		}

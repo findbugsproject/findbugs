@@ -21,14 +21,9 @@ package edu.umd.cs.findbugs;
 
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.AnalysisFeatures;
-import edu.umd.cs.findbugs.ba.ClassContext;
-import edu.umd.cs.findbugs.ba.Location;
 import edu.umd.cs.findbugs.util.MultiMap;
 
 import java.util.TreeSet;
-
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.MethodGen;
 
 /**
  * Accumulate warnings that may occur at multiple source locations,
@@ -41,7 +36,7 @@ public class BugAccumulator {
 
 	private BugReporter reporter;
 	private final boolean performAccumulation;
-	private MultiMap<BugInstance, SourceLineAnnotation> map;
+	private MultiMap<BugInstance, ISourceLineAnnotation> map;
 	
 	/**
 	 * Constructor.
@@ -51,7 +46,7 @@ public class BugAccumulator {
 	public BugAccumulator(BugReporter reporter) {
 		this.reporter = reporter;
 		performAccumulation = AnalysisContext.currentAnalysisContext().getBoolProperty(AnalysisFeatures.MERGE_SIMILAR_WARNINGS);
-		this.map = new MultiMap<BugInstance, SourceLineAnnotation>(TreeSet.class);
+		this.map = new MultiMap<BugInstance, ISourceLineAnnotation>(TreeSet.class);
 	}
 
 	/**
@@ -60,32 +55,19 @@ public class BugAccumulator {
 	 * @param bug        the warning
 	 * @param sourceLine the source location
 	 */
-	public void accumulateBug(BugInstance bug, SourceLineAnnotation sourceLine) {
-		if (performAccumulation)
-			map.add(bug,sourceLine);
-		else
-			reporter.reportBug(bug.addSourceLine(sourceLine));
-		
+	public void accumulateBug(BugInstance bug, ISourceLineAnnotation sourceLine) {
+		if (performAccumulation) {
+	        map.add(bug,sourceLine);
+        } else {
+	        reporter.reportBug(bug.add(sourceLine));
+        }
 	}
-
-	/**
-	 * Accumulate a warning at source location currently being visited by 
-	 * given BytecodeScanningDetector.
-	 * 
-	 * @param bug     the warning
-	 * @param visitor the BytecodeScanningDetector
-	 */
-	public void accumulateBug(BugInstance bug, BytecodeScanningDetector visitor) {
-		SourceLineAnnotation source = SourceLineAnnotation.fromVisitedInstruction(visitor);
-		accumulateBug(bug, source);
-	}
-	
 
 	public Iterable<? extends BugInstance> uniqueBugs() {
 		return map.keySet();
 	}
 	
-	public Iterable<? extends SourceLineAnnotation> locations(BugInstance bug) {
+	public Iterable<? extends ISourceLineAnnotation> locations(BugInstance bug) {
 		return map.get(bug);
 	}
 	
@@ -96,13 +78,13 @@ public class BugAccumulator {
 	public void reportAccumulatedBugs() {
 		for(BugInstance bug : map.keySet()) {
 			boolean first = true;
-			for (SourceLineAnnotation source  : map.get(bug)) {
+			for (ISourceLineAnnotation source  : map.get(bug)) {
 				if (source != null) {
-					bug.addSourceLine(source);
+					bug.add(source);
 					if (first) {
 						first = false;
 					} else {
-						bug.describe(SourceLineAnnotation.ROLE_ANOTHER_INSTANCE);
+						bug.describe(ISourceLineAnnotation.ROLE_ANOTHER_INSTANCE);
 					}
 				}
 			}
@@ -116,31 +98,6 @@ public class BugAccumulator {
      */
     public void clearBugs() {
     	map.clear();
-	    
     }
 
-	/**
-     * @param bug
-     * @param classContext
-     * @param method
-     * @param location
-     */
-    public void accumulateBug(BugInstance bug, ClassContext classContext, Method method, Location location) {
-	    accumulateBug(bug, SourceLineAnnotation.fromVisitedInstruction(classContext, method, location));
-	    
-    }
-
-	/**
-     * @param bug
-     * @param classContext
-     * @param methodGen
-     * @param sourceFile
-     * @param location
-     */
-    public void accumulateBug(BugInstance bug, ClassContext classContext, MethodGen methodGen, String sourceFile,
-            Location location) {
-    	   accumulateBug(bug, SourceLineAnnotation.fromVisitedInstruction(classContext, methodGen, sourceFile, location.getHandle()));
-    		 
-	    
-    }
 }

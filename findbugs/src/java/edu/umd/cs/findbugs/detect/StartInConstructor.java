@@ -29,9 +29,10 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
-import edu.umd.cs.findbugs.ClassAnnotation;
+import edu.umd.cs.findbugs.IClassAnnotation;
 import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.Hierarchy;
 import edu.umd.cs.findbugs.ba.ch.Subtypes2;
@@ -70,17 +71,17 @@ public class StartInConstructor extends BytecodeScanningDetector implements Stat
 				&& getSigConstantOperand().equals("()V")) {
 			try {
 				if (Hierarchy.isSubtype(getDottedClassConstantOperand(), "java.lang.Thread")) {
-					BugInstance bug = new BugInstance(this, "SC_START_IN_CTOR", Priorities.NORMAL_PRIORITY)
-							.addClassAndMethod(this)
-							.addCalledMethod(this);
+					BugInstance bug = DetectorUtil.addClassAndMethod(new BugInstance(this, "SC_START_IN_CTOR", Priorities.NORMAL_PRIORITY), this)
+							.add(AnnotationFactory.createCalledMethod(this));
 					 Subtypes2 subtypes2 = AnalysisContext.currentAnalysisContext().getSubtypes2();
 		             Set<ClassDescriptor> directSubtypes = subtypes2.getDirectSubtypes(getClassDescriptor());
 		             if (!directSubtypes.isEmpty()) {
 							for(ClassDescriptor sub : directSubtypes) 
-		                		bug.addClass(sub).describe(ClassAnnotation.SUBCLASS_ROLE);
+		                		bug.add(AnnotationFactory.createClass(sub))
+		                			.describe(IClassAnnotation.SUBCLASS_ROLE);
 		                	bug.setPriority(Priorities.HIGH_PRIORITY);
 		                }
-					bugAccumulator.accumulateBug(bug, this);
+					bugAccumulator.accumulateBug(bug, AnnotationFactory.createSourceLine(this));
 				}
 			} catch (ClassNotFoundException e) {
 				bugReporter.reportMissingClass(e);

@@ -33,7 +33,8 @@ import org.apache.bcel.classfile.Method;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.ba.XField;
@@ -67,7 +68,7 @@ public class MutableStaticFields extends BytecodeScanningDetector {
 	Set<XField> unsafeValue = new HashSet<XField>();
 	Set<XField> notFinal = new HashSet<XField>();
 	Set<XField> outsidePackage = new HashSet<XField>();
-	Map<XField, SourceLineAnnotation> firstFieldUse = new HashMap<XField, SourceLineAnnotation>();
+	Map<XField, ISourceLineAnnotation> firstFieldUse = new HashMap<XField, ISourceLineAnnotation>();
 	private final BugReporter bugReporter;
 
 	/**
@@ -144,7 +145,7 @@ public class MutableStaticFields extends BytecodeScanningDetector {
 			//Remove inStaticInitializer check to report all source lines of first use
 			//doing so, however adds quite a bit of memory bloat.
 			if (inStaticInitializer && !firstFieldUse.containsKey(xField)) {
-				SourceLineAnnotation sla = SourceLineAnnotation.fromVisitedInstruction(this);
+				ISourceLineAnnotation sla = AnnotationFactory.createSourceLine(this);
 				firstFieldUse.put(xField, sla);
 			}
 			break;
@@ -286,11 +287,11 @@ public class MutableStaticFields extends BytecodeScanningDetector {
             }
 
 			BugInstance bug = new BugInstance(this, bugType, priority)
-												.addClass(className)
-												.addField(f);
-			SourceLineAnnotation firstPC = firstFieldUse.get(f);
+				.add(AnnotationFactory.createClass(className))
+				.add(AnnotationFactory.createField(f));
+			ISourceLineAnnotation firstPC = firstFieldUse.get(f);
 			if (firstPC != null) {
-	            bug.addSourceLine(firstPC);
+	            bug.add(firstPC);
             }
 			bugReporter.reportBug(bug);
 

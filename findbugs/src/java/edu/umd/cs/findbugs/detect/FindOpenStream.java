@@ -38,12 +38,13 @@ import org.apache.bcel.generic.Type;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
+import edu.umd.cs.findbugs.ITypeAnnotation;
 import edu.umd.cs.findbugs.ResourceCollection;
 import edu.umd.cs.findbugs.ResourceTrackingDetector;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.TypeAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
 import edu.umd.cs.findbugs.ba.ClassContext;
@@ -452,10 +453,11 @@ public final class FindOpenStream extends ResourceTrackingDetector<Stream, Strea
 				continue;
 
 			String sourceFile = javaClass.getSourceFileName();
-			bugAccumulator.accumulateBug(new BugInstance(this, pos.bugType, pos.priority)
-					.addClassAndMethod(methodGen, sourceFile)
-					.addTypeOfNamedClass(stream.getStreamBase()).describe(TypeAnnotation.CLOSEIT_ROLE), 
-					SourceLineAnnotation.fromVisitedInstruction(classContext, methodGen, sourceFile, stream.getLocation().getHandle()));
+			TypeAnnotation typeAnnotation = new TypeAnnotation("L" + stream.getStreamBase().replace('.','/') + ";");
+			bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this, pos.bugType, pos.priority), methodGen, sourceFile)
+					.add(typeAnnotation)
+					.describe(ITypeAnnotation.CLOSEIT_ROLE), 
+					AnnotationFactory.createSourceLine(methodGen, sourceFile, stream.getLocation().getHandle()));
 		}
 	}
 

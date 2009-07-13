@@ -28,9 +28,10 @@ import org.apache.bcel.classfile.Code;
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.OpcodeStack;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 
 public class FindFloatEquality extends OpcodeStackDetector implements StatelessDetector 
@@ -48,7 +49,7 @@ public class FindFloatEquality extends OpcodeStackDetector implements StatelessD
 	}
 
 
-	Collection<SourceLineAnnotation> found = new LinkedList<SourceLineAnnotation>();
+	Collection<ISourceLineAnnotation> found = new LinkedList<ISourceLineAnnotation>();
 
 	@Override
 		 public void visit(Code obj) {
@@ -61,14 +62,13 @@ public class FindFloatEquality extends OpcodeStackDetector implements StatelessD
 		super.visit(obj);
 		bugAccumulator.reportAccumulatedBugs();
 		if (!found.isEmpty()) {
-				BugInstance bug = new BugInstance(this, "FE_FLOATING_POINT_EQUALITY", priority)
-						.addClassAndMethod(this);
+				BugInstance bug = DetectorUtil.addClassAndMethod(new BugInstance(this, "FE_FLOATING_POINT_EQUALITY", priority), this);
 
 				boolean first = true;
-				for(SourceLineAnnotation s : found) {
+				for(ISourceLineAnnotation s : found) {
 					bug.add(s);
 					if (first) first = false;
-					else bug.describe(SourceLineAnnotation.ROLE_ANOTHER_INSTANCE);
+					else bug.describe(ISourceLineAnnotation.ROLE_ANOTHER_INSTANCE);
 				}
 
 				bugReporter.reportBug(bug);
@@ -105,9 +105,9 @@ public class FindFloatEquality extends OpcodeStackDetector implements StatelessD
 						Number n2 = (Number)second.getConstant();
 						if (n1 != null && Double.isNaN(n1.doubleValue())
 								|| n2 != null && Double.isNaN(n2.doubleValue()) ) {
-							BugInstance bug = new BugInstance(this, "FE_TEST_IF_EQUAL_TO_NOT_A_NUMBER", HIGH_PRIORITY)
-							.addClassAndMethod(this);
-							bugAccumulator.accumulateBug(bug, this);
+							BugInstance bug = DetectorUtil.addClassAndMethod(
+									new BugInstance(this, "FE_TEST_IF_EQUAL_TO_NOT_A_NUMBER", HIGH_PRIORITY), this);
+							bugAccumulator.accumulateBug(bug, AnnotationFactory.createSourceLine(this));
 							state = SAW_NOTHING;
 							break;
 						}
@@ -142,11 +142,7 @@ public class FindFloatEquality extends OpcodeStackDetector implements StatelessD
 				case IFEQ:
 				case IFNE:
 					if (state == SAW_COMP) {
-						SourceLineAnnotation sourceLineAnnotation =
-							SourceLineAnnotation.fromVisitedInstruction(getClassContext(), this, getPC());
-						if (sourceLineAnnotation != null) {
-							found.add(sourceLineAnnotation);
-						}
+						found.add(AnnotationFactory.createSourceLine(this));
 					}
 					state = SAW_NOTHING;
 				break;

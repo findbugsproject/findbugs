@@ -61,7 +61,7 @@ public class SloppyBugComparator implements  WarningComparator {
 	 * @param rhs right hand class annotation
 	 * @return comparison of the class annotations
 	 */
-	private int compareClassesAllowingNull(ClassAnnotation lhs, ClassAnnotation rhs) {
+	private int compareClassesAllowingNull(IClassAnnotation lhs, IClassAnnotation rhs) {
 		if (lhs == null || rhs == null) {
 			return compareNullElements(lhs, rhs);
 		}
@@ -76,7 +76,7 @@ public class SloppyBugComparator implements  WarningComparator {
 		return cmp;
 	}
 
-	private int compareMethodsAllowingNull(MethodAnnotation lhs, MethodAnnotation rhs) {
+	private int compareMethodsAllowingNull(IMethodAnnotation lhs, IMethodAnnotation rhs) {
 		if (lhs == null || rhs == null) {
 			return compareNullElements(lhs, rhs);
 		}
@@ -87,7 +87,7 @@ public class SloppyBugComparator implements  WarningComparator {
 		return lhs.compareTo(rhs);
 	}
 
-	private int compareFieldsAllowingNull(FieldAnnotation lhs, FieldAnnotation rhs) {
+	private int compareFieldsAllowingNull(IFieldAnnotation lhs, IFieldAnnotation rhs) {
 		if (lhs == null || rhs == null) {
 			return compareNullElements(lhs, rhs);
 		}
@@ -100,11 +100,11 @@ public class SloppyBugComparator implements  WarningComparator {
 		return lhs.compareTo(rhs);
 	}
 
-	private MethodAnnotation convertMethod(MethodAnnotation methodAnnotation) {
+	private IMethodAnnotation convertMethod(IMethodAnnotation methodAnnotation) {
 		return ClassNameRewriterUtil.convertMethodAnnotation(classNameRewriter, methodAnnotation);
 	}
 
-	private FieldAnnotation convertField(FieldAnnotation fieldAnnotation) {
+	private IFieldAnnotation convertField(IFieldAnnotation fieldAnnotation) {
 		return ClassNameRewriterUtil.convertFieldAnnotation(classNameRewriter, fieldAnnotation);
 	}
 

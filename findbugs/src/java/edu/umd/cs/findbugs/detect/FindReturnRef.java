@@ -27,9 +27,9 @@ import org.apache.bcel.classfile.Method;
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.BytecodeScanningDetector;
-import edu.umd.cs.findbugs.LocalVariableAnnotation;
+import edu.umd.cs.findbugs.FieldAnnotation;
 import edu.umd.cs.findbugs.OpcodeStack;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 
@@ -94,22 +94,22 @@ public class FindReturnRef extends OpcodeStackDetector {
 				&& MutableStaticFields.mutableSignature(getSigConstantOperand())) {
 			OpcodeStack.Item top = stack.getStackItem(0);
 			if (isPotentialCapture(top))
-			bugAccumulator.accumulateBug(new BugInstance(this, "EI_EXPOSE_STATIC_REP2", NORMAL_PRIORITY)
-					.addClassAndMethod(this)
-					.addReferencedField(this)
-					.add(LocalVariableAnnotation.getLocalVariableAnnotation(getMethod(), top.getRegisterNumber(), getPC(), getPC()-1)),
-					this);
+			bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+					new BugInstance(this, "EI_EXPOSE_STATIC_REP2", NORMAL_PRIORITY), this)
+					.add(AnnotationFactory.createReferencedField(this))
+					.add(AnnotationFactory.createVariable(getMethod(), top.getRegisterNumber(), getPC(), getPC()-1)),
+					AnnotationFactory.createSourceLine(this));
 		}
 		if (!staticMethod && seen == PUTFIELD
 				&& MutableStaticFields.mutableSignature(getSigConstantOperand())) {
 			OpcodeStack.Item top = stack.getStackItem(0);
 			OpcodeStack.Item target = stack.getStackItem(1);
 			if (isPotentialCapture(top) && target.getRegisterNumber() == 0)
-			bugAccumulator.accumulateBug(new BugInstance(this, "EI_EXPOSE_REP2", NORMAL_PRIORITY)
-					.addClassAndMethod(this)
-					.addReferencedField(this)
-					.add(LocalVariableAnnotation.getLocalVariableAnnotation(getMethod(),top.getRegisterNumber(),getPC(),getPC()-1)),
-					this);
+			bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+					new BugInstance(this, "EI_EXPOSE_REP2", NORMAL_PRIORITY), this)
+					.add(AnnotationFactory.createReferencedField(this))
+					.add(AnnotationFactory.createVariable(getMethod(),top.getRegisterNumber(),getPC(),getPC()-1)),
+					AnnotationFactory.createSourceLine(this));
 		}
 		
 		if (seen == ALOAD_0 && !staticMethod) {
@@ -151,10 +151,10 @@ public class FindReturnRef extends OpcodeStackDetector {
 				&& nameOnStack.indexOf("EMPTY") == -1
 				&& MutableStaticFields.mutableSignature(sigOnStack)
 		) {
-			bugAccumulator.accumulateBug(new BugInstance(this, staticMethod ? "MS_EXPOSE_REP" : "EI_EXPOSE_REP", NORMAL_PRIORITY)
-					.addClassAndMethod(this)
-					.addField(classNameOnStack, nameOnStack, sigOnStack, fieldIsStatic),
-					this);
+			BugInstance bugInstance = DetectorUtil.addClassAndMethod(
+					new BugInstance(this, staticMethod ? "MS_EXPOSE_REP" : "EI_EXPOSE_REP", NORMAL_PRIORITY), this);
+			bugInstance.add(new FieldAnnotation(classNameOnStack, nameOnStack, sigOnStack, fieldIsStatic));
+			bugAccumulator.accumulateBug(bugInstance, AnnotationFactory.createSourceLine(this));
 		}
 
 		fieldOnTOS = false;

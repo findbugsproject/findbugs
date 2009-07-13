@@ -28,6 +28,7 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XMethod;
@@ -128,10 +129,11 @@ public class NumberConstructor extends BytecodeScanningDetector {
 
 	bugAccumulator.accumulateBug(
 			new BugInstance(this, type, prio)
-			  .addClass(this)
-			  .addMethod(this)
-			  .addCalledMethod(this)
-			  .addMethod(shouldCall).describe("SHOULD_CALL"), 
-			this);
+				.add(AnnotationFactory.createClass(getDottedClassName()))
+				.add(AnnotationFactory.createMethod(this))
+				.add(AnnotationFactory.createCalledMethod(this))
+				.add(AnnotationFactory.createMethod(shouldCall))
+				.describe("SHOULD_CALL"), 
+				AnnotationFactory.createSourceLine(this));
   }
 }

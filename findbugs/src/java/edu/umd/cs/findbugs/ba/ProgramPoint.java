@@ -17,24 +17,16 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.umd.cs.findbugs;
+package edu.umd.cs.findbugs.ba;
 
-import edu.umd.cs.findbugs.ba.XMethod;
+import edu.umd.cs.findbugs.BytecodeScanningDetector;
 
 public class ProgramPoint {
+	public final XMethod method;
+	public final int pc;
+
 	public ProgramPoint(BytecodeScanningDetector v) {
 		method = v.getXMethod();
 		pc =  v.getPC();
-	}
-
-	public final XMethod method;
-	
-	public final int pc;
-
-	public MethodAnnotation getMethodAnnotation() {
-		return MethodAnnotation.fromXMethod(method);
-	}
-	public SourceLineAnnotation getSourceLineAnnotation() {
-		return SourceLineAnnotation.fromVisitedInstruction(method.getMethodDescriptor(), pc);
 	}
 }

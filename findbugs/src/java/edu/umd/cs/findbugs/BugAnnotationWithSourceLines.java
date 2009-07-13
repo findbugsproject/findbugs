@@ -22,10 +22,10 @@ package edu.umd.cs.findbugs;
 /**
  * @author pugh
  */
-public abstract class BugAnnotationWithSourceLines implements BugAnnotation {
+public abstract class BugAnnotationWithSourceLines implements IBugAnnotationWithSourceLines {
 
 	protected String sourceFileName;
-	protected SourceLineAnnotation sourceLines;
+	protected ISourceLineAnnotation sourceLines;
 
 	/**
 	 * 
@@ -53,7 +53,7 @@ public abstract class BugAnnotationWithSourceLines implements BugAnnotation {
      * Set a SourceLineAnnotation describing the source lines
      * where the package element is defined.
      */
-    public void setSourceLines(SourceLineAnnotation sourceLines) {
+    public void setSourceLines(ISourceLineAnnotation sourceLines) {
     	this.sourceLines = sourceLines;
     	sourceFileName = sourceLines.getSourceFile();
     }
@@ -65,10 +65,10 @@ public abstract class BugAnnotationWithSourceLines implements BugAnnotation {
      * @return the SourceLineAnnotation, or null if there is no source information
      *         for this package element
      */
-    public SourceLineAnnotation getSourceLines() {
+    public ISourceLineAnnotation getSourceLines() {
     	return sourceLines;
     }
-    public String toString(ClassAnnotation primaryClass) {
+    public String toString(IClassAnnotation primaryClass) {
 	    return toString();
     }
 

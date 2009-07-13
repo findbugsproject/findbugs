@@ -27,6 +27,7 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.OpcodeStack;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 
 /**
@@ -56,16 +57,16 @@ public class URLProblems extends OpcodeStackDetector {
 		String sig = obj.getSignature();
 		for (String s : BAD_SIGNATURES)
 			if (sig.indexOf(s) >= 0) {
-				if (visitingField())
-					bugReporter.reportBug(new BugInstance(this, "DMI_COLLECTION_OF_URLS",
-							HIGH_PRIORITY).addClass(this).addVisitedField(
-							this));
-				else if (visitingMethod())
-					bugReporter.reportBug(new BugInstance(this, "DMI_COLLECTION_OF_URLS",
-							HIGH_PRIORITY).addClassAndMethod(this));
-				else
-					bugReporter.reportBug(new BugInstance(this, "DMI_COLLECTION_OF_URLS",
-							HIGH_PRIORITY).addClass(this).addClass(this));
+				if (visitingField()) {
+	                bugReporter.reportBug(new BugInstance(this, "DMI_COLLECTION_OF_URLS", HIGH_PRIORITY)
+						.add(AnnotationFactory.createClass(getDottedClassName()))
+						.add(AnnotationFactory.createField(this)));
+                } else if (visitingMethod()) {
+	                bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "DMI_COLLECTION_OF_URLS", HIGH_PRIORITY), this));
+                } else {
+	                bugReporter.reportBug(new BugInstance(this, "DMI_COLLECTION_OF_URLS", HIGH_PRIORITY)
+						.add(AnnotationFactory.createClass(getDottedClassName())));
+                }
 			}
 	}
 
@@ -77,9 +78,9 @@ public class URLProblems extends OpcodeStackDetector {
 		OpcodeStack.Item urlItem = stack.getStackItem(url);
 		if (!urlItem.getSignature().equals("Ljava/net/URL;")) return;
 		if (!targetItem.getSignature().equals(className)) return;
-		accumulator.accumulateBug(new BugInstance(this, "DMI_COLLECTION_OF_URLS",
-				HIGH_PRIORITY).addClassAndMethod(this)
-				.addCalledMethod(this), this);
+		accumulator.accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "DMI_COLLECTION_OF_URLS",
+				HIGH_PRIORITY), this)
+				.add(AnnotationFactory.createCalledMethod(this)), AnnotationFactory.createSourceLine(this));
 	}
 	@Override
 	public void sawOpcode(int seen) {
@@ -99,9 +100,10 @@ public class URLProblems extends OpcodeStackDetector {
 					&& getSigConstantOperand().equals("(Ljava/lang/Object;)Z")
 					|| getNameConstantOperand().equals("hashCode")
 					&& getSigConstantOperand().equals("()I")) {
-				accumulator.accumulateBug(new BugInstance(this, "DMI_BLOCKING_METHODS_ON_URL",
-						HIGH_PRIORITY).addClassAndMethod(this)
-						.addCalledMethod(this), this);
+				accumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+						new BugInstance(this, "DMI_BLOCKING_METHODS_ON_URL", HIGH_PRIORITY), this)
+						.add(AnnotationFactory.createCalledMethod(this)),
+						AnnotationFactory.createSourceLine(this));
 			}
 		}
 	}

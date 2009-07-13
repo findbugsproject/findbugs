@@ -38,6 +38,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.FieldAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.ClassContext;
 
 
@@ -153,11 +154,11 @@ public class MultithreadedInstanceAccess extends BytecodeScanningDetector
 								return;
 							alreadyReported.add(nameCons.getBytes());
 							bugReporter.reportBug(new BugInstance(this,
-									STRUTS_ACTION_NAME.equals(mtClassName) ? "MTIA_SUSPECT_STRUTS_INSTANCE_FIELD" : "MTIA_SUSPECT_SERVLET_INSTANCE_FIELD",
-									LOW_PRIORITY)
-									.addField(new FieldAnnotation(getDottedClassName(), nameCons.getBytes(), typeCons.getBytes(), false))
-									.addClass(this).addSourceLine(this)
-									);
+								STRUTS_ACTION_NAME.equals(mtClassName) ? "MTIA_SUSPECT_STRUTS_INSTANCE_FIELD" : "MTIA_SUSPECT_SERVLET_INSTANCE_FIELD",
+								LOW_PRIORITY)
+								.add(new FieldAnnotation(getDottedClassName(), nameCons.getBytes(), typeCons.getBytes(), false))
+								.add(AnnotationFactory.createClass(getDottedClassName()))
+								.add(AnnotationFactory.createSourceLine(this)));
 						}
 						break;
 					}

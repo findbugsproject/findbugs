@@ -22,8 +22,10 @@ package edu.umd.cs.findbugs.model;
 import java.util.Iterator;
 
 import edu.umd.cs.findbugs.FieldAnnotation;
+import edu.umd.cs.findbugs.IFieldAnnotation;
+import edu.umd.cs.findbugs.IMethodAnnotation;
 import edu.umd.cs.findbugs.MethodAnnotation;
-import edu.umd.cs.findbugs.ba.SignatureParser;
+import edu.umd.cs.findbugs.signature.SignatureParser;
 
 /**
  * Utility methods for using a ClassNameRewriter.
@@ -87,7 +89,7 @@ public abstract class ClassNameRewriterUtil {
 	 * @param annotation        a MethodAnnotation
 	 * @return the possibly-rewritten MethodAnnotation
 	 */
-	public static MethodAnnotation convertMethodAnnotation(ClassNameRewriter classNameRewriter, MethodAnnotation annotation) {
+	public static IMethodAnnotation convertMethodAnnotation(ClassNameRewriter classNameRewriter, IMethodAnnotation annotation) {
 
 		if (classNameRewriter != IdentityClassNameRewriter.instance()) {
 			annotation = new MethodAnnotation(
@@ -107,7 +109,7 @@ public abstract class ClassNameRewriterUtil {
 	 * @param annotation        a FieldAnnotation
 	 * @return the possibly-rewritten FieldAnnotation
 	 */
-	public static FieldAnnotation convertFieldAnnotation(ClassNameRewriter classNameRewriter, FieldAnnotation annotation) {
+	public static IFieldAnnotation convertFieldAnnotation(ClassNameRewriter classNameRewriter, IFieldAnnotation annotation) {
 
 		if (classNameRewriter != IdentityClassNameRewriter.instance()) {
 			annotation = new FieldAnnotation(

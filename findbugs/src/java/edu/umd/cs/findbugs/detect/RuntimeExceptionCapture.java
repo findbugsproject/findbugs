@@ -38,11 +38,10 @@ import org.apache.bcel.generic.InstructionHandle;
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.OpcodeStack;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.BasicBlock;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
@@ -61,7 +60,6 @@ import edu.umd.cs.findbugs.classfile.Global;
 import edu.umd.cs.findbugs.classfile.MissingClassException;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 import edu.umd.cs.findbugs.util.ClassName;
-;
 
 /**
  * RuntimeExceptionCapture
@@ -116,12 +114,12 @@ public class RuntimeExceptionCapture extends OpcodeStackDetector implements Stat
 	}
 
 	@Override
-		 public void visitMethod(Method method) {
-		this.method = method;
+	public void visitMethod(Method method1) {
+		this.method = method1;
 		if (DEBUG) {
-			System.out.println("RuntimeExceptionCapture visiting " + method);
+			System.out.println("RuntimeExceptionCapture visiting " + method1);
 		}
-		super.visitMethod(method);
+		super.visitMethod(method1);
 	}
 
 	@Override
@@ -156,15 +154,24 @@ public class RuntimeExceptionCapture extends OpcodeStackDetector implements Stat
 				int range = caughtException.endOffset - caughtException.startOffset;
 				if (!rteCaught) {
 					int priority = LOW_PRIORITY + 1;
-					if (range > 300) priority--;
-					else if (range < 30) priority++;
-					if (catchClauses > 1) priority++;
-					if (thrownSet.size() > 1) priority--;
-					if (caughtException.dead) priority--;
-					accumulator.accumulateBug(new BugInstance(this, "REC_CATCH_EXCEPTION",
-							priority)
-							.addClassAndMethod(this), 
-							SourceLineAnnotation.fromVisitedInstruction(getClassContext(), this, caughtException.sourcePC));
+					if (range > 300) {
+	                    priority--;
+                    } else if (range < 30) {
+	                    priority++;
+                    }
+					if (catchClauses > 1) {
+	                    priority++;
+                    }
+					if (thrownSet.size() > 1) {
+	                    priority--;
+                    }
+					if (caughtException.dead) {
+	                    priority--;
+                    }
+					accumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+							new BugInstance(this, "REC_CATCH_EXCEPTION",
+							priority), this), 
+							AnnotationFactory.createSourceLine(this, caughtException.sourcePC));
 				}
 			}
 		}

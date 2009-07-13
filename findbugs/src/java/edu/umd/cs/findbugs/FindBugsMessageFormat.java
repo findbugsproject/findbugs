@@ -57,7 +57,7 @@ public class FindBugsMessageFormat {
 	 * @param primaryClass TODO
 	 * @return the formatted message
 	 */
-	public String format(BugAnnotation[] args, ClassAnnotation primaryClass) {
+	public String format(BugAnnotation[] args, IClassAnnotation primaryClass) {
 		String pat = pattern;
 		StringBuilder result = new StringBuilder();
 

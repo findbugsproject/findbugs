@@ -26,6 +26,7 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.ch.Subtypes2;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 
@@ -59,20 +60,20 @@ public class DoInsideDoPrivileged  extends BytecodeScanningDetector {
 		if (seen == INVOKEVIRTUAL && getNameConstantOperand().equals("setAccessible")) {
 			@DottedClassName String className = getDottedClassConstantOperand();
 			if (className.equals("java.lang.reflect.Field") || className.equals("java.lang.reflect.Method"))
-				bugAccumulator.accumulateBug(new BugInstance(this, "DP_DO_INSIDE_DO_PRIVILEGED",
-						LOW_PRIORITY)
-							.addClassAndMethod(this)
-							.addCalledMethod(this), this);
+				bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+						new BugInstance(this, "DP_DO_INSIDE_DO_PRIVILEGED",	LOW_PRIORITY), this)
+							.add(AnnotationFactory.createCalledMethod(this)), 
+							AnnotationFactory.createSourceLine(this));
 							
 		}
 		if (seen == NEW) {
 			@DottedClassName String classOfConstructedClass = getDottedClassConstantOperand();
 			if (Subtypes2.instanceOf(classOfConstructedClass,"java/lang/ClassLoader") 
 					&& !(getMethodName().equals("main") && getMethodSig().equals("([Ljava/lang/String;)V") && getMethod().isStatic()) )
-				bugAccumulator.accumulateBug(new BugInstance(this, "DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED",
-					NORMAL_PRIORITY)
-						.addClassAndMethod(this)
-						.addClass(classOfConstructedClass), this);
+				bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(
+						new BugInstance(this, "DP_CREATE_CLASSLOADER_INSIDE_DO_PRIVILEGED",	NORMAL_PRIORITY), this)
+						.add(AnnotationFactory.createClass(classOfConstructedClass)), 
+						AnnotationFactory.createSourceLine(this));
 		}
 
 

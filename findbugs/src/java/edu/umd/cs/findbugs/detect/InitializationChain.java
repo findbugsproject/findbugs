@@ -34,6 +34,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class InitializationChain extends BytecodeScanningDetector {
 	Set<String> requires = new TreeSet<String>();
@@ -101,10 +102,9 @@ public class InitializationChain extends BytecodeScanningDetector {
 				String okSig = "L" + getClassName() + ";";
 				if (!okSig.equals(getSigConstantOperand())) {
 					staticFieldWritten.put(getNameConstantOperand(), 
-							new BugInstance(this, "SI_INSTANCE_BEFORE_FINALS_ASSIGNED", NORMAL_PRIORITY)
-							.addClassAndMethod(this)
-							.addReferencedField(this)
-							.addSourceLine(this, instanceCreatedPC));
+							DetectorUtil.addClassAndMethod(new BugInstance(this, "SI_INSTANCE_BEFORE_FINALS_ASSIGNED", NORMAL_PRIORITY), this)
+							.add(AnnotationFactory.createReferencedField(this))
+							.add(AnnotationFactory.createSourceLine(this, instanceCreatedPC)));
 					instanceCreatedWarningGiven = true;
 				}
 			}
@@ -157,8 +157,8 @@ public class InitializationChain extends BytecodeScanningDetector {
 				Set<String> s = classRequires.get(needs);
 				if (s != null && s.contains(c) && c.compareTo(needs) < 0)
 					bugReporter.reportBug(new BugInstance(this, "IC_INIT_CIRCULARITY", NORMAL_PRIORITY)
-							.addClass(c)
-							.addClass(needs));
+						.add(AnnotationFactory.createClass(c))
+						.add(AnnotationFactory.createClass(needs)));
 			}
 		}
 	}

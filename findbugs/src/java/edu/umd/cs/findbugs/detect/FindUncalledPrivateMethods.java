@@ -27,8 +27,10 @@ import org.apache.bcel.classfile.Method;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
+import edu.umd.cs.findbugs.IMethodAnnotation;
 import edu.umd.cs.findbugs.MethodAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.ClassContext;
 
 /**
@@ -37,7 +39,7 @@ import edu.umd.cs.findbugs.ba.ClassContext;
 public class FindUncalledPrivateMethods extends BytecodeScanningDetector implements StatelessDetector {
 	private BugReporter bugReporter;
 	private String className;
-	private HashSet<MethodAnnotation> definedPrivateMethods, calledMethods;
+	private HashSet<IMethodAnnotation> definedPrivateMethods, calledMethods;
 	private HashSet<String> calledMethodNames;
 
 	public FindUncalledPrivateMethods(BugReporter bugReporter) {
@@ -62,7 +64,7 @@ public class FindUncalledPrivateMethods extends BytecodeScanningDetector impleme
 				&& !getMethodName().equals("<init>")
 				&& !getMethodName().equals("<clinit>")
 		)
-			definedPrivateMethods.add(MethodAnnotation.fromVisitedMethod(this));
+			definedPrivateMethods.add(AnnotationFactory.createMethod(this));
 	}
 
 	@Override
@@ -73,7 +75,7 @@ public class FindUncalledPrivateMethods extends BytecodeScanningDetector impleme
 		case INVOKESTATIC:
 			if (getDottedClassConstantOperand().equals(className)) {
 				String className = getDottedClassConstantOperand();
-				MethodAnnotation called = new MethodAnnotation(
+				IMethodAnnotation called = new MethodAnnotation(
 						className,
 						getNameConstantOperand(),
 						getSigConstantOperand(),
@@ -91,8 +93,8 @@ public class FindUncalledPrivateMethods extends BytecodeScanningDetector impleme
 
 	@Override
 		 public void visitClassContext(ClassContext classContext) {
-		definedPrivateMethods = new HashSet<MethodAnnotation>();
-		calledMethods = new HashSet<MethodAnnotation>();
+		definedPrivateMethods = new HashSet<IMethodAnnotation>();
+		calledMethods = new HashSet<IMethodAnnotation>();
 		calledMethodNames = new HashSet<String>();
 		className = classContext.getJavaClass().getClassName();
 		String[] parts = className.split("[$+.]");
@@ -101,7 +103,7 @@ public class FindUncalledPrivateMethods extends BytecodeScanningDetector impleme
 
 		definedPrivateMethods.removeAll(calledMethods);
 
-		for (MethodAnnotation m : definedPrivateMethods) {
+		for (IMethodAnnotation m : definedPrivateMethods) {
 			// System.out.println("Checking " + m);
 			int priority = LOW_PRIORITY;
 			String methodName = m.getMethodName();
@@ -111,10 +113,9 @@ public class FindUncalledPrivateMethods extends BytecodeScanningDetector impleme
 					&& calledMethodNames.contains(methodName.toLowerCase()))
 				priority = NORMAL_PRIORITY;
 			BugInstance bugInstance
-					= new BugInstance(this, "UPM_UNCALLED_PRIVATE_METHOD",
-					priority)
-					.addClass(this)
-					.addMethod(m);
+					= new BugInstance(this, "UPM_UNCALLED_PRIVATE_METHOD", priority)
+					.add(AnnotationFactory.createClass(getDottedClassName()))
+					.add(m);
 			bugReporter.reportBug(bugInstance);
 		}
 

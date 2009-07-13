@@ -28,7 +28,8 @@ import org.objectweb.asm.Opcodes;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 
 public class RepeatedConditionals extends OpcodeStackDetector {
@@ -50,11 +51,6 @@ public class RepeatedConditionals extends OpcodeStackDetector {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see edu.umd.cs.findbugs.bcel.OpcodeStackDetector#sawOpcode(int)
-	 */
 	int oldPC;
 
 	LinkedList<Integer> emptyStackLocations = new LinkedList<Integer>();
@@ -66,6 +62,7 @@ public class RepeatedConditionals extends OpcodeStackDetector {
     public void sawBranchTo(int pc) {
 		branchTargets.put(getPC(), pc);
 	}
+	
 	@Override
 	public void sawOpcode(int seen) {
 		if (isRegisterStore() || isReturn(seen) || isSwitch(seen) || seen == INVOKEINTERFACE || seen == INVOKESPECIAL || seen == INVOKESTATIC
@@ -103,15 +100,15 @@ public class RepeatedConditionals extends OpcodeStackDetector {
 							break check;
 						}
 					}
-					if (false) {
-						System.out.println(getFullyQualifiedMethodName());
-						System.out.println(first + " ... " + endOfFirstSegment + " : " + OPCODE_NAMES[opcodeAtEndOfFirst]);
-						System.out.println(second + " ... " + endOfSecondSegment + " : " + OPCODE_NAMES[opcodeAtEndOfSecond]);
-					}
-					SourceLineAnnotation firstSourceLine =
-						SourceLineAnnotation.fromVisitedInstructionRange(getClassContext(), this, first, endOfFirstSegment-1);
-					SourceLineAnnotation secondSourceLine =
-						SourceLineAnnotation.fromVisitedInstructionRange(getClassContext(), this, second, endOfSecondSegment-1);
+//					if (false) {
+//						System.out.println(getFullyQualifiedMethodName());
+//						System.out.println(first + " ... " + endOfFirstSegment + " : " + OPCODE_NAMES[opcodeAtEndOfFirst]);
+//						System.out.println(second + " ... " + endOfSecondSegment + " : " + OPCODE_NAMES[opcodeAtEndOfSecond]);
+//					}
+					ISourceLineAnnotation firstSourceLine =
+						AnnotationFactory.createSourceLineRange(this, first, endOfFirstSegment-1);
+					ISourceLineAnnotation secondSourceLine =
+						AnnotationFactory.createSourceLineRange(this, second, endOfSecondSegment-1);
 
 					int priority = HIGH_PRIORITY;
 					if (firstSourceLine.getStartLine() == -1 || firstSourceLine.getStartLine() != secondSourceLine.getEndLine()) {
@@ -133,7 +130,7 @@ public class RepeatedConditionals extends OpcodeStackDetector {
 						priority+=2;
 					}
 
-					BugInstance bug = new BugInstance(this, "RpC_REPEATED_CONDITIONAL_TEST", priority).addClassAndMethod(this)
+					BugInstance bug = DetectorUtil.addClassAndMethod(new BugInstance(this, "RpC_REPEATED_CONDITIONAL_TEST", priority), this)
 					.add(firstSourceLine).add(secondSourceLine);
 					bugReporter.reportBug(bug);
 				}

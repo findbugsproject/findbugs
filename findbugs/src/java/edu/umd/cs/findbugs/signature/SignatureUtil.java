@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.umd.cs.findbugs.filter;
+package edu.umd.cs.findbugs.signature;
 
 import java.util.StringTokenizer;
 
@@ -56,9 +56,8 @@ public class SignatureUtil {
 	private static String typeToSignature(String type) {
 		if(type.endsWith("[]")) {
 			return "[" + typeToSignature(type.substring(0, type.length() - 2));
-		} else {
-			return scalarTypeToSiganture(type);
 		}
+		return scalarTypeToSiganture(type);
 	}
 
 	private static String scalarTypeToSiganture(String type) {

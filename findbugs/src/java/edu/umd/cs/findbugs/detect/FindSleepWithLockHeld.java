@@ -32,6 +32,7 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
 import edu.umd.cs.findbugs.ba.ClassContext;
@@ -100,19 +101,21 @@ public class FindSleepWithLockHeld implements Detector {
 			Location location = i.next();
 			Instruction ins = location.getHandle().getInstruction(); 
 
-			if (!(ins instanceof INVOKESTATIC))
-				continue;
+			if (!(ins instanceof INVOKESTATIC)) {
+	            continue;
+            }
 
-			if (!isSleep((INVOKESTATIC) ins, classContext.getConstantPoolGen()))
-				continue;
+			if (!isSleep((INVOKESTATIC) ins, classContext.getConstantPoolGen())) {
+	            continue;
+            }
 
 //			System.out.println("Found sleep at " + location.getHandle());
 
 			LockSet lockSet = lockDataflow.getFactAtLocation(location);
 			if (lockSet.getNumLockedObjects() > 0) {
-				bugAccumulator.accumulateBug(new BugInstance(this, "SWL_SLEEP_WITH_LOCK_HELD", NORMAL_PRIORITY)
-						.addClassAndMethod(classContext.getJavaClass(), method),
-						classContext, method, location);
+				BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "SWL_SLEEP_WITH_LOCK_HELD", NORMAL_PRIORITY), classContext.getJavaClass(), method);
+				bugAccumulator.accumulateBug(bugInstance, 
+						AnnotationFactory.createSourceLine(classContext, method, location.getHandle()));
 			}
 		}
 		bugAccumulator.reportAccumulatedBugs();
@@ -120,8 +123,9 @@ public class FindSleepWithLockHeld implements Detector {
 
 	private boolean isSleep(INVOKESTATIC ins, ConstantPoolGen cpg) {
 		String className = ins.getClassName(cpg);
-		if (!className.equals("java.lang.Thread"))
-			return false;
+		if (!className.equals("java.lang.Thread")) {
+	        return false;
+        }
 		String methodName = ins.getMethodName(cpg);
 		String signature = ins.getSignature(cpg);
 

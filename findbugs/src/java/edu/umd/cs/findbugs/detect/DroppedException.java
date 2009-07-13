@@ -35,10 +35,11 @@ import org.apache.bcel.classfile.Utility;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.Token;
 import edu.umd.cs.findbugs.Tokenizer;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.Hierarchy;
@@ -62,9 +63,9 @@ public class DroppedException extends PreorderVisitor implements Detector {
 		if (DEBUG) System.out.println("Dropped Exception debugging turned on");
 	}
 
-	public void visitClassContext(ClassContext classContext) {
-		this.classContext = classContext;
-		classContext.getJavaClass().accept(this);
+	public void visitClassContext(ClassContext classContext1) {
+		this.classContext = classContext1;
+		classContext1.getJavaClass().accept(this);
 	}
 
 	public void report() {
@@ -250,14 +251,16 @@ public class DroppedException extends PreorderVisitor implements Detector {
 			if (end - start >= 5 && drops && !c.equals("java.lang.InterruptedException")
 					&& !c.equals("java.lang.CloneNotSupportedException")) {
 				int priority = NORMAL_PRIORITY;
-				if (exitInTryBlock) priority++;
-				SourceLineAnnotation srcLine
-						= SourceLineAnnotation.fromVisitedInstruction(this.classContext, this, handled);
-				if (srcLine != null && LOOK_IN_SOURCE_TO_FIND_COMMENTED_CATCH_BLOCKS) {
-					if (catchBlockHasComment(srcLine))
-						return;
-					else
-						priority++;
+				if (exitInTryBlock) {
+	                priority++;
+                }
+				ISourceLineAnnotation srcLine
+						= AnnotationFactory.createSourceLineRange(this, handled, handled);
+				if (LOOK_IN_SOURCE_TO_FIND_COMMENTED_CATCH_BLOCKS) {
+					if (catchBlockHasComment(srcLine)) {
+	                    return;
+                    }
+					priority++;
 				} else {
 					// can't look at source
 					if (lineNumbers == null || multiLineHandler) priority += 2;
@@ -281,11 +284,10 @@ public class DroppedException extends PreorderVisitor implements Detector {
 
 				String key = (exitInTryBlock ? "mightDrop," : "mightIgnore,") + getFullyQualifiedMethodName() + "," + c;
 				if (reported.add(key)) {
-					BugInstance bugInstance = new BugInstance(this, exitInTryBlock ? "DE_MIGHT_DROP" : "DE_MIGHT_IGNORE",
-							priority)
-							.addClassAndMethod(this);
-					bugInstance.addClass(c).describe("CLASS_EXCEPTION");
-					bugInstance.addSourceLine(srcLine);
+					BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, exitInTryBlock ? "DE_MIGHT_DROP" : "DE_MIGHT_IGNORE",
+							priority), this);
+					bugInstance.add(AnnotationFactory.createClass(c)).describe("CLASS_EXCEPTION");
+					bugInstance.add(srcLine);
 					bugReporter.reportBug(bugInstance);
 				}
 
@@ -311,8 +313,8 @@ public class DroppedException extends PreorderVisitor implements Detector {
 					return line;
 			}
 			return secondChoice;
-		} else
-			return entries[entries.length - 1].getLineNumber();
+		}
+		return entries[entries.length - 1].getLineNumber();
 	}
 
 
@@ -344,7 +346,7 @@ public class DroppedException extends PreorderVisitor implements Detector {
 	 * @return true if there is a comment in the catch block,
 	 *         false if not (or if we can't tell)
 	 */
-	private boolean catchBlockHasComment(SourceLineAnnotation srcLine) {
+	private boolean catchBlockHasComment(ISourceLineAnnotation srcLine) {
 		if (!LOOK_IN_SOURCE_TO_FIND_COMMENTED_CATCH_BLOCKS)
 			return false;
 

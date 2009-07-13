@@ -25,6 +25,8 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.FieldAnnotation;
+import edu.umd.cs.findbugs.IFieldAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 /*
  * This is a very simply written detector. It checks if there is exactly
@@ -50,8 +52,8 @@ public class SynchronizeAndNullCheckField extends BytecodeScanningDetector {
 		syncField = null;
 	}
 
-	FieldAnnotation gottenField;
-	FieldAnnotation syncField;
+	IFieldAnnotation gottenField;
+	IFieldAnnotation syncField;
 	int currState;
 	@Override
 	public void sawOpcode(int seen) {
@@ -59,7 +61,7 @@ public class SynchronizeAndNullCheckField extends BytecodeScanningDetector {
 		switch(currState){
 		case 0:
 			if(seen == GETFIELD || seen == GETSTATIC){
-				syncField = FieldAnnotation.fromReferencedField(this);
+				syncField = AnnotationFactory.createReferencedField(this);
 				currState = 1;
 			}
 			break;
@@ -81,14 +83,16 @@ public class SynchronizeAndNullCheckField extends BytecodeScanningDetector {
 			break;
 		case 4:
 			if(seen == GETFIELD || seen == GETSTATIC){
-				gottenField = FieldAnnotation.fromReferencedField(this);
+				gottenField = AnnotationFactory.createReferencedField(this);
 				currState = 5;
 			} else currState = 0;
 			break;
 		case 5:
 			if((seen == IFNONNULL || seen == IFNULL) && gottenField.equals(syncField)){
 				BugInstance bug = new BugInstance(this, "NP_SYNC_AND_NULL_CHECK_FIELD", NORMAL_PRIORITY)
-				.addClass(this).addMethod(this).addField(syncField).addSourceLine(this);
+					.add(AnnotationFactory.createClass(getDottedClassName()))
+					.add(AnnotationFactory.createMethod(this))
+					.add(syncField).add(AnnotationFactory.createSourceLine(this));
 				bugReporter.reportBug(bug);
 			} else currState = 0;
 			break;

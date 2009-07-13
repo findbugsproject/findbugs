@@ -1,17 +1,17 @@
 /*
  * Machine Learning support for FindBugs
  * Copyright (C) 2004,2005 University of Maryland
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -57,8 +57,8 @@ public class ConvertToARFF {
 	// ------------------------------------------------------------
 
 	private static class DataFile {
-		private Document document;
-		private String appName;
+		private final Document document;
+		private final String appName;
 
 		public DataFile(Document document, String appName) {
 			this.document = document;
@@ -88,8 +88,8 @@ public class ConvertToARFF {
 	}
 
 	private abstract static class XPathAttribute implements Attribute {
-		private String name;
-		private String xpath;
+		private final String name;
+		private final String xpath;
 
 		public XPathAttribute(String name, String xpath) {
 			this.name = name;
@@ -102,14 +102,16 @@ public class ConvertToARFF {
 
 		public String getInstanceValue(Element element, String appName) throws MissingNodeException {
 			Object value = element.selectObject(xpath);
-			if (value == null)
-				throw new MissingNodeException("Could not get value from element (path=" +
+			if (value == null) {
+                throw new MissingNodeException("Could not get value from element (path=" +
 					xpath + ")");
+            }
 			if (value instanceof List) {
 				List<?> list = (List<?>) value;
-				if (list.size() == 0)
-					throw new MissingNodeException("Could not get value from element (path=" +
+				if (list.size() == 0) {
+                    throw new MissingNodeException("Could not get value from element (path=" +
 							xpath + ")");
+                }
 				value = list.get(0);
 			}
 
@@ -120,16 +122,18 @@ public class ConvertToARFF {
 				return (String) value;
 			} else if (value instanceof Number) {
 				String s = value.toString();
-				if (s.endsWith(".0"))
-					s = s.substring(0, s.length() - 2);
+				if (s.endsWith(".0")) {
+                    s = s.substring(0, s.length() - 2);
+                }
 				return s;
-			} else
-				throw new IllegalStateException("Unexpected object returned from xpath query: " + value);
+			} else {
+                throw new IllegalStateException("Unexpected object returned from xpath query: " + value);
+            }
 		}
 	}
 
 	public static class NominalAttribute extends XPathAttribute {
-		private Set<String> possibleValueSet;
+		private final Set<String> possibleValueSet;
 
 		public NominalAttribute(String name, String xpath) {
 			super(name, xpath);
@@ -222,14 +226,15 @@ public class ConvertToARFF {
 
 		@Override
 		protected String bugToString(int state) throws MissingNodeException {
-			if (state == NOT_BUG)
-				return "not_bug";
-			else if (state == BUG)
-				return "bug";
-			else if (state == HARMLESS_BUG)
-				return "harmless_bug";
-			else
-				throw new MissingNodeException("Unclassified warning");
+			if (state == NOT_BUG) {
+                return "not_bug";
+            } else if (state == BUG) {
+                return "bug";
+            } else if (state == HARMLESS_BUG) {
+                return "harmless_bug";
+            } else {
+                throw new MissingNodeException("Unclassified warning");
+            }
 
 		}
 	}
@@ -247,12 +252,13 @@ public class ConvertToARFF {
 		 */
 		@Override
 		protected String bugToString(int state) throws MissingNodeException {
-			if (state == BUG)
-				return "bug";
-			else if (state == NOT_BUG || state == HARMLESS_BUG)
-				return "not_bug";
-			else
-				throw new MissingNodeException("unclassified warning");
+			if (state == BUG) {
+                return "bug";
+            } else if (state == NOT_BUG || state == HARMLESS_BUG) {
+                return "not_bug";
+            } else {
+                throw new MissingNodeException("unclassified warning");
+            }
 		}
 	}
 
@@ -283,8 +289,9 @@ public class ConvertToARFF {
 
 		public String getInstanceValue(Element element, String appName) throws MissingNodeException {
 			org.dom4j.Attribute attribute = element.attribute("priority");
-			if (attribute ==  null)
-				throw new MissingNodeException("Missing priority attribute");
+			if (attribute ==  null) {
+                throw new MissingNodeException("Missing priority attribute");
+            }
 			String value = attribute.getValue();
 			try {
 				int prio = Integer.parseInt(value);
@@ -306,11 +313,11 @@ public class ConvertToARFF {
 	 * really unique, even across applications.
 	 * Obviously, this attribute shouldn't be used as input
 	 * to a learning algorithm.
-	 * 
+	 *
 	 * <p>Uses the Element's uid attribute if it has one.</p>
 	 */
 	public static class IdAttribute implements Attribute {
-		private TreeSet<String> possibleValueSet = new TreeSet<String>();
+		private final TreeSet<String> possibleValueSet = new TreeSet<String>();
 
 		private boolean scanning = true;
 		private int count = 0;
@@ -391,8 +398,8 @@ public class ConvertToARFF {
 
 	public static class RandomIdAttribute implements Attribute {
 
-		private Random rng = new Random();
-		private IdentityHashMap<Element, String> idMap = new IdentityHashMap<Element, String>();
+		private final Random rng = new Random();
+		private final IdentityHashMap<Element, String> idMap = new IdentityHashMap<Element, String>();
 
 		/* (non-Javadoc)
 		 * @see edu.umd.cs.findbugs.ml.ConvertToARFF.Attribute#getName()
@@ -425,8 +432,9 @@ public class ConvertToARFF {
 		public String getRange() {
 			TreeSet<String> range = new TreeSet<String>();
 			range.addAll(idMap.values());
-			if (range.size() != idMap.size())
-				throw new IllegalStateException("id collision!");
+			if (range.size() != idMap.size()) {
+                throw new IllegalStateException("id collision!");
+            }
 			return collectionToRange(range);
 		}
 
@@ -435,15 +443,16 @@ public class ConvertToARFF {
 		 */
 		public String getInstanceValue(Element element, String appName) throws MissingNodeException {
 			String id = idMap.get(element);
-			if (id == null)
-				throw new IllegalStateException("Element not scanned?");
+			if (id == null) {
+                throw new IllegalStateException("Element not scanned?");
+            }
 			return "\"" + id + "\"";
 		}
 
 	}
 
 	public static class AppNameAttribute implements Attribute {
-		private Set<String> appNameSet = new TreeSet<String>();
+		private final Set<String> appNameSet = new TreeSet<String>();
 
 		public String getName() {
 			return "appname";
@@ -468,8 +477,9 @@ public class ConvertToARFF {
 		StringBuilder buf = new StringBuilder();
 		buf.append("{");
 		for (String aCollection : collection) {
-			if (buf.length() > 1)
-				buf.append(',');
+			if (buf.length() > 1) {
+                buf.append(',');
+            }
 			buf.append(aCollection);
 		}
 		buf.append("}");
@@ -491,7 +501,7 @@ public class ConvertToARFF {
 	// Fields
 	// ------------------------------------------------------------
 
-	private List<Attribute> attributeList;
+	private final List<Attribute> attributeList;
 	private String nodeSelectionXpath;
 	private boolean dropUnclassifiedWarnings;
 	private String appName;
@@ -512,7 +522,7 @@ public class ConvertToARFF {
 
 	/**
 	 * Set the xpath expression used to select BugInstance nodes.
-	 * 
+	 *
 	 * @param nodeSelectionXpath the node selection xpath expression
 	 */
 	public void setNodeSelectionXpath(String nodeSelectionXpath) {
@@ -638,8 +648,9 @@ public class ConvertToARFF {
 				boolean first = true;
 
 				public void apply(Attribute attribute) throws IOException {
-					if (!first)
-						out.write(",");
+					if (!first) {
+                        out.write(",");
+                    }
 					first = false;
 					String value;
 					try {
@@ -677,20 +688,22 @@ public class ConvertToARFF {
 
 		while (tok.hasMoreTokens()) {
 			String s = tok.nextToken();
-			if (s.equals("BUG"))
-				state |= BUG;
-			else if (s.equals("NOT_BUG"))
-				state |= NOT_BUG;
-			else if (s.equals("HARMLESS"))
-				state |= HARMLESS;
+			if (s.equals("BUG")) {
+                state |= BUG;
+            } else if (s.equals("NOT_BUG")) {
+                state |= NOT_BUG;
+            } else if (s.equals("HARMLESS")) {
+                state |= HARMLESS;
+            }
 		}
 
-		if ((state & NOT_BUG) != 0)
-			return NOT_BUG;
-		else if ((state & BUG) != 0)
-			return ((state & HARMLESS) != 0) ? HARMLESS_BUG : BUG;
-		else
-			return UNCLASSIFIED;
+		if ((state & NOT_BUG) != 0) {
+            return NOT_BUG;
+        } else if ((state & BUG) != 0) {
+            return ((state & HARMLESS) != 0) ? HARMLESS_BUG : BUG;
+        } else {
+            return UNCLASSIFIED;
+        }
 	}
 
 	@SuppressWarnings("unchecked")
@@ -701,15 +714,16 @@ public class ConvertToARFF {
 				Element element = i.next();
 				String annotationText = element.valueOf("./UserAnnotation[text()]");
 				int classification = getBugClassification(annotationText);
-				if (classification == UNCLASSIFIED)
-					i.remove();
+				if (classification == UNCLASSIFIED) {
+                    i.remove();
+                }
 			}
 		}
 		return bugInstanceList;
 	}
 
 	private static class C2ACommandLine extends CommandLine {
-		private ConvertToARFF converter = new ConvertToARFF();
+		private final ConvertToARFF converter = new ConvertToARFF();
 
 		public C2ACommandLine() {
 			addOption("-select","xpath expression","select BugInstance elements");
@@ -805,13 +819,15 @@ public class ConvertToARFF {
 	}
 
 	public String toAppName(String fileName) {
-		if (appName != null)
-			return appName;
+		if (appName != null) {
+            return appName;
+        }
 
 		// Remove file extension, if any
 		int lastDot = fileName.lastIndexOf('.');
-		if (lastDot >= 0)
-			fileName = fileName.substring(0, lastDot);
+		if (lastDot >= 0) {
+            fileName = fileName.substring(0, lastDot);
+        }
 		return fileName;
 	}
 

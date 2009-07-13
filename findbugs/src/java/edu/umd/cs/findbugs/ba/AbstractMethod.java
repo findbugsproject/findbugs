@@ -23,6 +23,7 @@ import org.apache.bcel.Constants;
 import edu.umd.cs.findbugs.classfile.DescriptorFactory;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
+import edu.umd.cs.findbugs.signature.SignatureParser;
 import edu.umd.cs.findbugs.util.ClassName;
 
 public abstract class AbstractMethod extends AbstractClassMember implements XMethod {

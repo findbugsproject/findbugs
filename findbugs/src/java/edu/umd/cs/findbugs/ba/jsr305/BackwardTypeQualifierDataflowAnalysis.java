@@ -39,7 +39,6 @@ import edu.umd.cs.findbugs.ba.Edge;
 import edu.umd.cs.findbugs.ba.Location;
 import edu.umd.cs.findbugs.ba.ReverseDFSOrder;
 import edu.umd.cs.findbugs.ba.ReverseDepthFirstSearch;
-import edu.umd.cs.findbugs.ba.SignatureParser;
 import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XField;
 import edu.umd.cs.findbugs.ba.XMethod;
@@ -47,6 +46,8 @@ import edu.umd.cs.findbugs.ba.vna.ValueNumber;
 import edu.umd.cs.findbugs.ba.vna.ValueNumberDataflow;
 import edu.umd.cs.findbugs.ba.vna.ValueNumberFrame;
 import edu.umd.cs.findbugs.classfile.Global;
+import edu.umd.cs.findbugs.signature.SignatureParser;
+
 import org.apache.bcel.generic.Instruction;
 import org.apache.bcel.generic.RETURN;
 import org.apache.bcel.generic.ReturnInstruction;

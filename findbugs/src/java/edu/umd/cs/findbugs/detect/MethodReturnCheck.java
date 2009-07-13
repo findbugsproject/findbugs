@@ -27,11 +27,11 @@ import org.apache.bcel.classfile.Method;
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.MethodAnnotation;
+import edu.umd.cs.findbugs.IMethodAnnotation;
 import edu.umd.cs.findbugs.OpcodeStack;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.UseAnnotationDatabase;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.CheckReturnAnnotationDatabase;
 import edu.umd.cs.findbugs.ba.CheckReturnValueAnnotation;
@@ -148,11 +148,13 @@ public class MethodReturnCheck extends OpcodeStackDetector implements UseAnnotat
 							.annotationIsDirect(callSeen)
 							&& !callSeen.getSignature().endsWith(
 									callSeen.getClassName().replace('.', '/')
-											+ ";"))
-						priority++;
-					bugAccumulator.accumulateBug(new BugInstance(this,
-							annotation.getPattern(), priority)
-							.addClassAndMethod(this).addCalledMethod(this), this);
+											+ ";")) {
+	                    priority++;
+                    }
+					bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this,
+							annotation.getPattern(), priority), this)
+							.add(AnnotationFactory.createCalledMethod(this)), 
+							AnnotationFactory.createSourceLine(this));
 				}
 
 			}
@@ -193,11 +195,11 @@ public class MethodReturnCheck extends OpcodeStackDetector implements UseAnnotat
 						&& (callSeen.getClassName().endsWith("Exception")  
 								|| callSeen.getClassName().endsWith("Error")))
 					pattern = "RV_EXCEPTION_NOT_THROWN";
-				BugInstance warning = new BugInstance(this,
-						pattern, priority)
-						.addClassAndMethod(this)
-						.addMethod(callSeen).describe(MethodAnnotation.METHOD_CALLED);
-				bugAccumulator.accumulateBug(warning, SourceLineAnnotation.fromVisitedInstruction(this, callPC));
+				BugInstance warning = DetectorUtil.addClassAndMethod(new BugInstance(this,
+						pattern, priority), this)
+						.add(AnnotationFactory.createMethod(callSeen))
+						.describe(IMethodAnnotation.METHOD_CALLED);
+				bugAccumulator.accumulateBug(warning, AnnotationFactory.createSourceLine(this, callPC));
 			}
 			state = SCAN;
 		}

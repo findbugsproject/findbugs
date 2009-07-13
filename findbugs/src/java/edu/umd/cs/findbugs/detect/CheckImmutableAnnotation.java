@@ -25,6 +25,7 @@ import org.apache.bcel.classfile.JavaClass;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.JCIPAnnotationDatabase;
@@ -51,8 +52,9 @@ public class CheckImmutableAnnotation extends PreorderVisitor implements
 	@Override
 	public void visit(Field obj) {
 		if (!obj.isFinal())
-			bugReporter.reportBug(new BugInstance(this, "JCIP_FIELD_ISNT_FINAL_IN_IMMUTABLE_CLASS",
-					NORMAL_PRIORITY).addClass(this).addVisitedField(this));
+			bugReporter.reportBug(new BugInstance(this, "JCIP_FIELD_ISNT_FINAL_IN_IMMUTABLE_CLASS",	NORMAL_PRIORITY)
+					.add(AnnotationFactory.createClass(getDottedClassName()))
+					.add(AnnotationFactory.createField(this)));
 	}
 
 

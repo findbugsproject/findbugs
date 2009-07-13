@@ -65,18 +65,18 @@ import javax.swing.JOptionPane;
 import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugCollection;
 import edu.umd.cs.findbugs.BugDesignation;
-import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugPattern;
 import edu.umd.cs.findbugs.BugRanker;
-import edu.umd.cs.findbugs.ClassAnnotation;
 import edu.umd.cs.findbugs.FindBugs;
 import edu.umd.cs.findbugs.I18N;
+import edu.umd.cs.findbugs.BugInstance;
+import edu.umd.cs.findbugs.IClassAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.PackageStats;
 import edu.umd.cs.findbugs.PluginLoader;
 import edu.umd.cs.findbugs.ProjectPackagePrefixes;
 import edu.umd.cs.findbugs.ProjectStats;
 import edu.umd.cs.findbugs.SortedBugCollection;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.StartTime;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.UserDesignation;
@@ -1258,7 +1258,7 @@ public  class DBCloud extends AbstractCloud {
 		out.println("Bug report generated from FindBugs");
 		out.println(b.getMessageWithoutPrefix());
 		out.println();
-		ClassAnnotation primaryClass = b.getPrimaryClass();
+		IClassAnnotation primaryClass = b.getPrimaryClass();
 
 		for (BugAnnotation a : b.getAnnotations()) {
 			if (a == primaryClass)
@@ -1342,13 +1342,13 @@ public  class DBCloud extends AbstractCloud {
 			return "";
 		StringWriter stringWriter = new StringWriter();
 		PrintWriter out = new PrintWriter(stringWriter);
-		ClassAnnotation primaryClass = b.getPrimaryClass();
+		IClassAnnotation primaryClass = b.getPrimaryClass();
 
 		int firstLine = Integer.MAX_VALUE;
 		int lastLine = Integer.MIN_VALUE;
 		for (BugAnnotation a : b.getAnnotations())
-			if (a instanceof SourceLineAnnotation) {
-				SourceLineAnnotation s = (SourceLineAnnotation) a;
+			if (a instanceof ISourceLineAnnotation) {
+				ISourceLineAnnotation s = (ISourceLineAnnotation) a;
 				if (s.getClassName().equals(primaryClass.getClassName()) && s.getStartLine() > 0) {
 					firstLine = Math.min(firstLine, s.getStartLine());
 					lastLine = Math.max(lastLine, s.getEndLine());
@@ -1357,7 +1357,7 @@ public  class DBCloud extends AbstractCloud {
 
 			}
 
-		SourceLineAnnotation primarySource = primaryClass.getSourceLines();
+		ISourceLineAnnotation primarySource = primaryClass.getSourceLines();
 		if (primarySource.isSourceFileKnown() && firstLine >= 1 && firstLine <= lastLine && lastLine - firstLine < 50) {
 			try {
 				SourceFile sourceFile = bugCollection2.getProject().getSourceFinder().findSourceFile(primarySource);
@@ -1818,7 +1818,7 @@ public  class DBCloud extends AbstractCloud {
 		if (sourceFileLinkPattern == null)
 			return null;
 
-		SourceLineAnnotation src = b.getPrimarySourceLineAnnotation();
+		ISourceLineAnnotation src = b.getPrimarySourceLineAnnotation();
 		String fileName = src.getSourcePath();
 		int startLine = src.getStartLine();
 

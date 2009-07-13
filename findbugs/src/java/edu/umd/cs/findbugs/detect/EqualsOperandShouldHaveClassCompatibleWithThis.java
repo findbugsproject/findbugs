@@ -23,8 +23,10 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.FirstPassDetector;
+import edu.umd.cs.findbugs.ITypeAnnotation;
 import edu.umd.cs.findbugs.OpcodeStack;
 import edu.umd.cs.findbugs.TypeAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.ClassSummary;
 import edu.umd.cs.findbugs.ba.IncompatibleTypes;
@@ -36,9 +38,6 @@ import edu.umd.cs.findbugs.classfile.DescriptorFactory;
 import edu.umd.cs.findbugs.util.ClassName;
 
 import org.apache.bcel.classfile.Code;
-
-import java.util.HashSet;
-import java.util.Set;
 
 public class EqualsOperandShouldHaveClassCompatibleWithThis extends OpcodeStackDetector implements FirstPassDetector {
 
@@ -118,8 +117,9 @@ public class EqualsOperandShouldHaveClassCompatibleWithThis extends OpcodeStackD
 	            int priority = check.getPriority();
 	            if ("java/lang/Object".equals(getSuperclassName()) && ClassName.isAnonymous(getClassName()))
 	            		priority++;
-	            bugAccumulator.accumulateBug(new BugInstance(this, "EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS", priority).addClassAndMethod(this)
-	            		.addType(c).describe(TypeAnnotation.FOUND_ROLE), this);
+	            bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "EQ_CHECK_FOR_OPERAND_NOT_COMPATIBLE_WITH_THIS", priority), this)
+	            	.add(new TypeAnnotation("L" + c.getClassName() + ";"))
+	            	.describe(ITypeAnnotation.FOUND_ROLE), AnnotationFactory.createSourceLine(this));
 	            classSummary.checksForEqualTo(thisClassDescriptor, c);
 	            
 	    		

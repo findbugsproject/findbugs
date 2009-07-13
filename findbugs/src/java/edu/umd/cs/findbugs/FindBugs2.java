@@ -66,7 +66,6 @@ import edu.umd.cs.findbugs.log.Profiler;
 import edu.umd.cs.findbugs.plan.AnalysisPass;
 import edu.umd.cs.findbugs.plan.ExecutionPlan;
 import edu.umd.cs.findbugs.plan.OrderingConstraintException;
-import edu.umd.cs.findbugs.util.ClassName;
 import edu.umd.cs.findbugs.util.TopologicalSort;
 import edu.umd.cs.findbugs.util.TopologicalSort.OutEdges;
 
@@ -961,13 +960,13 @@ public class FindBugs2 implements IFindBugsEngine2 {
 						}
 						continue;
 					}
+					currentClassName = classDescriptor.toDottedClassName();
 					boolean isHuge = AnalysisContext.currentAnalysisContext().isTooBig(classDescriptor);
 					if (isHuge && AnalysisContext.currentAnalysisContext().isApplicationClass(classDescriptor)) {
-						bugReporter.reportBug(new BugInstance("SKIPPED_CLASS_TOO_BIG", Priorities.NORMAL_PRIORITY).addClass(classDescriptor));
+						bugReporter.reportBug(new BugInstance("SKIPPED_CLASS_TOO_BIG", Priorities.NORMAL_PRIORITY)
+							.add(new ClassAnnotation(currentClassName)));
 					}
-					currentClassName = ClassName.toDottedClassName(classDescriptor.getClassName());
 					notifyClassObservers(classDescriptor);
-
 
 					for (Detector2 detector : detectorList) {
 						if (Thread.interrupted()) {

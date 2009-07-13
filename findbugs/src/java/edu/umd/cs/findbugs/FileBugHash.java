@@ -64,10 +64,10 @@ public class FileBugHash {
             		sizes.put(path, size + cStat.size());
             	}
 			for (BugInstance bug : bugs.getCollection()) {
-				SourceLineAnnotation source = bug.getPrimarySourceLineAnnotation();
-				ClassAnnotation classAnnotation = bug.getPrimaryClass();
-				MethodAnnotation methodAnnotation = bug.getPrimaryMethod();
-				FieldAnnotation fieldAnnotation = bug.getPrimaryField();
+				ISourceLineAnnotation source = bug.getPrimarySourceLineAnnotation();
+				IClassAnnotation classAnnotation = bug.getPrimaryClass();
+				IMethodAnnotation methodAnnotation = bug.getPrimaryMethod();
+				IFieldAnnotation fieldAnnotation = bug.getPrimaryField();
 
 				String packagePath = source.getPackageName().replace('.', '/');
 				String key;

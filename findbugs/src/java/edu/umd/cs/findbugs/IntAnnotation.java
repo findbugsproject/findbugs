@@ -82,7 +82,7 @@ public class IntAnnotation implements BugAnnotation {
 		visitor.visitIntAnnotation(this);
 	}
 
-	public String format(String key, ClassAnnotation primaryClass) {
+	public String format(String key, IClassAnnotation primaryClass) {
 		if (key.equals("hash") && !isSignificant()) return "";
 		return String.valueOf(value);
 	}
@@ -147,7 +147,7 @@ public class IntAnnotation implements BugAnnotation {
 
 
 	
-    public String toString(ClassAnnotation primaryClass) {
+    public String toString(IClassAnnotation primaryClass) {
 	    return toString();
     }
 }

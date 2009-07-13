@@ -39,6 +39,7 @@ import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
 import edu.umd.cs.findbugs.ba.ClassContext;
@@ -153,9 +154,8 @@ public final class FindMismatchedWaitOrNotify implements Detector, StatelessDete
 						// Non-public methods may be properly locked in a calling context.
 						int priority = method.isPublic() ? NORMAL_PRIORITY : LOW_PRIORITY;
 
-						bugAccumulator.accumulateBug(new BugInstance(this, type, priority)
-						.addClassAndMethod(methodGen, sourceFile),
-						SourceLineAnnotation.fromVisitedInstruction(classContext, methodGen, sourceFile, handle));
+						bugAccumulator.accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this, type, priority), methodGen, sourceFile),
+						AnnotationFactory.createSourceLine(methodGen, sourceFile, handle));
 					}
 				}
 			}

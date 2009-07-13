@@ -20,8 +20,6 @@
 package edu.umd.cs.findbugs;
 
 import edu.umd.cs.findbugs.ba.AnalysisContext;
-import edu.umd.cs.findbugs.classfile.ClassDescriptor;
-import edu.umd.cs.findbugs.classfile.DescriptorFactory;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 
 /**
@@ -32,7 +30,7 @@ import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
  * @author David Hovemeyer
  * @see BugAnnotation
  */
-public abstract class PackageMemberAnnotation extends BugAnnotationWithSourceLines  {
+public abstract class PackageMemberAnnotation extends BugAnnotationWithSourceLines implements IPackageMemberAnnotation  {
 	private static final long serialVersionUID = -8208567669352996892L;
 
 	protected final @DottedClassName String className;
@@ -52,7 +50,7 @@ public abstract class PackageMemberAnnotation extends BugAnnotationWithSourceLin
 		this.className = className;
 		AnalysisContext context = AnalysisContext.currentAnalysisContext();
 		if (context != null) this.sourceFileName = context.lookupSourceFile(className);
-		else this.sourceFileName = SourceLineAnnotation.UNKNOWN_SOURCE_FILE;
+		else this.sourceFileName = ISourceLineAnnotation.UNKNOWN_SOURCE_FILE;
 		if (description != null)
 			description = description.intern();
 		this.description = description;
@@ -65,13 +63,7 @@ public abstract class PackageMemberAnnotation extends BugAnnotationWithSourceLin
 	public final @DottedClassName String getClassName() {
 		return className;
 	}
-	/**
-	 * Get the class name.
-	 */
-	public final ClassDescriptor getClassDescriptor() {
-		return DescriptorFactory.instance().getClassDescriptorForDottedClassName(className);
-	}
-
+	
 	/**
 	 * Get the package name.
 	 */
@@ -92,7 +84,7 @@ public abstract class PackageMemberAnnotation extends BugAnnotationWithSourceLin
 	 * @param key the key
 	 * @return the formatted annotation
 	 */
-	public final String format(String key, ClassAnnotation primaryClass) {
+	public final String format(String key, IClassAnnotation primaryClass) {
 		if (key.equals("class.givenClass"))
 			return shorten(primaryClass.getPackageName(), className);
 		if (key.equals("class"))
@@ -121,8 +113,9 @@ public abstract class PackageMemberAnnotation extends BugAnnotationWithSourceLin
 		int index = typeName.lastIndexOf('.');
 		if (index >= 0) {
 			String otherPkg = typeName.substring(0, index);
-			if (otherPkg.equals(pkgName) || otherPkg.equals("java.lang"))
-				typeName = typeName.substring(index + 1);
+			if (otherPkg.equals(pkgName) || otherPkg.equals("java.lang")) {
+	            typeName = typeName.substring(index + 1);
+            }
 		}
 		return typeName;
 	}
@@ -151,7 +144,7 @@ public abstract class PackageMemberAnnotation extends BugAnnotationWithSourceLin
 	 * @param key the key specifying how to do the formatting
 	 * @param primaryClass TODO
 	 */
-	protected abstract String formatPackageMember(String key, ClassAnnotation primaryClass);
+	protected abstract String formatPackageMember(String key, IClassAnnotation primaryClass);
 
 	/**
 	 * All PackageMemberAnnotation object share a common toString() implementation.
@@ -162,9 +155,9 @@ public abstract class PackageMemberAnnotation extends BugAnnotationWithSourceLin
 	public String toString() {
 		return toString(null);
 	}
-
 	
-	public String toString(ClassAnnotation primaryClass) {
+	@Override
+    public String toString(IClassAnnotation primaryClass) {
 		String pattern = I18N.instance().getAnnotationDescription(description);
 		FindBugsMessageFormat format = new FindBugsMessageFormat(pattern);
 		return format.format(new BugAnnotation[]{this}, primaryClass);

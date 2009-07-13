@@ -36,8 +36,9 @@ import org.apache.bcel.generic.MethodGen;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
 import edu.umd.cs.findbugs.ba.ClassContext;
@@ -52,7 +53,7 @@ public final class FindTwoLockWait implements Detector, StatelessDetector {
 	private JavaClass javaClass;
 
 	private Collection<BugInstance> possibleWaitBugs = new LinkedList<BugInstance>();
-	private Collection<SourceLineAnnotation> possibleNotifyLocations = new LinkedList<SourceLineAnnotation>();
+	private Collection<ISourceLineAnnotation> possibleNotifyLocations = new LinkedList<ISourceLineAnnotation>();
 	public FindTwoLockWait(BugReporter bugReporter) {
 		this.bugReporter = bugReporter;
 	}
@@ -89,8 +90,8 @@ public final class FindTwoLockWait implements Detector, StatelessDetector {
 		}
 		if (!possibleNotifyLocations.isEmpty()) 
 			for(BugInstance bug : possibleWaitBugs ) {
-				for(SourceLineAnnotation notifyLine : possibleNotifyLocations)
-					bug.addSourceLine(notifyLine).describe("SOURCE_NOTIFICATION_DEADLOCK");
+				for(ISourceLineAnnotation notifyLine : possibleNotifyLocations)
+					bug.add(notifyLine).describe("SOURCE_NOTIFICATION_DEADLOCK");
 				bugReporter.reportBug(bug);
 			}
 	}
@@ -140,9 +141,9 @@ public final class FindTwoLockWait implements Detector, StatelessDetector {
 			if (count > 1) {
 				// A wait with multiple locks held?
 				String sourceFile = javaClass.getSourceFileName();
-				possibleWaitBugs.add(new BugInstance(this, "TLW_TWO_LOCK_WAIT", HIGH_PRIORITY )
-						.addClassAndMethod(methodGen, sourceFile)
-						.addSourceLine(classContext, methodGen, sourceFile, location.getHandle()));
+				possibleWaitBugs.add(DetectorUtil.addClassAndMethod(new BugInstance(this, "TLW_TWO_LOCK_WAIT", HIGH_PRIORITY ), methodGen, sourceFile)
+						.add(AnnotationFactory.createSourceLine(
+								methodGen, sourceFile, location.getHandle())));
 			}
 		}
 		if (Hierarchy.isMonitorNotify(location.getHandle().getInstruction(), cpg)) {
@@ -150,7 +151,8 @@ public final class FindTwoLockWait implements Detector, StatelessDetector {
 			if (count > 1) {
 				// A notify with multiple locks held?
 				String sourceFile = javaClass.getSourceFileName();
-				possibleNotifyLocations.add(SourceLineAnnotation.fromVisitedInstruction(classContext, methodGen, sourceFile, location.getHandle()));
+				possibleNotifyLocations.add(
+						AnnotationFactory.createSourceLine(methodGen, sourceFile, location.getHandle()));
 			}
 		}
 	}

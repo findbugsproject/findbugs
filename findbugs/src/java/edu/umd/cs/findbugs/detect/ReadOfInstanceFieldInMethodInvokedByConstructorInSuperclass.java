@@ -31,12 +31,13 @@ import org.apache.bcel.classfile.Method;
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.MethodAnnotation;
+import edu.umd.cs.findbugs.IMethodAnnotation;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.OpcodeStack;
-import edu.umd.cs.findbugs.ProgramPoint;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.FieldSummary;
+import edu.umd.cs.findbugs.ba.ProgramPoint;
 import edu.umd.cs.findbugs.ba.PutfieldScanner;
 import edu.umd.cs.findbugs.ba.XField;
 import edu.umd.cs.findbugs.ba.XMethod;
@@ -46,21 +47,19 @@ import edu.umd.cs.findbugs.classfile.DescriptorFactory;
 
 public class ReadOfInstanceFieldInMethodInvokedByConstructorInSuperclass extends OpcodeStackDetector {
 
-	BugReporter bugReporter;
-
 	BugAccumulator accumulator;
+	Set<XField> initializedFields; 
+	Set<XField> nullCheckedFields;
 
 	public ReadOfInstanceFieldInMethodInvokedByConstructorInSuperclass(BugReporter bugReporter) {
-		this.bugReporter = bugReporter;
 		this.accumulator = new BugAccumulator(bugReporter);
 	}
-	
-	Set<XField> initializedFields, nullCheckedFields;
 
 	@Override
     public void visit(Code obj) {
-		if (getMethod().isStatic())
-			return;
+		if (getMethod().isStatic()) {
+	        return;
+        }
 		initializedFields = new HashSet<XField>();
 		nullCheckedFields = new HashSet<XField>();
 		super.visit(obj);
@@ -134,20 +133,21 @@ public class ReadOfInstanceFieldInMethodInvokedByConstructorInSuperclass extends
 			if (putfieldsAt.isEmpty())
 				continue;
 			Map.Entry<Integer, OpcodeStack.Item> e = putfieldsAt.entrySet().iterator().next();
-			int pc = e.getKey();
+			int pc = e.getKey().intValue();
 			OpcodeStack.Item value = e.getValue();
 			if (value.isNull() || value.hasConstantValue(0)) 
 				priority++;
 			
-			SourceLineAnnotation fieldSetAt = SourceLineAnnotation.fromVisitedInstruction(getThisClass(), upcallMethod, pc);
+			ISourceLineAnnotation fieldSetAt = AnnotationFactory.createSourceLine(getThisClass(), upcallMethod, pc);
 			
-			BugInstance bug = new BugInstance(this, "UR_UNINIT_READ_CALLED_FROM_SUPER_CONSTRUCTOR", priority).addClassAndMethod(this).addField(f);
-			bug.addMethod(p.method).describe(MethodAnnotation.METHOD_SUPERCLASS_CONSTRUCTOR)
-			   .addSourceLine(p.getSourceLineAnnotation()).describe(SourceLineAnnotation.ROLE_CALLED_FROM_SUPERCLASS_AT)
-			   .addMethod(upcall).describe(MethodAnnotation.METHOD_CONSTRUCTOR)
-			   .add(fieldSetAt).describe(SourceLineAnnotation.ROLE_FIELD_SET_TOO_LATE_AT);
+			BugInstance bug = DetectorUtil.addClassAndMethod(new BugInstance(this, "UR_UNINIT_READ_CALLED_FROM_SUPER_CONSTRUCTOR", priority), this).add(AnnotationFactory.createField(f));
+			bug.add(AnnotationFactory.createMethod(p.method))
+				.describe(IMethodAnnotation.METHOD_SUPERCLASS_CONSTRUCTOR)
+			   .add(AnnotationFactory.createSourceLine(p)).describe(ISourceLineAnnotation.ROLE_CALLED_FROM_SUPERCLASS_AT)
+			   .add(AnnotationFactory.createMethod(upcall)).describe(IMethodAnnotation.METHOD_CONSTRUCTOR)
+			   .add(fieldSetAt).describe(ISourceLineAnnotation.ROLE_FIELD_SET_TOO_LATE_AT);
 			   
-			accumulator.accumulateBug(bug, this);
+			accumulator.accumulateBug(bug, AnnotationFactory.createSourceLine(this));
 		}
 			
 

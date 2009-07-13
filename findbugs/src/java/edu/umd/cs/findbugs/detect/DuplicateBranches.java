@@ -42,6 +42,7 @@ import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.BasicBlock;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.ClassContext;
@@ -153,10 +154,10 @@ public class DuplicateBranches extends PreorderVisitor implements Detector
 		InstructionHandle elseLastIns = elseFinishHandle.getPrev();
 		if (elseLastIns != null) elseFinishPos = elseLastIns.getPosition();
 
-		pendingBugs.add(new BugInstance(this, "DB_DUPLICATE_BRANCHES", NORMAL_PRIORITY)
-				.addClassAndMethod(classContext.getJavaClass(), method)
-				.addSourceLineRange(classContext, this, thenStartPos, thenFinishPos)
-				.addSourceLineRange(classContext, this, elseStartPos, elseFinishPos));
+		BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "DB_DUPLICATE_BRANCHES", NORMAL_PRIORITY), classContext.getJavaClass(), method)
+				.add(AnnotationFactory.createSourceLineRange(this, thenStartPos, thenFinishPos))
+				.add(AnnotationFactory.createSourceLineRange(this, elseStartPos, elseFinishPos));
+		pendingBugs.add(bugInstance);
 	}
 
 	/** Like bb.getFirstInstruction() except that if null is
@@ -235,12 +236,12 @@ public class DuplicateBranches extends PreorderVisitor implements Detector
 		}
 		for(Collection<Integer> clauses : map.values()) {
 			if (clauses.size() > 1) {
-				BugInstance bug = new BugInstance(this, "DB_DUPLICATE_SWITCH_CLAUSES", LOW_PRIORITY)
-						.addClassAndMethod(classContext.getJavaClass(), method);
-				for(int i : clauses) 
-					bug.addSourceLineRange(this.classContext, this, 
+				BugInstance bug = DetectorUtil.addClassAndMethod(new BugInstance(this, "DB_DUPLICATE_SWITCH_CLAUSES", LOW_PRIORITY), classContext.getJavaClass(), method);
+				for(int i : clauses) {
+	                bug.add(AnnotationFactory.createSourceLineRange(this, 
 							switchPos[i],
-							switchPos[i+1]-1); // not endPos, but that's ok
+							switchPos[i+1]-1)); // not endPos, but that's ok
+                } 
 				pendingBugs.add(bug);
 			}
 		}

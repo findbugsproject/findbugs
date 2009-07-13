@@ -238,7 +238,7 @@ public class Update {
 
 					BugInstance newBug = (BugInstance) bug.clone();
 
-					ClassAnnotation classBugFoundIn = bug.getPrimaryClass();
+					IClassAnnotation classBugFoundIn = bug.getPrimaryClass();
 					String className = classBugFoundIn.getClassName();
 					String sourceFile = classBugFoundIn.getSourceFileName();
 					boolean fixed = sourceFile != null && analyzedSourceFiles.contains(sourceFile) 
@@ -279,7 +279,7 @@ public class Update {
 				newBug.setFirstVersion(lastSequence + 1);
 				addedBugs++;
 
-				ClassAnnotation classBugFoundIn = bug.getPrimaryClass();
+				IClassAnnotation classBugFoundIn = bug.getPrimaryClass();
 
 				String className = classBugFoundIn.getClassName();
 				if (origCollection.getProjectStats().getClassStats(className) != null) {

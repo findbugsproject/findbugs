@@ -31,7 +31,8 @@ import org.apache.bcel.classfile.Method;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
-import edu.umd.cs.findbugs.FieldAnnotation;
+import edu.umd.cs.findbugs.IFieldAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 
 public class FindDoubleCheck extends BytecodeScanningDetector {
 	static final boolean DEBUG = false;
@@ -39,9 +40,9 @@ public class FindDoubleCheck extends BytecodeScanningDetector {
 	int startPC, endPC;
 	int count;
 	boolean sawMonitorEnter;
-	Set<FieldAnnotation> fields = new HashSet<FieldAnnotation>();
-	Set<FieldAnnotation> twice = new HashSet<FieldAnnotation>();
-	FieldAnnotation pendingFieldLoad;
+	Set<IFieldAnnotation> fields = new HashSet<IFieldAnnotation>();
+	Set<IFieldAnnotation> twice = new HashSet<IFieldAnnotation>();
+	IFieldAnnotation pendingFieldLoad;
 
 	int countSinceGetReference;
 	int countSinceGetBoolean;
@@ -71,7 +72,7 @@ public class FindDoubleCheck extends BytecodeScanningDetector {
 
 		if (seen == MONITORENTER) sawMonitorEnter = true;
 		if (seen == GETFIELD || seen == GETSTATIC) {
-			pendingFieldLoad = FieldAnnotation.fromReferencedField(this);
+			pendingFieldLoad = AnnotationFactory.createReferencedField(this);
 			if (DEBUG) System.out.println("	" + pendingFieldLoad);
 			String sig = getSigConstantOperand();
 			if (sig.equals("Z")) {
@@ -136,7 +137,7 @@ public class FindDoubleCheck extends BytecodeScanningDetector {
 			break;
 		case 3:
 			if (seen == PUTFIELD || seen == PUTSTATIC) {
-				FieldAnnotation f = FieldAnnotation.fromReferencedField(this);
+				IFieldAnnotation f = AnnotationFactory.createReferencedField(this);
 				if (DEBUG) System.out.println("	" + f);
 				if (twice.contains(f) && !getNameConstantOperand().startsWith("class$")
 						&& !getSigConstantOperand().equals("Ljava/lang/String;")) {
@@ -146,11 +147,12 @@ public class FindDoubleCheck extends BytecodeScanningDetector {
 					System.out.println(declaration);
 					System.out.println(getSigConstantOperand());
 					*/
-					if (declaration == null || !declaration.isVolatile())
-						bugReporter.reportBug(new BugInstance(this, "DC_DOUBLECHECK", NORMAL_PRIORITY)
-								.addClassAndMethod(this)
-								.addField(f).describe("FIELD_ON")
-								.addSourceLineRange(this, startPC, endPC));
+					if (declaration == null || !declaration.isVolatile()) {
+	                    BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "DC_DOUBLECHECK", NORMAL_PRIORITY), this)
+								.add(f).describe("FIELD_ON")
+								.add(AnnotationFactory.createSourceLineRange(this, startPC, endPC));	                    
+						bugReporter.reportBug(bugInstance);
+                    }
 					stage++;
 				}
 			}

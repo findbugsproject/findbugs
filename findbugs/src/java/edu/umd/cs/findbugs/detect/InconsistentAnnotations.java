@@ -26,8 +26,8 @@ import org.apache.bcel.classfile.Method;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.LocalVariableAnnotation;
 import edu.umd.cs.findbugs.UseAnnotationDatabase;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.XFactory;
@@ -70,9 +70,8 @@ public class InconsistentAnnotations implements Detector, UseAnnotationDatabase 
 						int paramLocal = xmethod.isStatic() ? p : p + 1;
 
 						reporter.reportBug(
-							new BugInstance(this, "NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE", NORMAL_PRIORITY)
-								.addClassAndMethod(jclass, method)
-								.add(LocalVariableAnnotation.getParameterLocalVariableAnnotation(method, paramLocal))
+							DetectorUtil.addClassAndMethod(new BugInstance(this, "NP_PARAMETER_MUST_BE_NONNULL_BUT_MARKED_AS_NULLABLE", NORMAL_PRIORITY), jclass, method)
+								.add(AnnotationFactory.createParameter(method, paramLocal))
 						);
 
 

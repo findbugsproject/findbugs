@@ -31,6 +31,7 @@ import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.StatelessDetector;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.visitclass.DismantleBytecode;
 
 /**
@@ -227,9 +228,8 @@ public class StringConcatenation extends BytecodeScanningDetector implements Sta
 			        break;
 			    }
 			    
-				bugReporter.reportBug(new BugInstance(this, "SBSC_USE_STRINGBUFFER_CONCATENATION", NORMAL_PRIORITY)
-						.addClassAndMethod(this)
-						.addSourceLine(this, createPC));
+				bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "SBSC_USE_STRINGBUFFER_CONCATENATION", NORMAL_PRIORITY), this)
+						.add(AnnotationFactory.createSourceLine(this, createPC)));
 				// System.out.println("SBSC spread: " + (getPC() - getBranchTarget()));
 				reset();
 				reportedThisMethod = true;

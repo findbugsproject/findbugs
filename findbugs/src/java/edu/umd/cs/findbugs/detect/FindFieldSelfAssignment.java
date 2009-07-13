@@ -26,9 +26,10 @@ import org.apache.bcel.classfile.Code;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.LocalVariableAnnotation;
+import edu.umd.cs.findbugs.ILocalVariableAnnotation;
 import edu.umd.cs.findbugs.OpcodeStack;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.XField;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 
@@ -50,10 +51,6 @@ public class FindFieldSelfAssignment extends OpcodeStackDetector implements Stat
 
 	int register;
 
-	String f;
-
-	String className;
-
 	Set<String> initializedFields = new HashSet<String>();
 
 	@Override
@@ -70,10 +67,10 @@ public class FindFieldSelfAssignment extends OpcodeStackDetector implements Stat
 					&& registerNumber >= 0 && registerNumber == top.getFieldLoadedFromRegister()) {
 				int priority = NORMAL_PRIORITY;
 
-				LocalVariableAnnotation possibleMatch = LocalVariableAnnotation.findMatchingIgnoredParameter(getClassContext(),
+				ILocalVariableAnnotation possibleMatch = DetectorUtil.findMatchingIgnoredParameter(getClassContext(),
 				        getMethod(), getNameConstantOperand(), getSigConstantOperand());
 				if (possibleMatch == null)
-					possibleMatch = LocalVariableAnnotation.findUniqueBestMatchingParameter(getClassContext(), getMethod(),
+					possibleMatch = DetectorUtil.findUniqueBestMatchingParameter(getClassContext(), getMethod(),
 					        getNameConstantOperand(), getSigConstantOperand());
 				if (possibleMatch != null)
 					priority--;
@@ -86,12 +83,13 @@ public class FindFieldSelfAssignment extends OpcodeStackDetector implements Stat
 						}
 					}
 				}
-					
-					
-					
 				
-				bugReporter.reportBug(new BugInstance(this, "SA_FIELD_SELF_ASSIGNMENT", priority).addClassAndMethod(this)
-				        .addReferencedField(this).addOptionalAnnotation(possibleMatch).addSourceLine(this));
+				BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "SA_FIELD_SELF_ASSIGNMENT", priority), this)
+				    .add(AnnotationFactory.createReferencedField(this));
+				if(possibleMatch != null){
+					bugInstance.add(possibleMatch);
+				}
+				bugReporter.reportBug(bugInstance.add(AnnotationFactory.createSourceLine(this)));
 				
 			}
 		}
@@ -109,10 +107,9 @@ public class FindFieldSelfAssignment extends OpcodeStackDetector implements Stat
 			break;
 		case 7:
 			if (isRegisterStore() && register == getRegisterOperand()) {
-				bugReporter.reportBug(new BugInstance(this, "SA_LOCAL_DOUBLE_ASSIGNMENT", NORMAL_PRIORITY)
-				        .addClassAndMethod(this).add(
-				                LocalVariableAnnotation.getLocalVariableAnnotation(getMethod(), register, getPC(), getPC() - 1))
-				        .addSourceLine(this));
+				bugReporter.reportBug(DetectorUtil.addClassAndMethod(new BugInstance(this, "SA_LOCAL_DOUBLE_ASSIGNMENT", NORMAL_PRIORITY), this).add(
+				                AnnotationFactory.createVariable(getMethod(), register, getPC(), getPC() - 1))
+				        .add(AnnotationFactory.createSourceLine(this)));
 			}
 			state = 0;
 			break;

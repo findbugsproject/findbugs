@@ -1,17 +1,17 @@
 /*
  * FindBugs - Find bugs in Java programs
  * Copyright (C) 2003-2005, University of Maryland
- * 
+ *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
  * License as published by the Free Software Foundation; either
  * version 2.1 of the License, or (at your option) any later version.
- * 
+ *
  * This library is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * Lesser General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
@@ -38,8 +38,8 @@ import java.util.Map.Entry;
 
 import org.dom4j.DocumentException;
 
-import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.FuzzyBugComparator;
+import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.Project;
 import edu.umd.cs.findbugs.SloppyBugComparator;
 import edu.umd.cs.findbugs.SortedBugCollection;
@@ -57,7 +57,7 @@ import edu.umd.cs.findbugs.util.Util;
  * The new BugCollection returned is a deep copy of one of the input collections
  * (depending on the operation performed), with only a subset of the original
  * BugInstances retained.  Because it is a deep copy, it may be freely modified.
- * 
+ *
  * @author David Hovemeyer
  */
 @Deprecated
@@ -66,7 +66,7 @@ public class BugHistory {
 
 	private static class BugCollectionAndProject {
 		SortedBugCollection bugCollection;
-		
+
 		public BugCollectionAndProject(SortedBugCollection bugCollection) {
 			this.bugCollection = bugCollection;
 		}
@@ -108,7 +108,7 @@ public class BugHistory {
 
 		/**
 		 * Fetch an entry, reading it if necessary.
-		 * 
+		 *
 		 * @param fileName file to get
 		 * @return the BugCollectionAndProject for the file
 		 * @throws IOException
@@ -131,7 +131,7 @@ public class BugHistory {
 	public interface SetOperation {
 		/**
 		 * Perform the set operation.
-		 * 
+		 *
 		 * @param result         Set to put the resulting BugInstances in
 		 * @param origCollection original BugCollection
 		 * @param newCollection  new BugCollection
@@ -170,7 +170,9 @@ public class BugHistory {
 		public SortedBugCollection perform(Set<BugInstance> result,
 				SortedBugCollection origCollection, SortedBugCollection newCollection) {
 			result.addAll(newCollection.getCollection());
-			if (DEBUG) System.out.println(result.size() + " instances initially");
+			if (DEBUG) {
+                System.out.println(result.size() + " instances initially");
+            }
 
 			// Get shared instances
 			List<BugInstance> inBoth = getSharedInstances(result, origCollection);
@@ -178,7 +180,9 @@ public class BugHistory {
 			// Replace instances with only those shared
 			replaceBugInstances(result, inBoth);
 
-			if (DEBUG) System.out.println(result.size() + " after retaining new instances");
+			if (DEBUG) {
+                System.out.println(result.size() + " after retaining new instances");
+            }
 			return newCollection;
 		}
 	};
@@ -204,14 +208,14 @@ public class BugHistory {
 		}
 	};
 
-	private SortedBugCollection origCollection, newCollection;
+	private final SortedBugCollection origCollection, newCollection;
 	private SortedBugCollection resultCollection;
 	private SortedBugCollection originator;
 	private WarningComparator comparator;
 
 	/**
 	 * Contructor.
-	 * 
+	 *
 	 * @param origCollection the original BugCollection
 	 * @param newCollection  the new BugCollection
 	 */
@@ -236,7 +240,7 @@ public class BugHistory {
 
 	/**
 	 * Perform a SetOperation.
-	 * 
+	 *
 	 * @param operation the SetOperation
 	 * @return the BugCollection resulting from performing the SetOperation
 	 */
@@ -305,7 +309,7 @@ public class BugHistory {
 	 * Get instances shared between given Set and BugCollection.
 	 * The Set is queried for membership, because it has a special Comparator
 	 * which can match BugInstances from different versions.
-	 * 
+	 *
 	 * @param result     the Set
 	 * @param collection the BugCollection
 	 * @return List of shared instances
@@ -323,7 +327,7 @@ public class BugHistory {
 
 	/**
 	 * Replace all of the BugInstances in given Set with the given Collection.
-	 * 
+	 *
 	 * @param dest   the Set to replace the instances of
 	 * @param source the Collection containing the instances to put in the Set
 	 */
@@ -334,7 +338,7 @@ public class BugHistory {
 
 	/**
 	 * Remove bug instances from Set.
-	 * 
+	 *
 	 * @param result   the Set
 	 * @param toRemove Collection of BugInstances to remove
 	 */
@@ -582,8 +586,9 @@ public class BugHistory {
 		while ((csvRecord = reader.readLine()) != null) {
 			csvRecord = csvRecord.trim();
 			String[] tuple = csvRecord.split(",");
-			if (tuple.length < 2)
-				continue;
+			if (tuple.length < 2) {
+                continue;
+            }
 
 			String origFile = tuple[0];
 			String newFile = tuple[1];

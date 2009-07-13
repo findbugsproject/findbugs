@@ -76,7 +76,7 @@ public class SAXBugCollectionHandler extends DefaultHandler {
 	private ArrayList<String> elementStack;
 	private StringBuilder textBuffer;
 	private BugInstance bugInstance;
-	private BugAnnotationWithSourceLines bugAnnotationWithSourceLines;
+	private IBugAnnotationWithSourceLines bugAnnotationWithSourceLines;
 	private AnalysisError analysisError;
 //	private ClassHash classHash;
 	private ClassFeatureSet classFeatureSet;
@@ -415,7 +415,7 @@ public class SAXBugCollectionHandler extends DefaultHandler {
 	    	bugAnnotation = bugAnnotationWithSourceLines = new ClassAnnotation(className);
 	    } else if (qName.equals("Type")) {
 	    	String typeDescriptor = getRequiredAttribute(attributes, "descriptor", qName);
-	    	TypeAnnotation typeAnnotation;
+	    	ITypeAnnotation typeAnnotation;
 	    	bugAnnotation = bugAnnotationWithSourceLines = typeAnnotation = new TypeAnnotation(typeDescriptor);
 	    	String typeParameters = getOptionalAttribute(attributes, "typeParameters");
 	    	if (typeParameters != null)
@@ -441,7 +441,7 @@ public class SAXBugCollectionHandler extends DefaultHandler {
 	    	}
 
 	    } else if (qName.equals("SourceLine")) {
-	    	SourceLineAnnotation sourceAnnotation = createSourceLineAnnotation(qName, attributes);
+	    	ISourceLineAnnotation sourceAnnotation = createSourceLineAnnotation(qName, attributes);
 	    	if (!sourceAnnotation.isSynthetic())
 	    		bugAnnotation = sourceAnnotation;
 	    } else if (qName.equals("Int")) {
@@ -530,12 +530,12 @@ public class SAXBugCollectionHandler extends DefaultHandler {
 			bugAnnotation.setDescription(role);
 	}
 
-	private SourceLineAnnotation createSourceLineAnnotation(String qName, Attributes attributes)
+	private ISourceLineAnnotation createSourceLineAnnotation(String qName, Attributes attributes)
 			throws SAXException {
 		String classname = getRequiredAttribute(attributes, "classname", qName);
 		String sourceFile = getOptionalAttribute(attributes, "sourcefile");
 		if (sourceFile == null)
-			sourceFile = SourceLineAnnotation.UNKNOWN_SOURCE_FILE;
+			sourceFile = ISourceLineAnnotation.UNKNOWN_SOURCE_FILE;
 		String startLine = getOptionalAttribute(attributes, "start"); // "start"/"end" are now optional
 		String endLine = getOptionalAttribute(attributes, "end");     // (were too many "-1"s in the xml)
 		String startBytecode = getOptionalAttribute(attributes, "startBytecode");
@@ -547,7 +547,7 @@ public class SAXBugCollectionHandler extends DefaultHandler {
 			int sb = startBytecode != null ? Integer.parseInt(startBytecode) : -1;
 			int eb = endBytecode != null ? Integer.parseInt(endBytecode) : -1;
 
-			SourceLineAnnotation annotation =
+			ISourceLineAnnotation annotation =
 				new SourceLineAnnotation(classname, sourceFile, sl, el, sb, eb);
 
 			return annotation;

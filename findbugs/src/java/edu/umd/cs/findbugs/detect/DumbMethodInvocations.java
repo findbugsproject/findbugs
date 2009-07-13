@@ -13,8 +13,8 @@ import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
 import edu.umd.cs.findbugs.ba.ClassContext;
@@ -87,15 +87,15 @@ public class DumbMethodInvocations implements Detector {
 				Constant operandValue = frame.getTopValue();
 				if (operandValue.isConstantString()) {
 					String password = operandValue.getConstantString();
-					if (password.length() == 0)
-						bugAccumulator.accumulateBug(new BugInstance(this,
-								"DMI_EMPTY_DB_PASSWORD", NORMAL_PRIORITY)
-								.addClassAndMethod(methodGen, sourceFile),
+					if (password.length() == 0) {
+	                    accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this,
+								"DMI_EMPTY_DB_PASSWORD", NORMAL_PRIORITY), methodGen, sourceFile),
 								classContext, methodGen,sourceFile, location);
-					else bugAccumulator.accumulateBug(new BugInstance(this,
-							"DMI_CONSTANT_DB_PASSWORD", NORMAL_PRIORITY)
-							.addClassAndMethod(methodGen, sourceFile), classContext, methodGen,
-													sourceFile, location);
+                    } else {
+	                    accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this,
+	                    		"DMI_CONSTANT_DB_PASSWORD", NORMAL_PRIORITY), methodGen, sourceFile), classContext, methodGen,
+	                    								sourceFile, location);
+                    }
 
 				}
 			}
@@ -105,14 +105,15 @@ public class DumbMethodInvocations implements Detector {
 					&& iins.getClassName(cpg).equals("java.lang.String")) {
 
 				Constant operandValue = frame.getTopValue();
-				if (!operandValue.isConstantInteger())
-					continue;
+				if (!operandValue.isConstantInteger()) {
+	                continue;
+                }
 				int v = operandValue.getConstantInt();
-				if (v == 0)
-					bugAccumulator.accumulateBug(new BugInstance(this,
-							"DMI_USELESS_SUBSTRING", NORMAL_PRIORITY)
-							.addClassAndMethod(methodGen, sourceFile), classContext, methodGen,
+				if (v == 0) {
+	                accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this,
+							"DMI_USELESS_SUBSTRING", NORMAL_PRIORITY), methodGen, sourceFile), classContext, methodGen,
 													sourceFile, location);
+                }
 
 			}
 			else 
@@ -126,11 +127,13 @@ public class DumbMethodInvocations implements Detector {
 					String v = operandValue.getConstantString();
 					if (isAbsoluteFileName(v) && !v.startsWith("/etc/") && !v.startsWith("/dev/")) {
 						int priority = NORMAL_PRIORITY;
-						if (v.startsWith("/tmp")) priority = LOW_PRIORITY;
-						else if (v.indexOf("/home") >= 0) priority = HIGH_PRIORITY;
-						bugAccumulator.accumulateBug(new BugInstance(this,
-								"DMI_HARDCODED_ABSOLUTE_FILENAME", priority)
-								.addClassAndMethod(methodGen, sourceFile)
+						if (v.startsWith("/tmp")) {
+	                        priority = LOW_PRIORITY;
+                        } else if (v.indexOf("/home") >= 0) {
+	                        priority = HIGH_PRIORITY;
+                        }
+						accumulateBug(DetectorUtil.addClassAndMethod(new BugInstance(this,
+								"DMI_HARDCODED_ABSOLUTE_FILENAME", priority), methodGen, sourceFile)
 								.addString(v).describe("FILE_NAME"), classContext, methodGen,
 														sourceFile, location);
 					}
@@ -140,6 +143,11 @@ public class DumbMethodInvocations implements Detector {
 		}
 	}
 
+    private void accumulateBug(BugInstance bug, ClassContext classContext, MethodGen methodGen, String sourceFile,
+            Location location) {
+    	bugAccumulator.accumulateBug(bug, AnnotationFactory.createSourceLine(methodGen, sourceFile, location.getHandle()));
+    }
+	
 	private boolean isAbsoluteFileName(String v) {
 		if (v.startsWith("/dev/")) return false;
 		if (v.startsWith("/")) return true;

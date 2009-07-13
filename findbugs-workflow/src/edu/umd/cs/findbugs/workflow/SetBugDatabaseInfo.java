@@ -30,12 +30,12 @@ import java.util.Set;
 import org.dom4j.DocumentException;
 
 import edu.umd.cs.findbugs.BugCollection;
-import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.DetectorFactoryCollection;
+import edu.umd.cs.findbugs.BugInstance;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.PackageStats;
 import edu.umd.cs.findbugs.Project;
 import edu.umd.cs.findbugs.SortedBugCollection;
-import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.config.CommandLine;
 import edu.umd.cs.findbugs.filter.Filter;
 
@@ -179,7 +179,7 @@ public class SetBugDatabaseInfo {
 		if (!commandLine.searchSourcePaths.isEmpty()) {
 			sourceSearcher = new SourceSearcher(project);
 			for(BugInstance bug : origCollection.getCollection()) {
-				SourceLineAnnotation src = bug.getPrimarySourceLineAnnotation();
+				ISourceLineAnnotation src = bug.getPrimarySourceLineAnnotation();
 				if (!sourceSearcher.sourceNotFound.contains(src.getClassName())
 						&& !sourceSearcher.findSource(src)) {
 					Set<String> paths = missingFiles.get(src.getSourceFile());
@@ -236,7 +236,7 @@ public class SetBugDatabaseInfo {
 
 	}
 
-	static String fullPath(SourceLineAnnotation src) {
+	static String fullPath(ISourceLineAnnotation src) {
 		return src.getPackageName().replace('.', File.separatorChar) + File.separatorChar + src.getSourceFile();
 	}
 

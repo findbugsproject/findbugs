@@ -160,7 +160,7 @@ public class PrintingBugReporter extends TextUIBugReporter {
 				else if (key.equals("MUST_FIX") || key.equals("SHOULD_FIX")  || key.equals("I_WILL_FIX"))
 					System.out.print("#7#"+key);
 				else System.out.print("#0#"+key);
-				SourceLineAnnotation sourceLine = warning.getPrimarySourceLineAnnotation();
+				ISourceLineAnnotation sourceLine = warning.getPrimarySourceLineAnnotation();
 				if (sourceLine != null) 
 					System.out.println("#" + sourceLine.getSourceFile() + "#"+sourceLine.getStartLine());
 				else System.out.println("##");

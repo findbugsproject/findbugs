@@ -21,9 +21,14 @@ package edu.umd.cs.findbugs;
 
 import java.io.IOException;
 
+import org.apache.bcel.classfile.Code;
+import org.apache.bcel.classfile.JavaClass;
+import org.apache.bcel.classfile.LineNumber;
+import org.apache.bcel.classfile.LineNumberTable;
+import org.apache.bcel.classfile.Method;
+
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.SourceInfoMap;
-import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 import edu.umd.cs.findbugs.xml.XMLAttributeList;
 import edu.umd.cs.findbugs.xml.XMLOutput;
@@ -35,23 +40,17 @@ import edu.umd.cs.findbugs.xml.XMLOutput;
  * @see BugAnnotation
  * @see BugInstance
  */
-public class ClassAnnotation extends PackageMemberAnnotation {
+public class ClassAnnotation extends PackageMemberAnnotation implements IClassAnnotation {
 	private static final long serialVersionUID = 1L;
 
 	private static final String DEFAULT_ROLE = "CLASS_DEFAULT";
-	public static final String SUBCLASS_ROLE = "CLASS_SUBCLASS";
-	public static final String SUPERCLASS_ROLE =  "CLASS_SUPERCLASS";
-	public static final String IMPLEMENTED_INTERFACE_ROLE =  "CLASS_IMPLEMENTED_INTERFACE";
-	public static final String INTERFACE_ROLE =  "INTERFACE_TYPE";
-	public static final String ANNOTATION_ROLE = "CLASS_ANNOTATION";
-
-
+	
 	/**
 	 * Constructor.
 	 *
 	 * @param className the name of the class
 	 */
-	public ClassAnnotation(String className) {
+	public ClassAnnotation(@DottedClassName String className) {
 		super(className, DEFAULT_ROLE);
 	}
 
@@ -59,22 +58,13 @@ public class ClassAnnotation extends PackageMemberAnnotation {
 	public boolean isSignificant() {
 		return !SUBCLASS_ROLE.equals(description);
 	}
-	/**
-	 * Factory method to create a ClassAnnotation from a ClassDescriptor.
-	 * 
-	 * @param classDescriptor the ClassDescriptor
-	 * @return the ClassAnnotation
-	 */
-	public static ClassAnnotation fromClassDescriptor(ClassDescriptor classDescriptor) {
-		return new ClassAnnotation(classDescriptor.toDottedClassName());
-	}
 
 	public void accept(BugAnnotationVisitor visitor) {
 		visitor.visitClassAnnotation(this);
 	}
 
 	@Override
-	protected String formatPackageMember(String key, ClassAnnotation primaryClass) {
+	protected String formatPackageMember(String key, IClassAnnotation primaryClass) {
 		if (key.equals("") || key.equals("hash"))
 			return className;
 		else if (key.equals("givenClass"))
@@ -92,55 +82,90 @@ public class ClassAnnotation extends PackageMemberAnnotation {
 
 	@Override
 	public boolean equals(Object o) {
-		if (!(o instanceof ClassAnnotation))
+		if (!(o instanceof IClassAnnotation))
 			return false;
-		ClassAnnotation other = (ClassAnnotation) o;
-		return className.equals(other.className);
+		IClassAnnotation other = (IClassAnnotation) o;
+		return className.equals(other.getClassName());
 	}
 
-	public boolean contains(ClassAnnotation other) {
-			return other.className.startsWith(className);
+	public boolean contains(IClassAnnotation other) {
+			return other.getClassName().startsWith(className);
 	}
-	public ClassAnnotation getTopLevelClass() {
+	public IClassAnnotation getTopLevelClass() {
 		int firstDollar = className.indexOf('$');
 		if (firstDollar <= 0) return this;
 		return new ClassAnnotation(className.substring(0,firstDollar));
 
 	}
 	public int compareTo(BugAnnotation o) {
-		if (!(o instanceof ClassAnnotation)) // BugAnnotations must be Comparable with any type of BugAnnotation
+		if (!(o instanceof IClassAnnotation)) // BugAnnotations must be Comparable with any type of BugAnnotation
 			return this.getClass().getName().compareTo(o.getClass().getName());
-		ClassAnnotation other = (ClassAnnotation) o;
-		return className.compareTo(other.className);
+		IClassAnnotation other = (IClassAnnotation) o;
+		return className.compareTo(other.getClassName());
 	}
 
-	/* (non-Javadoc)
-	 * @see edu.umd.cs.findbugs.PackageMemberAnnotation#getSourceLines()
-	 */
 	@Override
-	public SourceLineAnnotation getSourceLines() {
-		if (sourceLines == null)
-			this.sourceLines = getSourceLinesForClass(className, sourceFileName);
+	public ISourceLineAnnotation getSourceLines() {
+		if (sourceLines == null) {
+	        this.sourceLines = getSourceLinesForClass(className, sourceFileName);
+        }
 		return sourceLines;
 	}
 
-	public static SourceLineAnnotation getSourceLinesForClass(@DottedClassName String className, String sourceFileName) {
-
+	/**
+	 * @return never null, at least "unknown" source line info
+	 */
+	static ISourceLineAnnotation getSourceLinesForClass(@DottedClassName String className, String sourceFileName) {
+		/*
+		 * TODO Andrei: should move out from this class, because 1) it is already too late to get
+		 * the info after AnalysisContext is gone 2) this code belongs to other module (factory).  
+		 */
 		// Create source line annotation for class on demand
-
 		AnalysisContext currentAnalysisContext = AnalysisContext.currentAnalysisContext();
 
-		if (currentAnalysisContext == null)
-			return new SourceLineAnnotation(className, sourceFileName, -1, -1, -1, -1);
+		if (currentAnalysisContext == null) {
+	        return new SourceLineAnnotation(className, sourceFileName, -1, -1, -1, -1);
+        }
 
 		SourceInfoMap.SourceLineRange classLine = currentAnalysisContext.getSourceInfoMap().getClassLine(className);
 
-		if (classLine == null)
-			return SourceLineAnnotation.getSourceAnnotationForClass(className, sourceFileName);
-		else
-			return new SourceLineAnnotation(className, sourceFileName, classLine.getStart(), classLine.getEnd(), -1, -1);
+		if (classLine == null) {
+	        return getSourceAnnotationForClass(className, sourceFileName);
+        }
+		return new SourceLineAnnotation(
+				className, sourceFileName, classLine.getStart().intValue(), classLine.getEnd().intValue(), -1, -1);
 	}
 
+	private static ISourceLineAnnotation getSourceAnnotationForClass(String className, String sourceFileName) {
+		/*
+		 * TODO Andrei: should move out from this class, because 1) it is already too late to get
+		 * the info after AnalysisContext is gone 2) this code belongs to other module (factory).  
+		 */
+		int lastLine = -1;
+		int firstLine = Integer.MAX_VALUE;
+
+		try {
+			JavaClass targetClass = AnalysisContext.currentAnalysisContext().lookupClass(className);
+			for (Method m : targetClass.getMethods()) {
+				Code c = m.getCode();
+				if (c != null) {
+					LineNumberTable table = c.getLineNumberTable();
+					if (table != null)
+						for (LineNumber line : table.getLineNumberTable()) {
+							lastLine = Math.max(lastLine, line.getLineNumber());
+							firstLine = Math.min(firstLine, line.getLineNumber());
+						}
+				}
+			}
+		} catch (ClassNotFoundException e) {
+			AnalysisContext.reportMissingClass(e);
+		}
+		if (firstLine < Integer.MAX_VALUE)
+			return new SourceLineAnnotation(className, sourceFileName,
+					firstLine, lastLine, -1, -1);
+		return   SourceLineAnnotation.createUnknown(className, sourceFileName);
+	}
+	
 	/*
 	 * ----------------------------------------------------------------------
 	 * XML Conversion support
@@ -177,4 +202,3 @@ public class ClassAnnotation extends PackageMemberAnnotation {
 	}
 }
 
-// vim:ts=4

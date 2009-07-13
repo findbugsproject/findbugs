@@ -2,6 +2,8 @@ package edu.umd.cs.findbugs.ba;
 
 import java.util.Iterator;
 
+import edu.umd.cs.findbugs.signature.SignatureParser;
+
 import junit.framework.Assert;
 import junit.framework.TestCase;
 

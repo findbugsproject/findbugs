@@ -21,18 +21,13 @@ package edu.umd.cs.findbugs.cloud;
 
 import java.io.PrintWriter;
 import java.net.URL;
-import java.util.Collection;
 import java.util.Date;
-import java.util.SortedSet;
-
 import javax.annotation.CheckForNull;
 
 import edu.umd.cs.findbugs.BugCollection;
-import edu.umd.cs.findbugs.BugDesignation;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.UserDesignation;
-import edu.umd.cs.findbugs.cloud.DBCloud.BugData;
 
 /**
  * An interface for describing how a bug collection

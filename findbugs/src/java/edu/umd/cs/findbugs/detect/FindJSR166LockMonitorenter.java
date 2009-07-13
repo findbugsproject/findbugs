@@ -33,10 +33,13 @@ import org.apache.bcel.generic.ObjectType;
 import org.apache.bcel.generic.ReferenceType;
 import org.apache.bcel.generic.Type;
 
+import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.TypeAnnotation;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
@@ -151,22 +154,25 @@ public final class FindJSR166LockMonitorenter implements Detector, StatelessDete
 			boolean isUtilConcurrentSig = sig.startsWith(UTIL_CONCURRRENT_SIG_PREFIX);
             
 			if (isSubtype) {				
-				bugReporter.reportBug(new BugInstance(this, "JLM_JSR166_LOCK_MONITORENTER", 
-							isUtilConcurrentSig ? HIGH_PRIORITY : NORMAL_PRIORITY)
-						.addClassAndMethod(classContext.getJavaClass(), method)
-						.addType(sig)
-						.addSourceForTopStackValue(classContext, method, location)
-						.addSourceLine(classContext,method, location)
-						);
+				BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "JLM_JSR166_LOCK_MONITORENTER", 
+							isUtilConcurrentSig ? HIGH_PRIORITY : NORMAL_PRIORITY), classContext.getJavaClass(), method)
+						.add(new TypeAnnotation(sig));
+				BugAnnotation ba =  AnnotationFactory.createSourceForTopStackValue( classContext,  method,  location);
+				if(ba != null){
+					bugInstance.add(ba);
+				}
+				bugReporter.reportBug(bugInstance.add(
+					AnnotationFactory.createSourceLine(classContext,method, location.getHandle())));
 			} else if (isUtilConcurrentSig) { 
-	            		int priority = "Ljava/util/concurrent/CopyOnWriteArrayList;".equals(sig) ? HIGH_PRIORITY : NORMAL_PRIORITY;
-	            		bugReporter.reportBug(new BugInstance(this, "JLM_JSR166_UTILCONCURRENT_MONITORENTER", priority)
-	            				.addClassAndMethod(classContext.getJavaClass(), method)
-	            				.addType(sig)
-	            				.addSourceForTopStackValue(classContext, method, location)
-	            				.addSourceLine(classContext,method, location));
-
-	            
+        		int priority = "Ljava/util/concurrent/CopyOnWriteArrayList;".equals(sig) ? HIGH_PRIORITY : NORMAL_PRIORITY;
+        		BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, "JLM_JSR166_UTILCONCURRENT_MONITORENTER", priority), classContext.getJavaClass(), method)
+        				.add(new TypeAnnotation(sig));
+        		BugAnnotation ba =  AnnotationFactory.createSourceForTopStackValue( classContext,  method,  location);
+				if(ba != null){
+					bugInstance.add(ba);
+				}
+				bugReporter.reportBug(bugInstance.add(
+					AnnotationFactory.createSourceLine(classContext,method, location.getHandle())));        
             }
 		}
 	}

@@ -40,8 +40,10 @@ import org.apache.bcel.generic.ReturnInstruction;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.ByteCodePatternDetector;
+import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
 import edu.umd.cs.findbugs.SystemProperties;
+import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.BasicBlock;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
@@ -329,10 +331,10 @@ public final class LazyInit extends ByteCodePatternDetector implements Stateless
 			InstructionHandle start = match.getLabeledInstruction("start");
 			InstructionHandle end = match.getLabeledInstruction("end");
 			String sourceFile = javaClass.getSourceFileName();
-			bugReporter.reportBug(new BugInstance(this, sawGetStaticAfterPutStatic ? "LI_LAZY_INIT_UPDATE_STATIC" : "LI_LAZY_INIT_STATIC", priority)
-					.addClassAndMethod(methodGen, sourceFile)
-					.addField(xfield).describe("FIELD_ON")
-					.addSourceLine(classContext, methodGen, sourceFile, start, end));
+			BugInstance bugInstance = DetectorUtil.addClassAndMethod(new BugInstance(this, sawGetStaticAfterPutStatic ? "LI_LAZY_INIT_UPDATE_STATIC" : "LI_LAZY_INIT_STATIC", priority), methodGen, sourceFile)
+					.add(AnnotationFactory.createField(xfield)).describe("FIELD_ON");
+			addSourceLine(bugInstance, classContext, methodGen, sourceFile, start, end);
+			bugReporter.reportBug(bugInstance);
 			reported.set(testInstructionHandle.getPosition());
 		} catch (ClassNotFoundException e) {
 			bugReporter.reportMissingClass(e);
@@ -350,6 +352,30 @@ public final class LazyInit extends ByteCodePatternDetector implements Stateless
 	    if (instruction instanceof IfInstruction) return false;
 		return true;
     }
+    
+	/**
+	 * Add a source line annotation describing a range of instructions.
+	 *
+	 * @param classContext the ClassContext
+	 * @param methodGen  the method
+	 * @param sourceFile source file the method is defined in
+	 * @param start      the start instruction in the range
+	 * @param end        the end instruction in the range (inclusive)
+	 * @return this object
+	 */
+	private static void addSourceLine(BugInstance bug, ClassContext classContext, MethodGen methodGen, String sourceFile, InstructionHandle start, InstructionHandle end) {
+		// Make sure start and end are really in the right order.
+		if (start.getPosition() > end.getPosition()) {
+			InstructionHandle tmp = start;
+			start = end;
+			end = tmp;
+		}
+		ISourceLineAnnotation sourceLineAnnotation =
+			AnnotationFactory.createSourceLine(methodGen, sourceFile, start, end);
+		if (sourceLineAnnotation != null) {
+	        bug.add(sourceLineAnnotation);
+        }
+	}
 
 }
 

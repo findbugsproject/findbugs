@@ -176,7 +176,7 @@ public class PackageStats implements XMLWriteable {
 		++nBugs[bug.getPriority()];
 		++nBugs[0];
 
-		ClassAnnotation primaryClass = bug.getPrimaryClass();
+		IClassAnnotation primaryClass = bug.getPrimaryClass();
 		getClassStats(primaryClass.getClassName(), primaryClass.getSourceFileName()).addError(bug);
 	}
 
