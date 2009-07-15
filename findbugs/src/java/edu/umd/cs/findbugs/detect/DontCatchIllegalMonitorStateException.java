@@ -34,55 +34,59 @@ import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.visitclass.PreorderVisitor;
 
 public class DontCatchIllegalMonitorStateException
-		extends PreorderVisitor implements Detector {
+extends PreorderVisitor implements Detector {
 
 	private static final boolean DEBUG = SystemProperties.getBoolean("dcimse.debug");
 
 	BugReporter bugReporter;
-	Set<String> msgs = null;
-	ClassContext classContext;
+	Set<String> msgs;
 
 	public DontCatchIllegalMonitorStateException(BugReporter bugReporter) {
 		this.bugReporter = bugReporter;
-		if (DEBUG)
+		if (DEBUG) {
 			msgs = new HashSet<String>();
+		}
 	}
 
 
 
 	@Override
-		 public void visit(ExceptionTable obj) {
+	public void visit(ExceptionTable obj) {
 		if (DEBUG) {
 			String names[] = obj.getExceptionNames();
-			for (String name : names)
+			for (String name : names) {
 				if (name.equals("java.lang.Exception")
-						|| name.equals("java.lang.Throwable"))
+						|| name.equals("java.lang.Throwable")) {
 					System.out.println(name + " thrown by " + getFullyQualifiedMethodName());
+				}
+			}
 		}
 	}
 
 	@Override
 	public void visit(CodeException obj) {
 		int type = obj.getCatchType();
-		if (type == 0) return;
+		if (type == 0) {
+			return;
+		}
 		String name = getConstantPool().constantToString(getConstantPool().getConstant(type));
 		if (DEBUG) {
 			String msg = "Catching " + name + " in " + getFullyQualifiedMethodName();
-			if (msgs.add(msg))
+			if (msgs.add(msg)) {
 				System.out.println(msg);
+			}
 		}
 		if (name.equals("java.lang.IllegalMonitorStateException")) {
-	        int handlerPC = obj.getHandlerPC();
+			int handlerPC = obj.getHandlerPC();
 			BugInstance bugInstance = DetectorUtil.addClassAndMethod(
-	        		new BugInstance(this, "IMSE_DONT_CATCH_IMSE", HIGH_PRIORITY), this)
+					new BugInstance(this, "IMSE_DONT_CATCH_IMSE", HIGH_PRIORITY), this)
 					.add(AnnotationFactory.createSourceLineRange(this, handlerPC, handlerPC));
 			bugReporter.reportBug(bugInstance);
-        }
+		}
 
 	}
 
 	public void visitClassContext(ClassContext classContext1) {
-		this.classContext = classContext1;
 		classContext1.getJavaClass().accept(this);
 	}
 
