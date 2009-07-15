@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.umd.cs.findbugs;
+package edu.umd.cs.findbugs.ba;
 
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,10 +33,7 @@ import org.apache.bcel.generic.MONITORENTER;
 import org.apache.bcel.generic.MONITOREXIT;
 import org.apache.bcel.generic.MethodGen;
 
-import edu.umd.cs.findbugs.ba.BasicBlock;
-import edu.umd.cs.findbugs.ba.CFG;
-import edu.umd.cs.findbugs.ba.CFGBuilderException;
-import edu.umd.cs.findbugs.ba.ClassContext;
+import edu.umd.cs.findbugs.SystemProperties;
 
 /**
  * Build a call graph of the self calls in a class.

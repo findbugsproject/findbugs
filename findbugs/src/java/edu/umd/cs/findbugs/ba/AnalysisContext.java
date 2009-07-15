@@ -30,7 +30,6 @@ import org.apache.bcel.Repository;
 import org.apache.bcel.classfile.JavaClass;
 
 import edu.umd.cs.findbugs.AbstractBugReporter;
-import edu.umd.cs.findbugs.AnalysisLocal;
 import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.Project;
 import edu.umd.cs.findbugs.SystemProperties;
@@ -43,6 +42,7 @@ import edu.umd.cs.findbugs.ba.jsr305.DirectlyRelevantTypeQualifiersDatabase;
 import edu.umd.cs.findbugs.ba.npe.ParameterNullnessPropertyDatabase;
 import edu.umd.cs.findbugs.ba.npe.ReturnValueNullnessPropertyDatabase;
 import edu.umd.cs.findbugs.ba.type.FieldStoreTypeDatabase;
+import edu.umd.cs.findbugs.classfile.AnalysisLocal;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.DescriptorFactory;

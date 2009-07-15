@@ -17,13 +17,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.umd.cs.findbugs;
+package edu.umd.cs.findbugs.ba;
 
 import org.apache.bcel.classfile.Method;
 import org.apache.bcel.generic.InstructionHandle;
 
-import edu.umd.cs.findbugs.ba.BasicBlock;
-import edu.umd.cs.findbugs.ba.Location;
 
 /**
  * The site of a method call.

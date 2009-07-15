@@ -33,12 +33,12 @@ import org.apache.bcel.generic.ObjectType;
 import org.apache.bcel.generic.Type;
 import org.apache.bcel.generic.TypedInstruction;
 
-import edu.umd.cs.findbugs.ResourceCollection;
 import edu.umd.cs.findbugs.ba.BasicBlock;
 import edu.umd.cs.findbugs.ba.DataflowAnalysisException;
 import edu.umd.cs.findbugs.ba.Edge;
 import edu.umd.cs.findbugs.ba.Location;
 import edu.umd.cs.findbugs.ba.RepositoryLookupFailureCallback;
+import edu.umd.cs.findbugs.ba.ResourceCollection;
 import edu.umd.cs.findbugs.ba.ResourceTracker;
 import edu.umd.cs.findbugs.ba.ResourceValueFrame;
 import edu.umd.cs.findbugs.ba.ResourceValueFrameModelingVisitor;

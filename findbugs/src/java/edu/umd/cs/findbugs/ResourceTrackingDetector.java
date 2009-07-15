@@ -34,6 +34,7 @@ import edu.umd.cs.findbugs.ba.Dataflow;
 import edu.umd.cs.findbugs.ba.DataflowAnalysisException;
 import edu.umd.cs.findbugs.ba.DepthFirstSearch;
 import edu.umd.cs.findbugs.ba.Location;
+import edu.umd.cs.findbugs.ba.ResourceCollection;
 import edu.umd.cs.findbugs.ba.ResourceTracker;
 import edu.umd.cs.findbugs.ba.ResourceValueAnalysis;
 import edu.umd.cs.findbugs.ba.ResourceValueFrame;

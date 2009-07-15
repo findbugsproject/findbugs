@@ -17,7 +17,7 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  */
 
-package edu.umd.cs.findbugs;
+package edu.umd.cs.findbugs.ba;
 
 import java.util.HashMap;
 import java.util.Iterator;
@@ -25,7 +25,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import edu.umd.cs.findbugs.ba.Location;
 
 /**
  * A ResourceCollection defines all of the resources created

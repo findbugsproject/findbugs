@@ -30,7 +30,6 @@ import org.apache.bcel.generic.InstructionHandle;
 import org.apache.bcel.generic.InvokeInstruction;
 import org.apache.bcel.generic.MethodGen;
 
-import edu.umd.cs.findbugs.AnalysisLocal;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.ByteCodePatternDetector;
@@ -44,6 +43,7 @@ import edu.umd.cs.findbugs.ba.bcp.Invoke;
 import edu.umd.cs.findbugs.ba.bcp.MatchAny;
 import edu.umd.cs.findbugs.ba.bcp.Opcode;
 import edu.umd.cs.findbugs.ba.bcp.PatternElement;
+import edu.umd.cs.findbugs.classfile.AnalysisLocal;
 
 /**
  * This detector looks for places where the return value of a method

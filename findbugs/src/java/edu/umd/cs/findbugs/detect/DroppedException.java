@@ -37,14 +37,14 @@ import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
-import edu.umd.cs.findbugs.Token;
-import edu.umd.cs.findbugs.Tokenizer;
 import edu.umd.cs.findbugs.ann.AnnotationFactory;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.Hierarchy;
 import edu.umd.cs.findbugs.ba.SourceFile;
 import edu.umd.cs.findbugs.ba.SourceFinder;
+import edu.umd.cs.findbugs.util.Token;
+import edu.umd.cs.findbugs.util.Tokenizer;
 import edu.umd.cs.findbugs.visitclass.PreorderVisitor;
 
 public class DroppedException extends PreorderVisitor implements Detector {
