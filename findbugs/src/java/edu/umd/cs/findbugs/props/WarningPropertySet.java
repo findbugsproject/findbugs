@@ -26,7 +26,7 @@ import javax.annotation.CheckReturnValue;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.Detector;
 import edu.umd.cs.findbugs.FindBugsAnalysisFeatures;
-import edu.umd.cs.findbugs.Priorities;
+import edu.umd.cs.findbugs.annotations.Priorities;
 
 /**
  * A Set of WarningProperty objects, each with an optional attribute Object. A

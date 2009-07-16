@@ -31,9 +31,9 @@ import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.ILocalVariableAnnotation;
 import edu.umd.cs.findbugs.ISourceLineAnnotation;
 import edu.umd.cs.findbugs.OpcodeStack;
-import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.StringAnnotation;
 import edu.umd.cs.findbugs.ann.AnnotationFactory;
+import edu.umd.cs.findbugs.annotations.Priorities;
 import edu.umd.cs.findbugs.ba.XMethod;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 

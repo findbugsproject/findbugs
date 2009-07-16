@@ -23,8 +23,8 @@ import org.apache.bcel.classfile.Code;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
-import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.ann.AnnotationFactory;
+import edu.umd.cs.findbugs.annotations.Priorities;
 import edu.umd.cs.findbugs.ba.XField;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 

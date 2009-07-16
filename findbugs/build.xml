@@ -113,17 +113,14 @@
 	</patternset>
 
 	<patternset id="annotations.bin.pats">
-        <include name="**/${pkg.base}/Priorities.class"/>
         <include name="**/annotations/*.class"/>
 	</patternset>
 	
 	<patternset id="no.annotations.bin.pats">
-        <exclude name="**/${pkg.base}/Priorities.class"/>
         <exclude name="**/annotations/*.class"/>
 	</patternset>
 	
 	<patternset id="annotations.src.pats">
-        <include name="**/${pkg.base}/Priorities.java"/>
         <include name="**/annotations/*.java"/>
 	</patternset>
 	

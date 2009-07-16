@@ -27,6 +27,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 
+import edu.umd.cs.findbugs.annotations.Priorities;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.util.Util;
 

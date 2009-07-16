@@ -29,8 +29,8 @@ import org.apache.bcel.generic.ObjectType;
 import org.apache.bcel.generic.ReferenceType;
 import org.apache.bcel.generic.Type;
 
-import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.annotations.NonNull;
+import edu.umd.cs.findbugs.annotations.Priorities;
 import edu.umd.cs.findbugs.ba.ch.Subtypes2;
 import edu.umd.cs.findbugs.ba.generic.GenericObjectType;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;

@@ -38,7 +38,7 @@ import edu.umd.cs.findbugs.BugCode;
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugPattern;
 import edu.umd.cs.findbugs.I18N;
-import edu.umd.cs.findbugs.Priorities;
+import edu.umd.cs.findbugs.annotations.Priorities;
 
 /**
  * Type of the bug groups, shown inside the bug explorer

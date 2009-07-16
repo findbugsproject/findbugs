@@ -19,7 +19,6 @@
 
 package edu.umd.cs.findbugs.annotations;
 
-import edu.umd.cs.findbugs.Priorities;
 
 /**
  * @author pugh

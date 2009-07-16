@@ -33,6 +33,7 @@ import java.util.Set;
 import org.apache.bcel.classfile.ClassFormatException;
 import org.dom4j.DocumentException;
 
+import edu.umd.cs.findbugs.annotations.Priorities;
 import edu.umd.cs.findbugs.ba.AnalysisCacheToAnalysisContextAdapter;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.AnalysisFeatures;

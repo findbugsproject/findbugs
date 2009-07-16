@@ -22,7 +22,7 @@ package de.tobject.findbugs.marker;
 
 import org.eclipse.jdt.core.IJavaElement;
 
-import edu.umd.cs.findbugs.Priorities;
+import edu.umd.cs.findbugs.annotations.Priorities;
 
 /**
  * Marker ids for the findbugs.

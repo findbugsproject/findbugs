@@ -25,8 +25,8 @@ import java.util.TreeMap;
 
 import edu.umd.cs.findbugs.DetectorFactoryCollection;
 import edu.umd.cs.findbugs.PackageStats;
-import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.SortedBugCollection;
+import edu.umd.cs.findbugs.annotations.Priorities;
 import edu.umd.cs.findbugs.util.Bag;
 
 public class TreemapVisualization {

@@ -28,6 +28,7 @@ import java.util.StringTokenizer;
 
 import org.dom4j.DocumentException;
 
+import edu.umd.cs.findbugs.annotations.Priorities;
 import edu.umd.cs.findbugs.annotations.SuppressWarnings;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.AnalysisFeatures;
