@@ -67,7 +67,7 @@
         <pathelement location="${jar.dir}/asm-3.3.jar"/>
         <pathelement location="${jar.dir}/asm-commons-3.3.jar"/>
         <pathelement location="${jar.dir}/asm-tree-3.3.jar"/>
-        <pathelement location="${jar.dir}/jaxen-1.1.6.jar"/>
+        <pathelement location="${jar.dir}/jaxen-1.1.4.jar"/>
         <pathelement location="${jar.dir}/jsr305.jar"/>
         <pathelement location="${jar.dir}/jFormatString.jar"/>
         <pathelement location="${jar.dir}/commons-lang-2.6.jar"/>
@@ -131,7 +131,7 @@
         <zipfileset src="${jar.dir}/asm-3.3.jar"/>
         <zipfileset src="${jar.dir}/asm-commons-3.3.jar"/>
         <zipfileset src="${jar.dir}/asm-tree-3.3.jar"/>
-        <zipfileset src="${jar.dir}/jaxen-1.1.6.jar"/>
+        <zipfileset src="${jar.dir}/jaxen-1.1.4.jar"/>
         <zipfileset src="${jar.dir}/jsr305.jar"/>
         <zipfileset src="${jar.dir}/jFormatString.jar"/>
         <zipfileset src="${jar.dir}/commons-lang-2.6.jar"/>
@@ -372,7 +372,7 @@
             <zipfileset src="${jar.dir}/asm-xml-3.3.jar" excludes="META-INF/**"/>
 
             <zipfileset src="${jar.dir}/dom4j-1.6.1.jar" excludes="META-INF/**"/>
-            <zipfileset src="${jar.dir}/jaxen-1.1.6.jar" excludes="META-INF/**"/>
+            <zipfileset src="${jar.dir}/jaxen-1.1.4.jar" excludes="META-INF/**"/>
             <zipfileset src="${jar.dir}/jsr305.jar" excludes="META-INF/**"/>
             <zipfileset src="${jar.dir}/jFormatString.jar" excludes="META-INF/**"/>
             <zipfileset src="${jar.dir}/commons-lang-2.6.jar" excludes="META-INF/**"/>
@@ -1035,7 +1035,7 @@
         <copy todir="${jnlp.dir}" file="${jar.dir}/asm-commons-3.3.jar"/>
         <copy todir="${jnlp.dir}" file="${jar.dir}/asm-tree-3.3.jar"/>
         <copy todir="${jnlp.dir}" file="${jar.dir}/dom4j-1.6.1.jar"/>
-        <copy todir="${jnlp.dir}" file="${jar.dir}/jaxen-1.1.6.jar"/>
+        <copy todir="${jnlp.dir}" file="${jar.dir}/jaxen-1.1.4.jar"/>
         <copy todir="${jnlp.dir}" file="${jar.dir}/jFormatString.jar"/>
         <copy todir="${jnlp.dir}" file="${jar.dir}/commons-lang-2.6.jar"/>
         <copy todir="${jnlp.dir}" file="${jar.dir}/AppleJavaExtensions.jar"/>

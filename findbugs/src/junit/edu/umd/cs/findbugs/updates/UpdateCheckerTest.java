@@ -113,7 +113,7 @@ public class UpdateCheckerTest extends TestCase {
 
     public void testPluginSameVersionSameDate() throws Exception {
         // setup
-        setResponseXml("my.id", "2011-03-20 02:00:00 EST", "2.0");
+        setResponseXml("my.id", "03/20/2011 03:00 AM EDT", "2.0");
 
         // execute
         checkForUpdates(createPlugin("my.id", KEITHS_BIRTHDAY_2011, "2.0"));
