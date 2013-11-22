@@ -1,4 +1,4 @@
-<project>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
   <parent>
     <groupId>org.sonatype.oss</groupId>
@@ -29,9 +29,9 @@
 
 
   <scm>
-    <connection>scm:svn:http://findbugs.googlecode.com/svn/trunk/</connection>
-    <developerConnection>scm:svn:https://findbugs.googlecode.com/svn/trunk/</developerConnection>
-    <url>http://findbugs.googlecode.com/svn/trunk/</url>
+    <connection>scm:svn:http://findbugs.googlecode.com/svn/tags/findbugs-2.0.3</connection>
+    <developerConnection>scm:svn:https://findbugs.googlecode.com/svn/tags/findbugs-2.0.3</developerConnection>
+    <url>http://findbugs.googlecode.com/svn/tags/findbugs-2.0.3</url>
   </scm>
 
   <developers>
@@ -59,7 +59,7 @@
     <developer>
       <id>bp</id>
       <name>Keith Lea</name>
-      <email></email>
+      <email />
       <url>http://keithlea.com/</url>
       <roles>
         <role>web cloud</role>
@@ -88,26 +88,26 @@
     </contributor>
     <contributor>
       <name>Nay Ayewah</name>
-      <email></email>
-      <url></url>
+      <email />
+      <url />
       <roles>
-        <role></role>
+        <role />
       </roles>
       <timezone>-5</timezone>
     </contributor>
     <contributor>
       <name>Ben Langmead</name>
-      <email></email>
-      <url></url>
+      <email />
+      <url />
       <roles>
-        <role></role>
+        <role />
       </roles>
       <timezone>-5</timezone>
     </contributor>
     <contributor>
       <name>Tomas Pollak</name>
-      <email></email>
-      <url></url>
+      <email />
+      <url />
       <roles>
         <role>Eclipse plugin tests</role>
       </roles>
@@ -115,17 +115,17 @@
     </contributor>
     <contributor>
       <name>Phil Crosby</name>
-      <email></email>
-      <url></url>
+      <email />
+      <url />
       <roles>
-        <role></role>
+        <role />
       </roles>
       <timezone>-5</timezone>
     </contributor>
     <contributor>
       <name>Peter Friese</name>
-      <email></email>
-      <url></url>
+      <email />
+      <url />
       <roles>
         <role>Eclipse plugin</role>
       </roles>
@@ -133,28 +133,28 @@
     </contributor>
     <contributor>
       <name>Dave Brosius</name>
-      <email></email>
-      <url></url>
+      <email />
+      <url />
       <roles>
-        <role></role>
+        <role />
       </roles>
       <timezone>-5</timezone>
     </contributor>
     <contributor>
       <name>Brian Goetz</name>
-      <email></email>
-      <url></url>
+      <email />
+      <url />
       <roles>
-        <role></role>
+        <role />
       </roles>
       <timezone>-5</timezone>
     </contributor>
     <contributor>
       <name>Rohan Lloyd</name>
-      <email></email>
-      <url></url>
+      <email />
+      <url />
       <roles>
-        <role></role>
+        <role />
       </roles>
       <timezone>-5</timezone>
     </contributor>
@@ -226,7 +226,7 @@
     <dependency>
       <groupId>jaxen</groupId>
       <artifactId>jaxen</artifactId>
-      <version>1.1.6</version>
+      <version>1.1.4</version>
       <exclusions>
         <exclusion>
           <artifactId>icu4j</artifactId>
