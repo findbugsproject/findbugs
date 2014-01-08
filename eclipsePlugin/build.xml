@@ -75,7 +75,7 @@
         asm-util-3.3.jar,
         asm-xml-3.3.jar,
         dom4j-1.6.1.jar,
-        jaxen-1.1.6.jar" />
+        jaxen-1.1.4.jar" />
 
     <!-- list of all libraries, copied from FB core project, plus old libraries not more used -->
     <property name="jars.cleanup" value="${jars.required},
