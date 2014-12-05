@@ -145,6 +145,18 @@ public class FindRefComparison implements Detector, ExtendedTypes {
     }
 
     /**
+     * Classes which should not be compared by reference because they are
+     * <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/doc-files/ValueBased.html">value-based classes</a>.
+     */
+    @StaticConstant
+    private static final HashSet<String> VALUE_BASED_CLASSES = new HashSet<String>();
+
+    static {
+        VALUE_BASED_CLASSES.add("java.util.Optional");
+        // TODO (nipa@codefx.org) add all other such classes from the JDK
+    }
+
+    /**
      * Set of opcodes that invoke instance methods on an object.
      */
     private static final BitSet invokeInstanceSet = new BitSet();
@@ -643,6 +655,8 @@ public class FindRefComparison implements Detector, ExtendedTypes {
 
     private final Set<String> suspiciousSet;
 
+    private final Set<String> valueBasedClasses;
+
     private final boolean testingEnabled;
 
     /*
@@ -655,6 +669,7 @@ public class FindRefComparison implements Detector, ExtendedTypes {
         this.bugReporter = bugReporter;
         this.bugAccumulator = new BugAccumulator(bugReporter);
         this.suspiciousSet = new HashSet<String>(DEFAULT_SUSPICIOUS_SET);
+        this.valueBasedClasses = new HashSet<String>(VALUE_BASED_CLASSES);
 
         // Check frc.suspicious system property for additional suspicious types
         // to check
@@ -967,6 +982,7 @@ public class FindRefComparison implements Detector, ExtendedTypes {
             if (lhsType.equals(Type.OBJECT) && rhsType.equals(Type.OBJECT)) {
                 return;
             }
+
             String lhs = SignatureConverter.convert(lhsType.getSignature());
             String rhs = SignatureConverter.convert(rhsType.getSignature());
 
@@ -978,6 +994,12 @@ public class FindRefComparison implements Detector, ExtendedTypes {
             } else if (suspiciousSet.contains(rhs)) {
                 handleSuspiciousRefComparison(jclass, method, methodGen, refComparisonList, location, rhs,
                         (ReferenceType) lhsType, (ReferenceType) rhsType);
+            } else if (valueBasedClasses.contains(lhs)) {
+                handleValueBasedRefComparison(jclass, method, methodGen, refComparisonList, location, lhs,
+                        (ReferenceType)  lhsType, (ReferenceType) rhsType);
+            }else if (valueBasedClasses.contains(lhs)) {
+                handleValueBasedRefComparison(jclass, method, methodGen, refComparisonList, location, rhs,
+                        (ReferenceType)  lhsType, (ReferenceType) rhsType);
             }
         }
     }
@@ -1058,6 +1080,33 @@ public class FindRefComparison implements Detector, ExtendedTypes {
                 priority = Priorities.NORMAL_PRIORITY;
             }
         }
+        BugInstance instance = new BugInstance(this, bugPattern, priority).addClassAndMethod(methodGen, sourceFile)
+                .addType("L" + lhs.replace('.', '/') + ";").describe(TypeAnnotation.FOUND_ROLE);
+        if (xf != null) {
+            instance.addField(xf).describe(FieldAnnotation.LOADED_FROM_ROLE);
+        } else {
+            instance.addSomeSourceForTopTwoStackValues(classContext, method, location);
+        }
+        SourceLineAnnotation sourceLineAnnotation = SourceLineAnnotation.fromVisitedInstruction(classContext, methodGen,
+                sourceFile, location.getHandle());
+
+        refComparisonList.add(new WarningWithProperties(instance, new WarningPropertySet<WarningProperty>(),
+                sourceLineAnnotation, location));
+    }
+
+    private void handleValueBasedRefComparison(JavaClass jclass, Method method, MethodGen methodGen,
+            List<WarningWithProperties> refComparisonList, Location location, String lhs, ReferenceType lhsType,
+            ReferenceType rhsType) {
+        XField xf = null;
+        if (lhsType instanceof FinalConstant) {
+            xf = ((FinalConstant) lhsType).getXField();
+        } else if (rhsType instanceof FinalConstant) {
+            xf = ((FinalConstant) rhsType).getXField();
+        }
+        String sourceFile = jclass.getSourceFileName();
+        // TODO (nipa@codefx.org) define this pattern
+        String bugPattern = "VBC_REF_COMPARISON";
+        int priority = Priorities.HIGH_PRIORITY;
         BugInstance instance = new BugInstance(this, bugPattern, priority).addClassAndMethod(methodGen, sourceFile)
                 .addType("L" + lhs.replace('.', '/') + ";").describe(TypeAnnotation.FOUND_ROLE);
         if (xf != null) {
