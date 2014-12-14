@@ -68,6 +68,7 @@ import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.TypeAnnotation;
+import edu.umd.cs.findbugs.annotations.ValueBased;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
@@ -83,6 +84,7 @@ import edu.umd.cs.findbugs.ba.Location;
 import edu.umd.cs.findbugs.ba.RepositoryLookupFailureCallback;
 import edu.umd.cs.findbugs.ba.SignatureConverter;
 import edu.umd.cs.findbugs.ba.TestCaseDetector;
+import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XField;
 import edu.umd.cs.findbugs.ba.XMethod;
@@ -97,10 +99,12 @@ import edu.umd.cs.findbugs.ba.type.TypeDataflow;
 import edu.umd.cs.findbugs.ba.type.TypeFrame;
 import edu.umd.cs.findbugs.ba.type.TypeFrameModelingVisitor;
 import edu.umd.cs.findbugs.ba.type.TypeMerger;
+import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.DescriptorFactory;
 import edu.umd.cs.findbugs.classfile.Global;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
+import edu.umd.cs.findbugs.classfile.analysis.AnnotationValue;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 import edu.umd.cs.findbugs.internalAnnotations.StaticConstant;
 import edu.umd.cs.findbugs.log.Profiler;
@@ -994,10 +998,10 @@ public class FindRefComparison implements Detector, ExtendedTypes {
             } else if (suspiciousSet.contains(rhs)) {
                 handleSuspiciousRefComparison(jclass, method, methodGen, refComparisonList, location, rhs,
                         (ReferenceType) lhsType, (ReferenceType) rhsType);
-            } else if (valueBasedClasses.contains(lhs)) {
+            } else if (isValueBasedClass(lhs)) {
                 handleValueBasedRefComparison(jclass, method, methodGen, refComparisonList, location, lhs,
                         (ReferenceType)  lhsType, (ReferenceType) rhsType);
-            }else if (valueBasedClasses.contains(lhs)) {
+            }else if (isValueBasedClass(rhs)) {
                 handleValueBasedRefComparison(jclass, method, methodGen, refComparisonList, location, rhs,
                         (ReferenceType)  lhsType, (ReferenceType) rhsType);
             }
@@ -1092,6 +1096,26 @@ public class FindRefComparison implements Detector, ExtendedTypes {
 
         refComparisonList.add(new WarningWithProperties(instance, new WarningPropertySet<WarningProperty>(),
                 sourceLineAnnotation, location));
+    }
+
+    private boolean isValueBasedClass(String className) {
+        if (valueBasedClasses.contains(className) || isAnnotatedAsValueBasedClass(className)) {
+            return true;
+        }
+        return false;
+    }
+
+    private static boolean isAnnotatedAsValueBasedClass(String className) {
+        try {
+            ClassDescriptor classDescriptor = DescriptorFactory.createClassDescriptorFromDottedClassName(className);
+            XClass xClass = Global.getAnalysisCache().getClassAnalysis(XClass.class, classDescriptor);
+            ClassDescriptor annotationDescriptor = DescriptorFactory.createClassDescriptor(ValueBased.class);
+            AnnotationValue annotation = xClass.getAnnotation(annotationDescriptor);
+            return annotation != null;
+        } catch (CheckedAnalysisException ex) {
+            // TODO (nipa@codefx.org) log the exception?
+            return false;
+        }
     }
 
     private void handleValueBasedRefComparison(JavaClass jclass, Method method, MethodGen methodGen,
