@@ -68,7 +68,6 @@ import edu.umd.cs.findbugs.Priorities;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.TypeAnnotation;
-import edu.umd.cs.findbugs.annotations.ValueBased;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;
@@ -84,7 +83,6 @@ import edu.umd.cs.findbugs.ba.Location;
 import edu.umd.cs.findbugs.ba.RepositoryLookupFailureCallback;
 import edu.umd.cs.findbugs.ba.SignatureConverter;
 import edu.umd.cs.findbugs.ba.TestCaseDetector;
-import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.ba.XFactory;
 import edu.umd.cs.findbugs.ba.XField;
 import edu.umd.cs.findbugs.ba.XMethod;
@@ -99,12 +97,11 @@ import edu.umd.cs.findbugs.ba.type.TypeDataflow;
 import edu.umd.cs.findbugs.ba.type.TypeFrame;
 import edu.umd.cs.findbugs.ba.type.TypeFrameModelingVisitor;
 import edu.umd.cs.findbugs.ba.type.TypeMerger;
-import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
+import edu.umd.cs.findbugs.ba.vbc.ValueBasedClassIdentifier;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.DescriptorFactory;
 import edu.umd.cs.findbugs.classfile.Global;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
-import edu.umd.cs.findbugs.classfile.analysis.AnnotationValue;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 import edu.umd.cs.findbugs.internalAnnotations.StaticConstant;
 import edu.umd.cs.findbugs.log.Profiler;
@@ -146,18 +143,6 @@ public class FindRefComparison implements Detector, ExtendedTypes {
         DEFAULT_SUSPICIOUS_SET.add("java.lang.Integer");
         DEFAULT_SUSPICIOUS_SET.add("java.lang.Long");
         DEFAULT_SUSPICIOUS_SET.add("java.lang.Short");
-    }
-
-    /**
-     * Classes which should not be compared by reference because they are
-     * <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/doc-files/ValueBased.html">value-based classes</a>.
-     */
-    @StaticConstant
-    private static final HashSet<String> VALUE_BASED_CLASSES = new HashSet<String>();
-
-    static {
-        VALUE_BASED_CLASSES.add("java.util.Optional");
-        // TODO (nipa@codefx.org) add all other such classes from the JDK
     }
 
     /**
@@ -659,8 +644,6 @@ public class FindRefComparison implements Detector, ExtendedTypes {
 
     private final Set<String> suspiciousSet;
 
-    private final Set<String> valueBasedClasses;
-
     private final boolean testingEnabled;
 
     /*
@@ -673,7 +656,6 @@ public class FindRefComparison implements Detector, ExtendedTypes {
         this.bugReporter = bugReporter;
         this.bugAccumulator = new BugAccumulator(bugReporter);
         this.suspiciousSet = new HashSet<String>(DEFAULT_SUSPICIOUS_SET);
-        this.valueBasedClasses = new HashSet<String>(VALUE_BASED_CLASSES);
 
         // Check frc.suspicious system property for additional suspicious types
         // to check
@@ -998,10 +980,10 @@ public class FindRefComparison implements Detector, ExtendedTypes {
             } else if (suspiciousSet.contains(rhs)) {
                 handleSuspiciousRefComparison(jclass, method, methodGen, refComparisonList, location, rhs,
                         (ReferenceType) lhsType, (ReferenceType) rhsType);
-            } else if (isValueBasedClass(lhs)) {
+            } else if (ValueBasedClassIdentifier.isValueBasedClass(lhs)) {
                 handleValueBasedRefComparison(jclass, method, methodGen, refComparisonList, location, lhs,
                         (ReferenceType)  lhsType, (ReferenceType) rhsType);
-            }else if (isValueBasedClass(rhs)) {
+            }else if (ValueBasedClassIdentifier.isValueBasedClass(rhs)) {
                 handleValueBasedRefComparison(jclass, method, methodGen, refComparisonList, location, rhs,
                         (ReferenceType)  lhsType, (ReferenceType) rhsType);
             }
@@ -1098,25 +1080,6 @@ public class FindRefComparison implements Detector, ExtendedTypes {
                 sourceLineAnnotation, location));
     }
 
-    private boolean isValueBasedClass(String className) {
-        if (valueBasedClasses.contains(className) || isAnnotatedAsValueBasedClass(className)) {
-            return true;
-        }
-        return false;
-    }
-
-    private static boolean isAnnotatedAsValueBasedClass(String className) {
-        try {
-            ClassDescriptor classDescriptor = DescriptorFactory.createClassDescriptorFromDottedClassName(className);
-            XClass xClass = Global.getAnalysisCache().getClassAnalysis(XClass.class, classDescriptor);
-            ClassDescriptor annotationDescriptor = DescriptorFactory.createClassDescriptor(ValueBased.class);
-            AnnotationValue annotation = xClass.getAnnotation(annotationDescriptor);
-            return annotation != null;
-        } catch (CheckedAnalysisException ex) {
-            // TODO (nipa@codefx.org) log the exception?
-            return false;
-        }
-    }
 
     private void handleValueBasedRefComparison(JavaClass jclass, Method method, MethodGen methodGen,
             List<WarningWithProperties> refComparisonList, Location location, String lhs, ReferenceType lhsType,
