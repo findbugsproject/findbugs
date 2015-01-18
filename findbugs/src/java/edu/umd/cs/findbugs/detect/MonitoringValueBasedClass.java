@@ -26,6 +26,7 @@ import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.OpcodeStack.Item;
 import edu.umd.cs.findbugs.ba.vbc.ValueBasedClassIdentifier;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
+import edu.umd.cs.findbugs.util.ClassName;
 
 public class MonitoringValueBasedClass extends OpcodeStackDetector {
 
@@ -37,32 +38,74 @@ public class MonitoringValueBasedClass extends OpcodeStackDetector {
 
     @Override
     public void sawOpcode(int seen) {
-        checkLock(seen);
+        // TODO (nipa@codefx.org) define these patterns and determine priority
+        checkAndReport(isLockOnValueBasedClass(seen), "VBC_MO_LOCK", HIGH_PRIORITY);
+        checkAndReport(isCallToWaitOnValueBasedClass(seen), "VBC_MO_WAIT", HIGH_PRIORITY);
     }
 
-    private void checkLock(int seen) {
-        if (seen != MONITORENTER) {
+    private void checkAndReport(boolean isBug, String type, int priority) {
+        if (!isBug) {
             return;
         }
 
-        Item lastStackItem = getStack().getStackItem(0);
-        String dottedClassName = getDottedClassNameFromSignature(lastStackItem.getSignature());
-        boolean reportBug = ValueBasedClassIdentifier.isValueBasedClass(dottedClassName);
-        if (reportBug) {
-            // TODO (nipa@codefx.org) define this pattern
-            BugInstance bug = new BugInstance(this, "VBC_MO_LOCK", HIGH_PRIORITY).addClass(this).addSourceLine(this);
-            bugReporter.reportBug(bug);
-        }
+        BugInstance bug = new BugInstance(this, type, priority).addClass(this).addSourceLine(this);
+        bugReporter.reportBug(bug);
     }
 
-    // TODO is it necessary to implement this here?
-    // can I use some helper method, instead?
+    private boolean isLockOnValueBasedClass(int seen) {
+        boolean isLock = seen == MONITORENTER;
+        if (!isLock) {
+            return false;
+        }
+
+        // check the argument to 'MONITORENTER', which is the last item on the stack
+        Item lastStackItem = getStack().getStackItem(0);
+        String dottedClassName = getDottedClassNameFromSignature(lastStackItem.getSignature());
+        boolean onValueBasedClass = ValueBasedClassIdentifier.isValueBasedClass(dottedClassName);
+        if (!onValueBasedClass) {
+            return false;
+        }
+
+        return true;
+    }
+
+    private boolean isCallToWaitOnValueBasedClass(int seen) {
+        boolean invokesMethod = seen == INVOKEVIRTUAL;
+        if (!invokesMethod) {
+            return false;
+        }
+
+        boolean invokesObjectDotWait = "java/lang/Object".equals(getClassConstantOperand())
+                && "wait".equals(getNameConstantOperand());
+        // we can ignore the signature because all wait-methods on object are considered
+        if (!invokesObjectDotWait) {
+            return false;
+        }
+
+        // TODO (nipa@codefx.org) identify the class of the instance on which the method is called
+        boolean invokesOnValueBasedClass = true;
+        if (!invokesOnValueBasedClass) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Turns the specified signature into an 'L'-descriptor-free, dotted class name.
+     * <p>
+     * Is similar to {@link ClassName#toDottedClassName(String)} but not the same as it removes the descriptor if it is "L".
+     *
+     * @param signature
+     *            the signature of an OpCodeStack {@link Item}
+     * @return the "dotted" name of the class without the descriptor 'L'
+     */
     private String getDottedClassNameFromSignature(String signature) {
         if (StringUtils.isBlank(signature)) {
             return "";
         }
 
-        String slashedClassName = signature.substring(1, signature.length() - 1);
+        String slashedClassName = signature.startsWith("L") ? signature.substring(1, signature.length() - 1) : signature;
         return slashedClassName.replace('/', '.');
     }
 

@@ -646,9 +646,10 @@
           <Detector class="edu.umd.cs.findbugs.detect.CheckRelaxingNullnessAnnotation" speed="fast"
                     reports="NP_METHOD_RETURN_RELAXING_ANNOTATION,NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION"/>
           <Detector class="edu.umd.cs.findbugs.detect.MonitoringValueBasedClass" speed="fast"
-                    reports="VBC_MO_LOCK"/>
+                    reports="VBC_MO_LOCK,VBC_MO_WAIT"/>
                     
           <BugCode abbrev="VBC_MO_LOCK"/>
+          <BugCode abbrev="VBC_MO_WAIT"/>
 
             <!-- Bug Categories -->
            <BugCategory category="NOISE" hidden="true"/>
