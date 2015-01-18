@@ -7,7 +7,7 @@ import java.util.Optional;
 import edu.umd.cs.findbugs.annotations.ExpectWarning;
 import edu.umd.cs.findbugs.annotations.NoWarning;
 
-public class ReferenceComparisonOfValueBasedClasses {
+public class ReferenceComparisonOfValueBasedClass {
 
     @ExpectWarning("VBC_REF_COMPARISON")
     public void referenceComparisonOfOptional() {
