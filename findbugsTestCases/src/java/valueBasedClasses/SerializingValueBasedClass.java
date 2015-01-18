@@ -18,8 +18,8 @@ public class SerializingValueBasedClass implements Serializable {
     private MyValueBasedClass nonTransientFieldValueBasedClass;
 
     public SerializingValueBasedClass() {
-        nonTransientFieldOptional = null;
-        nonTransientFieldValueBasedClass = null;
+        nonTransientFieldOptional = Optional.empty();
+        nonTransientFieldValueBasedClass = new MyValueBasedClass();
     }
 
     @ExpectWarning("DMI_NONSERIALIZABLE_OBJECT_WRITTEN ")
