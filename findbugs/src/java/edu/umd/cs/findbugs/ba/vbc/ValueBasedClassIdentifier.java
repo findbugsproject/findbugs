@@ -41,11 +41,29 @@ public class ValueBasedClassIdentifier {
 
     static {
         JDK_VALUE_BASED_CLASSES.add("java.util.Optional");
-        /*
-         * TODO (nipa@codefx.org):
-         *  - add all other such classes from the JDK
-         *  - is there a need to include classes specified by system properties like in 'FindRefComparison.new'?
-         */
+        JDK_VALUE_BASED_CLASSES.add("java.util.OptionalDouble");
+        JDK_VALUE_BASED_CLASSES.add("java.util.OptionalLong");
+        JDK_VALUE_BASED_CLASSES.add("java.util.OptionalInt");
+
+        JDK_VALUE_BASED_CLASSES.add("java.time.Duration");
+        JDK_VALUE_BASED_CLASSES.add("java.time.Instant");
+        JDK_VALUE_BASED_CLASSES.add("java.time.LocalDate");
+        JDK_VALUE_BASED_CLASSES.add("java.time.LocalDateTime");
+        JDK_VALUE_BASED_CLASSES.add("java.time.LocalTime");
+        JDK_VALUE_BASED_CLASSES.add("java.time.MonthDay");
+        JDK_VALUE_BASED_CLASSES.add("java.time.OffsetDateTime");
+        JDK_VALUE_BASED_CLASSES.add("java.time.OffsetTime");
+        JDK_VALUE_BASED_CLASSES.add("java.time.Period");
+        JDK_VALUE_BASED_CLASSES.add("java.time.Year");
+        JDK_VALUE_BASED_CLASSES.add("java.time.YearMonth");
+        JDK_VALUE_BASED_CLASSES.add("java.time.ZonedDateTime");
+        JDK_VALUE_BASED_CLASSES.add("java.time.ZoneId");
+        JDK_VALUE_BASED_CLASSES.add("java.time.ZoneOffset");
+
+        JDK_VALUE_BASED_CLASSES.add("java.time.chrono.HijrahDate");
+        JDK_VALUE_BASED_CLASSES.add("java.time.chrono.JapaneseDate");
+        JDK_VALUE_BASED_CLASSES.add("java.time.chrono.MinguaDate");
+        JDK_VALUE_BASED_CLASSES.add("java.time.chrono.ThaiBuddhistDate");
     }
 
     /**
