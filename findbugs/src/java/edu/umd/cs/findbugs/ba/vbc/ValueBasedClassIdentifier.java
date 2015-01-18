@@ -33,8 +33,8 @@ import edu.umd.cs.findbugs.internalAnnotations.StaticConstant;
 public class ValueBasedClassIdentifier {
 
     /**
-     * <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/doc-files/ValueBased.html">Value-based classes</a>
-     * from the JDK which are identified as such by their documentation.
+     * <a href="http://docs.oracle.com/javase/8/docs/api/java/lang/doc-files/ValueBased.html">Value-based classes</a> from the JDK
+     * which are identified as such by their documentation.
      */
     @StaticConstant
     private static final HashSet<String> JDK_VALUE_BASED_CLASSES = new HashSet<String>();
@@ -71,11 +71,13 @@ public class ValueBasedClassIdentifier {
      * <p>
      * A class is considered value-based for one of two reasons:
      * <ul>
-     *  <li>the class is part of the JDK and its official documentation identifies it as value-based
-     *      (e.g. {@link java.util.Optional Optional})
-     *  <li>it is annotated with the FindBugs annotation {@link ValueBased @ValueBased}
+     * <li>the class is part of the JDK and its official documentation identifies it as value-based (e.g.
+     * {@link java.util.Optional Optional})
+     * <li>it is annotated with the FindBugs annotation {@link ValueBased @ValueBased}
      * </ul>
-     * @param dottedClassName the fully qualified class name in "dotted form", e.g. "java.util.Optional"
+     * 
+     * @param dottedClassName
+     *            the fully qualified class name in "dotted form" without descriptor, e.g. "java.util.Optional"
      * @return
      */
     public static boolean isValueBasedClass(String dottedClassName) {
