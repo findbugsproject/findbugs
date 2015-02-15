@@ -103,6 +103,7 @@ import edu.umd.cs.findbugs.classfile.DescriptorFactory;
 import edu.umd.cs.findbugs.classfile.Global;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
+import edu.umd.cs.findbugs.internalAnnotations.SlashedClassName;
 import edu.umd.cs.findbugs.internalAnnotations.StaticConstant;
 import edu.umd.cs.findbugs.log.Profiler;
 import edu.umd.cs.findbugs.props.WarningProperty;
@@ -969,23 +970,32 @@ public class FindRefComparison implements Detector, ExtendedTypes {
                 return;
             }
 
-            String lhs = SignatureConverter.convert(lhsType.getSignature());
-            String rhs = SignatureConverter.convert(rhsType.getSignature());
+            String lhsSignature = lhsType.getSignature();
+            @SlashedClassName
+            String lhsSlashed = ClassName.extractClassName(lhsSignature);
+            @DottedClassName
+            String lhsDotted = SignatureConverter.convert(lhsSignature);
 
-            if ("java.lang.String".equals(lhs) || "java.lang.String".equals(rhs)) {
+            String rhsSignature = rhsType.getSignature();
+            @SlashedClassName
+            String rhsSlashed = ClassName.extractClassName(rhsSignature);
+            @DottedClassName
+            String rhsDotted = SignatureConverter.convert(rhsSignature);
+
+            if ("java.lang.String".equals(lhsDotted) || "java.lang.String".equals(rhsDotted)) {
                 handleStringComparison(jclass, method, methodGen, visitor, stringComparisonList, location, lhsType, rhsType);
-            } else if (suspiciousSet.contains(lhs)) {
-                handleSuspiciousRefComparison(jclass, method, methodGen, refComparisonList, location, lhs,
+            } else if (suspiciousSet.contains(lhsDotted)) {
+                handleSuspiciousRefComparison(jclass, method, methodGen, refComparisonList, location, lhsDotted,
                         (ReferenceType) lhsType, (ReferenceType) rhsType);
-            } else if (suspiciousSet.contains(rhs)) {
-                handleSuspiciousRefComparison(jclass, method, methodGen, refComparisonList, location, rhs,
+            } else if (suspiciousSet.contains(rhsDotted)) {
+                handleSuspiciousRefComparison(jclass, method, methodGen, refComparisonList, location, rhsDotted,
                         (ReferenceType) lhsType, (ReferenceType) rhsType);
-            } else if (ValueBasedClassIdentifier.isValueBasedClass(lhs)) {
-                handleValueBasedRefComparison(jclass, method, methodGen, refComparisonList, location, lhs,
-                        (ReferenceType)  lhsType, (ReferenceType) rhsType);
-            }else if (ValueBasedClassIdentifier.isValueBasedClass(rhs)) {
-                handleValueBasedRefComparison(jclass, method, methodGen, refComparisonList, location, rhs,
-                        (ReferenceType)  lhsType, (ReferenceType) rhsType);
+            } else if (ValueBasedClassIdentifier.isValueBasedClass(lhsSlashed)) {
+                handleValueBasedRefComparison(jclass, method, methodGen, refComparisonList, location, lhsSignature,
+                        (ReferenceType) lhsType, (ReferenceType) rhsType);
+            } else if (ValueBasedClassIdentifier.isValueBasedClass(rhsSlashed)) {
+                handleValueBasedRefComparison(jclass, method, methodGen, refComparisonList, location, rhsSignature,
+                        (ReferenceType) lhsType, (ReferenceType) rhsType);
             }
         }
     }
@@ -1080,9 +1090,8 @@ public class FindRefComparison implements Detector, ExtendedTypes {
                 sourceLineAnnotation, location));
     }
 
-
     private void handleValueBasedRefComparison(JavaClass jclass, Method method, MethodGen methodGen,
-            List<WarningWithProperties> refComparisonList, Location location, String lhs, ReferenceType lhsType,
+            List<WarningWithProperties> refComparisonList, Location location, String signature, ReferenceType lhsType,
             ReferenceType rhsType) {
         XField xf = null;
         if (lhsType instanceof FinalConstant) {
@@ -1094,8 +1103,10 @@ public class FindRefComparison implements Detector, ExtendedTypes {
         // TODO (nipa@codefx.org) define this pattern
         String bugPattern = "VBC_REF_COMPARISON";
         int priority = Priorities.HIGH_PRIORITY;
-        BugInstance instance = new BugInstance(this, bugPattern, priority).addClassAndMethod(methodGen, sourceFile)
-                .addType("L" + lhs.replace('.', '/') + ";").describe(TypeAnnotation.FOUND_ROLE);
+        BugInstance instance = new BugInstance(this, bugPattern, priority)
+                .addClassAndMethod(methodGen, sourceFile)
+                .addType(signature)
+                .describe(TypeAnnotation.FOUND_ROLE);
         if (xf != null) {
             instance.addField(xf).describe(FieldAnnotation.LOADED_FROM_ROLE);
         } else {

@@ -19,13 +19,14 @@
 
 package edu.umd.cs.findbugs.detect;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.ArrayUtils;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.OpcodeStack.Item;
 import edu.umd.cs.findbugs.ba.vbc.ValueBasedClassIdentifier;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
+import edu.umd.cs.findbugs.internalAnnotations.SlashedClassName;
 import edu.umd.cs.findbugs.util.ClassName;
 
 public class MonitoringValueBasedClass extends OpcodeStackDetector {
@@ -41,6 +42,7 @@ public class MonitoringValueBasedClass extends OpcodeStackDetector {
         // TODO (nipa@codefx.org) define these patterns and determine priority
         checkAndReport(isLockOnValueBasedClass(seen), "VBC_MO_LOCK", HIGH_PRIORITY);
         checkAndReport(isCallToWaitOnValueBasedClass(seen), "VBC_MO_WAIT", HIGH_PRIORITY);
+        checkAndReport(isCallToNotifyOnValueBasedClass(seen), "VBC_MO_NOTIFY", HIGH_PRIORITY);
     }
 
     private void checkAndReport(boolean isBug, String type, int priority) {
@@ -60,8 +62,9 @@ public class MonitoringValueBasedClass extends OpcodeStackDetector {
 
         // check the argument to 'MONITORENTER', which is the last item on the stack
         Item lastStackItem = getStack().getStackItem(0);
-        String dottedClassName = getDottedClassNameFromSignature(lastStackItem.getSignature());
-        boolean onValueBasedClass = ValueBasedClassIdentifier.isValueBasedClass(dottedClassName);
+        String classSignature = lastStackItem.getSignature();
+        String slashedClassName = ClassName.extractClassName(classSignature);
+        boolean onValueBasedClass = ValueBasedClassIdentifier.isValueBasedClass(slashedClassName);
         if (!onValueBasedClass) {
             return false;
         }
@@ -70,43 +73,35 @@ public class MonitoringValueBasedClass extends OpcodeStackDetector {
     }
 
     private boolean isCallToWaitOnValueBasedClass(int seen) {
+        return isCallToObjectMethodOnValueBasedClass(seen, "wait");
+    }
+
+    private boolean isCallToNotifyOnValueBasedClass(int seen) {
+        return isCallToObjectMethodOnValueBasedClass(seen, "notify", "notifyAll");
+    }
+
+    private boolean isCallToObjectMethodOnValueBasedClass(int seen, String... methodNames) {
         boolean invokesMethod = seen == INVOKEVIRTUAL;
         if (!invokesMethod) {
             return false;
         }
 
-        boolean invokesObjectDotWait = "java/lang/Object".equals(getClassConstantOperand())
-                && "wait".equals(getNameConstantOperand());
-        // we can ignore the signature because all wait-methods on object are considered
-        if (!invokesObjectDotWait) {
+        boolean invokesSpecifiedMethod = "java/lang/Object".equals(getClassConstantOperand())
+                && ArrayUtils.contains(methodNames, getNameConstantOperand());
+        // all overloads are treated identically
+        if (!invokesSpecifiedMethod) {
             return false;
         }
 
-        // TODO (nipa@codefx.org) identify the class of the instance on which the method is called
-        boolean invokesOnValueBasedClass = true;
-        if (!invokesOnValueBasedClass) {
-            return false;
-        }
-
-        return true;
+        return ValueBasedClassIdentifier.isValueBasedClass(getCallTargetName());
     }
 
-    /**
-     * Turns the specified signature into an 'L'-descriptor-free, dotted class name.
-     * <p>
-     * Is similar to {@link ClassName#toDottedClassName(String)} but not the same as it removes the descriptor if it is "L".
-     *
-     * @param signature
-     *            the signature of an OpCodeStack {@link Item}
-     * @return the "dotted" name of the class without the descriptor 'L'
-     */
-    private String getDottedClassNameFromSignature(String signature) {
-        if (StringUtils.isBlank(signature)) {
-            return "";
-        }
-
-        String slashedClassName = signature.startsWith("L") ? signature.substring(1, signature.length() - 1) : signature;
-        return slashedClassName.replace('/', '.');
+    private @SlashedClassName String getCallTargetName() {
+        String calledMethod = getMethodDescriptorOperand().getSignature();
+        int nrOfArguments = getNumberArguments(calledMethod);
+        Item callTargetStackItem = getStack().getStackItem(nrOfArguments);
+        String callTargetSignature = callTargetStackItem.getSignature();
+        return ClassName.extractClassName(callTargetSignature);
     }
 
 }

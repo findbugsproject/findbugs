@@ -11,6 +11,7 @@ import edu.umd.cs.findbugs.annotations.ExpectWarning;
 import edu.umd.cs.findbugs.annotations.NoWarning;
 import edu.umd.cs.findbugs.annotations.ValueBased;
 
+@SuppressWarnings("javadoc")
 public class Feature313jdk8 {
 
     /*
@@ -110,6 +111,76 @@ public class Feature313jdk8 {
             }
         }
 
+        // notify on VBC
+
+        @ExpectWarning("VBC_MT_NOTIFY")
+        public void notifyOnOptional(Optional<?> lock) throws InterruptedException {
+            lock.notify();
+        }
+
+        @ExpectWarning("VBC_MT_NOTIFY")
+        public void notifyOnOptionalFromList(List<Optional<?>> locks) throws InterruptedException {
+            while (true) {
+                locks.get(0).notify();
+            }
+        }
+
+        @ExpectWarning("VBC_MT_NOTIFY")
+        public void notifyOnMyValueBasedClass(MyValueBasedClass lock) throws InterruptedException {
+            while (true) {
+                lock.notify();
+            }
+        }
+
+        @NoWarning("VBC_MT_NOTIFY")
+        public void notifyOnObject(Object lock) throws InterruptedException {
+            while (true) {
+                lock.notify();
+            }
+        }
+
+        @NoWarning("VBC_MT_NOTIFY")
+        public void noRealNotify(MyValueBasedClass lock) throws InterruptedException {
+            while (true) {
+                lock.notify("This method is not inherited from object, so no 'real notify'.");
+            }
+        }
+
+        // notifyAll on VBC
+
+        @ExpectWarning("VBC_MT_NOTIFY")
+        public void notifyAllOnOptional(Optional<?> lock) throws InterruptedException {
+            lock.notifyAll();
+        }
+
+        @ExpectWarning("VBC_MT_NOTIFY")
+        public void notifyAllOnOptionalFromList(List<Optional<?>> locks) throws InterruptedException {
+            while (true) {
+                locks.get(0).notifyAll();
+            }
+        }
+
+        @ExpectWarning("VBC_MT_NOTIFY")
+        public void notifyAllOnMyValueBasedClass(MyValueBasedClass lock) throws InterruptedException {
+            while (true) {
+                lock.notifyAll();
+            }
+        }
+
+        @NoWarning("VBC_MT_NOTIFY")
+        public void notifyAllOnObject(Object lock) throws InterruptedException {
+            while (true) {
+                lock.notifyAll();
+            }
+        }
+
+        @NoWarning("VBC_MT_NOTIFY")
+        public void noRealNotifyAll(MyValueBasedClass lock) throws InterruptedException {
+            while (true) {
+                lock.notifyAll("This method is not inherited from object, so no 'real notifyAll'.");
+            }
+        }
+
     }
 
     public static class SerializingValueBasedClass implements Serializable {
@@ -143,10 +214,23 @@ public class Feature313jdk8 {
     public static class MyValueBasedClass {
 
         /**
-         * A method overloading {@link #wait()} to write a test which captures
-         * false positives.
+         * A method overloading {@link #wait()} to write a test which captures false positives.
          */
         public void wait(String arg) {
+            System.out.println(arg);
+        }
+
+        /**
+         * A method overloading {@link #notify()} to write a test which captures false positives.
+         */
+        public void notify(String arg) {
+            System.out.println(arg);
+        }
+
+        /**
+         * A method overloading {@link #notifyAll()} to write a test which captures false positives.
+         */
+        public void notifyAll(String arg) {
             System.out.println(arg);
         }
 

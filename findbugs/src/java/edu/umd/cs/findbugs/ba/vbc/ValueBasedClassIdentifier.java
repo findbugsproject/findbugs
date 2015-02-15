@@ -28,6 +28,7 @@ import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.DescriptorFactory;
 import edu.umd.cs.findbugs.classfile.Global;
 import edu.umd.cs.findbugs.classfile.analysis.AnnotationValue;
+import edu.umd.cs.findbugs.internalAnnotations.SlashedClassName;
 import edu.umd.cs.findbugs.internalAnnotations.StaticConstant;
 
 public class ValueBasedClassIdentifier {
@@ -39,58 +40,74 @@ public class ValueBasedClassIdentifier {
     @StaticConstant
     private static final HashSet<String> JDK_VALUE_BASED_CLASSES = new HashSet<String>();
 
+    /**
+     * Non-JDK classes which are considered to be value-based.
+     */
+    @StaticConstant
+    private static final HashSet<String> OTHER_VALUE_BASED_CLASSES = new HashSet<String>();
+
     static {
-        JDK_VALUE_BASED_CLASSES.add("java.util.Optional");
-        JDK_VALUE_BASED_CLASSES.add("java.util.OptionalDouble");
-        JDK_VALUE_BASED_CLASSES.add("java.util.OptionalLong");
-        JDK_VALUE_BASED_CLASSES.add("java.util.OptionalInt");
+        /* JDK */
+        JDK_VALUE_BASED_CLASSES.add("java/util/Optional");
+        JDK_VALUE_BASED_CLASSES.add("java/util/OptionalDouble");
+        JDK_VALUE_BASED_CLASSES.add("java/util/OptionalLong");
+        JDK_VALUE_BASED_CLASSES.add("java/util/OptionalInt");
 
-        JDK_VALUE_BASED_CLASSES.add("java.time.Duration");
-        JDK_VALUE_BASED_CLASSES.add("java.time.Instant");
-        JDK_VALUE_BASED_CLASSES.add("java.time.LocalDate");
-        JDK_VALUE_BASED_CLASSES.add("java.time.LocalDateTime");
-        JDK_VALUE_BASED_CLASSES.add("java.time.LocalTime");
-        JDK_VALUE_BASED_CLASSES.add("java.time.MonthDay");
-        JDK_VALUE_BASED_CLASSES.add("java.time.OffsetDateTime");
-        JDK_VALUE_BASED_CLASSES.add("java.time.OffsetTime");
-        JDK_VALUE_BASED_CLASSES.add("java.time.Period");
-        JDK_VALUE_BASED_CLASSES.add("java.time.Year");
-        JDK_VALUE_BASED_CLASSES.add("java.time.YearMonth");
-        JDK_VALUE_BASED_CLASSES.add("java.time.ZonedDateTime");
-        JDK_VALUE_BASED_CLASSES.add("java.time.ZoneId");
-        JDK_VALUE_BASED_CLASSES.add("java.time.ZoneOffset");
+        JDK_VALUE_BASED_CLASSES.add("java/time/Duration");
+        JDK_VALUE_BASED_CLASSES.add("java/time/Instant");
+        JDK_VALUE_BASED_CLASSES.add("java/time/LocalDate");
+        JDK_VALUE_BASED_CLASSES.add("java/time/LocalDateTime");
+        JDK_VALUE_BASED_CLASSES.add("java/time/LocalTime");
+        JDK_VALUE_BASED_CLASSES.add("java/time/MonthDay");
+        JDK_VALUE_BASED_CLASSES.add("java/time/OffsetDateTime");
+        JDK_VALUE_BASED_CLASSES.add("java/time/OffsetTime");
+        JDK_VALUE_BASED_CLASSES.add("java/time/Period");
+        JDK_VALUE_BASED_CLASSES.add("java/time/Year");
+        JDK_VALUE_BASED_CLASSES.add("java/time/YearMonth");
+        JDK_VALUE_BASED_CLASSES.add("java/time/ZonedDateTime");
+        JDK_VALUE_BASED_CLASSES.add("java/time/ZoneId");
+        JDK_VALUE_BASED_CLASSES.add("java/time/ZoneOffset");
 
-        JDK_VALUE_BASED_CLASSES.add("java.time.chrono.HijrahDate");
-        JDK_VALUE_BASED_CLASSES.add("java.time.chrono.JapaneseDate");
-        JDK_VALUE_BASED_CLASSES.add("java.time.chrono.MinguaDate");
-        JDK_VALUE_BASED_CLASSES.add("java.time.chrono.ThaiBuddhistDate");
+        JDK_VALUE_BASED_CLASSES.add("java/time/chrono/HijrahDate");
+        JDK_VALUE_BASED_CLASSES.add("java/time/chrono/JapaneseDate");
+        JDK_VALUE_BASED_CLASSES.add("java/time/chrono/MinguaDate");
+        JDK_VALUE_BASED_CLASSES.add("java/time/chrono/ThaiBuddhistDate");
+
+        /* OTHER */
+        OTHER_VALUE_BASED_CLASSES.add("com/google/common/base/Optional");
     }
 
     /**
      * Indicates whether the specified class is <i>value-based</i>.
      * <p>
-     * A class is considered value-based for one of two reasons:
+     * A class is considered value-based for one of three reasons:
      * <ul>
      * <li>the class is part of the JDK and its official documentation identifies it as value-based (e.g.
      * {@link java.util.Optional Optional})
+     * <li>the class is part of some other widely used library and can be considered as value-based (e.g. <a
+     * href="http://docs.guava-libraries.googlecode.com/git/javadoc/com/google/common/base/Optional.html">Guava's Optional</a>)
      * <li>it is annotated with the FindBugs annotation {@link ValueBased @ValueBased}
      * </ul>
-     * 
-     * @param dottedClassName
-     *            the fully qualified class name in "dotted form" without descriptor, e.g. "java.util.Optional"
+     *
+     * @param className
+     *            the fully qualified class name in "slashed form" without descriptor and semicolon, e.g. "java/util/Optional"
      * @return
      */
-    public static boolean isValueBasedClass(String dottedClassName) {
-        return isJdkValueBasedClass(dottedClassName) || isAnnotatedAsValueBasedClass(dottedClassName);
+    public static boolean isValueBasedClass(@SlashedClassName String className) {
+        return isJdkValueBasedClass(className) || isOtherValueBasedClass(className) || isAnnotatedAsValueBasedClass(className);
     }
 
-    private static boolean isJdkValueBasedClass(String className) {
+    private static boolean isJdkValueBasedClass(@SlashedClassName String className) {
         return JDK_VALUE_BASED_CLASSES.contains(className);
     }
 
-    private static boolean isAnnotatedAsValueBasedClass(String className) {
+    private static boolean isOtherValueBasedClass(@SlashedClassName String className) {
+        return OTHER_VALUE_BASED_CLASSES.contains(className);
+    }
+
+    private static boolean isAnnotatedAsValueBasedClass(@SlashedClassName String className) {
         try {
-            ClassDescriptor classDescriptor = DescriptorFactory.createClassDescriptorFromDottedClassName(className);
+            ClassDescriptor classDescriptor = DescriptorFactory.createClassDescriptor(className);
             XClass xClass = Global.getAnalysisCache().getClassAnalysis(XClass.class, classDescriptor);
             ClassDescriptor annotationDescriptor = DescriptorFactory.createClassDescriptor(ValueBased.class);
             AnnotationValue annotation = xClass.getAnnotation(annotationDescriptor);
