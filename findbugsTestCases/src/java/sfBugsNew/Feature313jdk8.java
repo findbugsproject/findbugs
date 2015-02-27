@@ -76,35 +76,35 @@ public class Feature313jdk8 {
 
         // wait on VBC
 
-        @ExpectWarning("VBC_MT_WAIT")
+        @ExpectWarning("VBC_MO_WAIT")
         public void waitOnOptional(Optional<?> lock) throws InterruptedException {
             while (true) {
                 lock.wait();
             }
         }
 
-        @ExpectWarning("VBC_MT_WAIT")
+        @ExpectWarning("VBC_MO_WAIT")
         public void waitOnOptionalFromList(List<Optional<?>> locks) throws InterruptedException {
             while (true) {
                 locks.get(0).wait();
             }
         }
 
-        @ExpectWarning("VBC_MT_WAIT")
+        @ExpectWarning("VBC_MO_WAIT")
         public void waitOnMyValueBasedClass(MyValueBasedClass lock) throws InterruptedException {
             while (true) {
                 lock.wait();
             }
         }
 
-        @NoWarning("VBC_MT_WAIT")
+        @NoWarning("VBC_MO_WAIT")
         public void waitOnObject(Object lock) throws InterruptedException {
             while (true) {
                 lock.wait();
             }
         }
 
-        @NoWarning("VBC_MT_WAIT")
+        @NoWarning("VBC_MO_WAIT")
         public void noRealWait(MyValueBasedClass lock) throws InterruptedException {
             while (true) {
                 lock.wait("This method is not inherited from object, so no 'real wait'.");
@@ -113,33 +113,33 @@ public class Feature313jdk8 {
 
         // notify on VBC
 
-        @ExpectWarning("VBC_MT_NOTIFY")
+        @ExpectWarning("VBC_MO_NOTIFY")
         public void notifyOnOptional(Optional<?> lock) throws InterruptedException {
             lock.notify();
         }
 
-        @ExpectWarning("VBC_MT_NOTIFY")
+        @ExpectWarning("VBC_MO_NOTIFY")
         public void notifyOnOptionalFromList(List<Optional<?>> locks) throws InterruptedException {
             while (true) {
                 locks.get(0).notify();
             }
         }
 
-        @ExpectWarning("VBC_MT_NOTIFY")
+        @ExpectWarning("VBC_MO_NOTIFY")
         public void notifyOnMyValueBasedClass(MyValueBasedClass lock) throws InterruptedException {
             while (true) {
                 lock.notify();
             }
         }
 
-        @NoWarning("VBC_MT_NOTIFY")
+        @NoWarning("VBC_MO_NOTIFY")
         public void notifyOnObject(Object lock) throws InterruptedException {
             while (true) {
                 lock.notify();
             }
         }
 
-        @NoWarning("VBC_MT_NOTIFY")
+        @NoWarning("VBC_MO_NOTIFY")
         public void noRealNotify(MyValueBasedClass lock) throws InterruptedException {
             while (true) {
                 lock.notify("This method is not inherited from object, so no 'real notify'.");
@@ -148,33 +148,33 @@ public class Feature313jdk8 {
 
         // notifyAll on VBC
 
-        @ExpectWarning("VBC_MT_NOTIFY")
+        @ExpectWarning("VBC_MO_NOTIFY")
         public void notifyAllOnOptional(Optional<?> lock) throws InterruptedException {
             lock.notifyAll();
         }
 
-        @ExpectWarning("VBC_MT_NOTIFY")
+        @ExpectWarning("VBC_MO_NOTIFY")
         public void notifyAllOnOptionalFromList(List<Optional<?>> locks) throws InterruptedException {
             while (true) {
                 locks.get(0).notifyAll();
             }
         }
 
-        @ExpectWarning("VBC_MT_NOTIFY")
+        @ExpectWarning("VBC_MO_NOTIFY")
         public void notifyAllOnMyValueBasedClass(MyValueBasedClass lock) throws InterruptedException {
             while (true) {
                 lock.notifyAll();
             }
         }
 
-        @NoWarning("VBC_MT_NOTIFY")
+        @NoWarning("VBC_MO_NOTIFY")
         public void notifyAllOnObject(Object lock) throws InterruptedException {
             while (true) {
                 lock.notifyAll();
             }
         }
 
-        @NoWarning("VBC_MT_NOTIFY")
+        @NoWarning("VBC_MO_NOTIFY")
         public void noRealNotifyAll(MyValueBasedClass lock) throws InterruptedException {
             while (true) {
                 lock.notifyAll("This method is not inherited from object, so no 'real notifyAll'.");
@@ -199,7 +199,7 @@ public class Feature313jdk8 {
         }
 
         @ExpectWarning("DMI_NONSERIALIZABLE_OBJECT_WRITTEN ")
-        private void writeObject(ObjectOutputStream stream) throws IOException {
+        public void writeObject(ObjectOutputStream stream) throws IOException {
             stream.writeObject(nonTransientFieldOptional);
             stream.writeObject(nonTransientFieldValueBasedClass);
         }
