@@ -647,6 +647,8 @@
                     reports="NP_METHOD_RETURN_RELAXING_ANNOTATION,NP_METHOD_PARAMETER_TIGHTENS_ANNOTATION"/>
           <Detector class="edu.umd.cs.findbugs.detect.MonitoringValueBasedClass" speed="fast"
                     reports="VBC_MO_LOCK,VBC_MO_WAIT,VBC_MO_NOTIFY"/>
+          <Detector class="edu.umd.cs.findbugs.detect.IdentityHashCodeOnValueBasedClass" speed="fast"
+                    reports="VBC_IDENTITY_HASHCODE"/>
                     
           <BugCode abbrev="VBC_MO_LOCK"/>
           <BugCode abbrev="VBC_MO_WAIT"/>

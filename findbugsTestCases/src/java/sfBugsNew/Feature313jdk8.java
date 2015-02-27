@@ -206,6 +206,31 @@ public class Feature313jdk8 {
 
     }
 
+    public static class IdentityOfValueBasedClass {
+
+        // @NoWarning("VBC_IDENTITY_HASHCODE")
+        // public Map<OptionalInt, String> createIdentityMapWithOptionalAsKey() {
+        // Map<OptionalInt, String> map = new IdentityHashMap<>();
+        // return map;
+        // }
+
+        @ExpectWarning("VBC_IDENTITY_HASHCODE")
+        public void callIdentityHashCodeOnOptional(Optional<?> argument) {
+            System.identityHashCode(argument);
+        }
+
+        @ExpectWarning("VBC_IDENTITY_HASHCODE")
+        public void callIdentityHashCodeOnValueBasedClass(MyValueBasedClass argument) {
+            System.identityHashCode(argument);
+        }
+
+        @NoWarning("VBC_IDENTITY_HASHCODE")
+        public void callIdentityHashCodeNotOnValueBasedClass(Object argument) {
+            System.identityHashCode(argument);
+        }
+
+    }
+
     /*
      * UTILITIES
      */

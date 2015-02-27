@@ -1658,6 +1658,13 @@ factory pattern to create these objects.</p>
       ]]>
       </Details>
   </Detector>
+  <Detector class="edu.umd.cs.findbugs.detect.IdentityHashCodeOnValueBasedClass">
+    <Details>
+      <![CDATA[
+        <p>TODO</p>
+      ]]>
+      </Details>
+  </Detector>
   <!--
   **********************************************************************
   BugPatterns
