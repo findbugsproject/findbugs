@@ -1,0 +1,13 @@
+language: java
+sudo: false
+jdk:
+  - oraclejdk7
+install:
+  - wget http://www.eclipse.org/downloads/download.php?file=/eclipse/downloads/drops/R-3.6.2-201102101200/eclipse-SDK-3.6.2-linux-gtk-x86_64.tar.gz -O eclipse-3.6.2-linux64.tar.gz
+  - tar xzvf eclipse-3.6.2-linux64.tar.gz eclipse
+  - echo eclipsePlugin.dir=$(pwd)/eclipse/plugins > eclipsePlugin/local.properties
+script: ant build test
+notifications:
+  email:
+    recipients:
+      - skypencil+travis@gmail.com
