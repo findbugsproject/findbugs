@@ -77,6 +77,10 @@ public class ValueBasedClassIdentifier {
         OTHER_VALUE_BASED_CLASSES.add("com/google/common/base/Optional");
     }
 
+    @StaticConstant
+    private static final ClassDescriptor VALUE_BASED_ANNOTATION_DESCRIPTOR =
+    DescriptorFactory.createClassDescriptor(ValueBased.class);
+
     /**
      * Indicates whether the specified class is <i>value-based</i>.
      * <p>
@@ -109,8 +113,7 @@ public class ValueBasedClassIdentifier {
         try {
             ClassDescriptor classDescriptor = DescriptorFactory.createClassDescriptor(className);
             XClass xClass = Global.getAnalysisCache().getClassAnalysis(XClass.class, classDescriptor);
-            ClassDescriptor annotationDescriptor = DescriptorFactory.createClassDescriptor(ValueBased.class);
-            AnnotationValue annotation = xClass.getAnnotation(annotationDescriptor);
+            AnnotationValue annotation = xClass.getAnnotation(VALUE_BASED_ANNOTATION_DESCRIPTOR);
             return annotation != null;
         } catch (CheckedAnalysisException ex) {
             // TODO (nipa@codefx.org) log the exception?
