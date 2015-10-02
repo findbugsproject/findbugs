@@ -78,37 +78,32 @@ public class Feature313jdk8 {
 
         @ExpectWarning("VBC_MO_WAIT")
         public void waitOnOptional(Optional<?> lock) throws InterruptedException {
-            while (true) {
+            while (true)
                 lock.wait();
-            }
         }
 
         @ExpectWarning("VBC_MO_WAIT")
         public void waitOnOptionalFromList(List<Optional<?>> locks) throws InterruptedException {
-            while (true) {
+            while (true)
                 locks.get(0).wait();
-            }
         }
 
         @ExpectWarning("VBC_MO_WAIT")
         public void waitOnMyValueBasedClass(MyValueBasedClass lock) throws InterruptedException {
-            while (true) {
+            while (true)
                 lock.wait();
-            }
         }
 
         @NoWarning("VBC_MO_WAIT")
         public void waitOnObject(Object lock) throws InterruptedException {
-            while (true) {
+            while (true)
                 lock.wait();
-            }
         }
 
         @NoWarning("VBC_MO_WAIT")
         public void noRealWait(MyValueBasedClass lock) throws InterruptedException {
-            while (true) {
+            while (true)
                 lock.wait("This method is not inherited from object, so no 'real wait'.");
-            }
         }
 
         // notify on VBC
@@ -120,30 +115,26 @@ public class Feature313jdk8 {
 
         @ExpectWarning("VBC_MO_NOTIFY")
         public void notifyOnOptionalFromList(List<Optional<?>> locks) throws InterruptedException {
-            while (true) {
+            while (true)
                 locks.get(0).notify();
-            }
         }
 
         @ExpectWarning("VBC_MO_NOTIFY")
         public void notifyOnMyValueBasedClass(MyValueBasedClass lock) throws InterruptedException {
-            while (true) {
+            while (true)
                 lock.notify();
-            }
         }
 
         @NoWarning("VBC_MO_NOTIFY")
         public void notifyOnObject(Object lock) throws InterruptedException {
-            while (true) {
+            while (true)
                 lock.notify();
-            }
         }
 
         @NoWarning("VBC_MO_NOTIFY")
         public void noRealNotify(MyValueBasedClass lock) throws InterruptedException {
-            while (true) {
+            while (true)
                 lock.notify("This method is not inherited from object, so no 'real notify'.");
-            }
         }
 
         // notifyAll on VBC
@@ -155,30 +146,26 @@ public class Feature313jdk8 {
 
         @ExpectWarning("VBC_MO_NOTIFY")
         public void notifyAllOnOptionalFromList(List<Optional<?>> locks) throws InterruptedException {
-            while (true) {
+            while (true)
                 locks.get(0).notifyAll();
-            }
         }
 
         @ExpectWarning("VBC_MO_NOTIFY")
         public void notifyAllOnMyValueBasedClass(MyValueBasedClass lock) throws InterruptedException {
-            while (true) {
+            while (true)
                 lock.notifyAll();
-            }
         }
 
         @NoWarning("VBC_MO_NOTIFY")
         public void notifyAllOnObject(Object lock) throws InterruptedException {
-            while (true) {
+            while (true)
                 lock.notifyAll();
-            }
         }
 
         @NoWarning("VBC_MO_NOTIFY")
         public void noRealNotifyAll(MyValueBasedClass lock) throws InterruptedException {
-            while (true) {
+            while (true)
                 lock.notifyAll("This method is not inherited from object, so no 'real notifyAll'.");
-            }
         }
 
     }
@@ -199,7 +186,7 @@ public class Feature313jdk8 {
         }
 
         @ExpectWarning("DMI_NONSERIALIZABLE_OBJECT_WRITTEN ")
-        public void writeObject(ObjectOutputStream stream) throws IOException {
+        private void writeObject(ObjectOutputStream stream) throws IOException {
             stream.writeObject(nonTransientFieldOptional);
             stream.writeObject(nonTransientFieldValueBasedClass);
         }
@@ -215,17 +202,17 @@ public class Feature313jdk8 {
         // }
 
         @ExpectWarning("VBC_IDENTITY_HASHCODE")
-        public void callIdentityHashCodeOnOptional(Optional<?> argument) {
+        public void callIdentityHashCodeWithOptional(Optional<?> argument) {
             System.identityHashCode(argument);
         }
 
         @ExpectWarning("VBC_IDENTITY_HASHCODE")
-        public void callIdentityHashCodeOnValueBasedClass(MyValueBasedClass argument) {
+        public void callIdentityHashCodeWithValueBasedClass(MyValueBasedClass argument) {
             System.identityHashCode(argument);
         }
 
         @NoWarning("VBC_IDENTITY_HASHCODE")
-        public void callIdentityHashCodeNotOnValueBasedClass(Object argument) {
+        public void callIdentityHashCodeNotWithValueBasedClass(Object argument) {
             System.identityHashCode(argument);
         }
 
