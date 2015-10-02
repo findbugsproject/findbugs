@@ -50,7 +50,10 @@ public class MonitoringValueBasedClass extends OpcodeStackDetector {
             return;
         }
 
-        BugInstance bug = new BugInstance(this, type, priority).addClass(this).addSourceLine(this);
+        BugInstance bug = new BugInstance(this, type, priority)
+                .addClass(this)
+                .addSourceLine(this)
+                .addMethod(this);
         bugReporter.reportBug(bug);
     }
 
