@@ -1100,7 +1100,6 @@ public class FindRefComparison implements Detector, ExtendedTypes {
             xf = ((FinalConstant) rhsType).getXField();
         }
         String sourceFile = jclass.getSourceFileName();
-        // TODO (nipa@codefx.org) define this pattern
         String bugPattern = "VBC_REF_COMPARISON";
         int priority = Priorities.HIGH_PRIORITY;
         BugInstance instance = new BugInstance(this, bugPattern, priority)
