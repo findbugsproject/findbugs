@@ -60,13 +60,13 @@ import java.lang.annotation.Target;
  * It lists the following operations as examples of such operations:
  * <ul>
  *  <li>using reference equality <b>[FB]</b>
- *  <li>synchronization
- *  <li>identity hashing
+ *  <li>synchronization <b>[FB]</b>
+ *  <li>identity hashing <b>[FB]</b>
  *  <li>serialization
- *      (because some value-based JDK classes are serializable
- *      [e.g. {@link java.time.LocalTime LocalTime}] <b>[FB]</b> does no special checks; it uses the
+ *      (There are no specialized checks for this - only the
  *      <a href="http://findbugs.sourceforge.net/bugDescriptions.html#SE_BAD_FIELD">SE_BAD_FIELD</a>
- *      pattern to detect serialization)
+ *      pattern, which detects serialization of non-serializable instances.
+ *      Note that some value-based JDK classes, e.g. {@link java.time.LocalTime LocalTime}, <i>are</i> serializable.)
  *  <li>"any other identity-sensitive mechanism"
  * </ul>
  * It goes on: "Use of such identity-sensitive operations on instances of value-based classes
