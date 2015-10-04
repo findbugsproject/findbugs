@@ -39,10 +39,9 @@ public class MonitoringValueBasedClass extends OpcodeStackDetector {
 
     @Override
     public void sawOpcode(int seen) {
-        // TODO (nipa@codefx.org) define these patterns and determine priority
-        checkAndReport(isLockOnValueBasedClass(seen), "VBC_MO_LOCK", HIGH_PRIORITY);
-        checkAndReport(isCallToWaitOnValueBasedClass(seen), "VBC_MO_WAIT", HIGH_PRIORITY);
-        checkAndReport(isCallToNotifyOnValueBasedClass(seen), "VBC_MO_NOTIFY", HIGH_PRIORITY);
+        checkAndReport(isLockOnValueBasedClass(seen), "VBC_MO_LOCK", NORMAL_PRIORITY);
+        checkAndReport(isCallToWaitOnValueBasedClass(seen), "VBC_MO_WAIT", NORMAL_PRIORITY);
+        checkAndReport(isCallToNotifyOnValueBasedClass(seen), "VBC_MO_NOTIFY", NORMAL_PRIORITY);
     }
 
     private void checkAndReport(boolean isBug, String type, int priority) {

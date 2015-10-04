@@ -36,8 +36,7 @@ public class IdentityHashCodeOnValueBasedClass extends OpcodeStackDetector {
 
     @Override
     public void sawOpcode(int seen) {
-        // TODO (nipa@codefx.org) define these patterns and determine priority
-        checkAndReport(isCallToSystemIdentityHashCodeWithValueBasedClass(seen), "VBC_IDENTITY_HASHCODE", HIGH_PRIORITY);
+        checkAndReport(isCallToSystemIdentityHashCodeWithValueBasedClass(seen), "VBC_IDENTITY_HASHCODE", NORMAL_PRIORITY);
     }
 
     private void checkAndReport(boolean isBug, String type, int priority) {
