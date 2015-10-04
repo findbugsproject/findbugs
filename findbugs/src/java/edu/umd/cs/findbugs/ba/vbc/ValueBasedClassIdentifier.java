@@ -22,6 +22,7 @@ package edu.umd.cs.findbugs.ba.vbc;
 import java.util.HashSet;
 
 import edu.umd.cs.findbugs.annotations.ValueBased;
+import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
@@ -116,7 +117,8 @@ public class ValueBasedClassIdentifier {
             AnnotationValue annotation = xClass.getAnnotation(VALUE_BASED_ANNOTATION_DESCRIPTOR);
             return annotation != null;
         } catch (CheckedAnalysisException ex) {
-            // TODO (nipa@codefx.org) log the exception?
+            String message = String.format("Accessing the global cache for the analysis of '%s' failed.", className);
+            AnalysisContext.logError(message, ex);
             return false;
         }
     }
