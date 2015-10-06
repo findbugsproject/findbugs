@@ -19,14 +19,7 @@
 
 package edu.umd.cs.findbugs.detect;
 
-import java.util.Objects;
-
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantClass;
-import org.apache.bcel.classfile.ConstantMethodref;
-import org.apache.bcel.classfile.ConstantNameAndType;
-import org.apache.bcel.classfile.ConstantPool;
-import org.apache.bcel.classfile.ConstantUtf8;
+import java.util.Collections;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
@@ -35,7 +28,6 @@ import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.vbc.ValueBasedClassIdentifier;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
-import edu.umd.cs.findbugs.internalAnnotations.SlashedClassName;
 import edu.umd.cs.findbugs.util.ClassName;
 
 public class IdentityHashCodeOnValueBasedClass extends OpcodeStackDetector {
@@ -51,41 +43,9 @@ public class IdentityHashCodeOnValueBasedClass extends OpcodeStackDetector {
 
     @Override
     public void visitClassContext(ClassContext classContext) {
-        // to improve performance, only scan the whole class if 'System.identityHashCode' is called
-        // anywhere within it; look at the constant pool to find this out
-        if (constantPoolReferencesMethod(classContext.getJavaClass().getConstantPool(), IDENTITY_HASH_CODE)) {
+        if (hasInterestingMethod(classContext.getJavaClass().getConstantPool(), Collections.singleton(IDENTITY_HASH_CODE))) {
             super.visitClassContext(classContext);
         }
-    }
-
-    private static boolean constantPoolReferencesMethod(ConstantPool constantPool, MethodDescriptor methodDesc) {
-        Constant[] constants = constantPool.getConstantPool();
-        for (Constant constant : constants) {
-            if (constantDescribesMethod(constant, constants, methodDesc)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static boolean constantDescribesMethod(Constant constant, Constant[] constants, MethodDescriptor methodDesc) {
-        if (!(constant instanceof ConstantMethodref)) {
-            return false;
-        }
-        ConstantMethodref methodRef = (ConstantMethodref) constant;
-
-        ConstantClass clazz = (ConstantClass) constants[methodRef.getClassIndex()];
-        @SlashedClassName
-        String clazzName = ((ConstantUtf8) constants[clazz.getNameIndex()]).getBytes();
-        if (!Objects.equals(methodDesc.getSlashedClassName(), clazzName)) {
-            return false;
-        }
-
-        ConstantNameAndType nameAndSignature = (ConstantNameAndType) constants[methodRef.getNameAndTypeIndex()];
-        String methodName = ((ConstantUtf8) constants[nameAndSignature.getNameIndex()]).getBytes();
-        String methodSignature = ((ConstantUtf8) constants[nameAndSignature.getSignatureIndex()]).getBytes();
-
-        return Objects.equals(methodDesc.getName(), methodName) && Objects.equals(methodDesc.getSignature(), methodSignature);
     }
 
     @Override
