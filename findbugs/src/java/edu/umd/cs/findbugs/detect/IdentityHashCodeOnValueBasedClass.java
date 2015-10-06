@@ -113,7 +113,7 @@ public class IdentityHashCodeOnValueBasedClass extends OpcodeStackDetector {
 
         Item callArgumentStackItem = getStack().getStackItem(0);
         String callArgumentSignature = callArgumentStackItem.getSignature();
-        String callArgumentClassName = ClassName.extractClassName(callArgumentSignature);
+        String callArgumentClassName = ClassName.fromFieldSignature(callArgumentSignature);
 
         return ValueBasedClassIdentifier.isValueBasedClass(callArgumentClassName);
     }

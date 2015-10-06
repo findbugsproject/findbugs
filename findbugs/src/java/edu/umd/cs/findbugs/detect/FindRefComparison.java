@@ -31,6 +31,7 @@ import java.util.StringTokenizer;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.bcel.Constants;
 import org.apache.bcel.classfile.Field;
@@ -971,14 +972,16 @@ public class FindRefComparison implements Detector, ExtendedTypes {
             }
 
             String lhsSignature = lhsType.getSignature();
+            @Nullable
             @SlashedClassName
-            String lhsSlashed = ClassName.extractClassName(lhsSignature);
+            String lhsSlashed = ClassName.fromFieldSignature(lhsSignature);
             @DottedClassName
             String lhsDotted = SignatureConverter.convert(lhsSignature);
 
             String rhsSignature = rhsType.getSignature();
+            @Nullable
             @SlashedClassName
-            String rhsSlashed = ClassName.extractClassName(rhsSignature);
+            String rhsSlashed = ClassName.fromFieldSignature(rhsSignature);
             @DottedClassName
             String rhsDotted = SignatureConverter.convert(rhsSignature);
 

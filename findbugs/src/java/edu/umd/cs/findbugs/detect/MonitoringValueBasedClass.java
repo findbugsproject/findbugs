@@ -19,6 +19,9 @@
 
 package edu.umd.cs.findbugs.detect;
 
+import javax.annotation.CheckForNull;
+import javax.annotation.Nullable;
+
 import org.apache.commons.lang.ArrayUtils;
 
 import edu.umd.cs.findbugs.BugInstance;
@@ -65,13 +68,11 @@ public class MonitoringValueBasedClass extends OpcodeStackDetector {
         // check the argument to 'MONITORENTER', which is the last item on the stack
         Item lastStackItem = getStack().getStackItem(0);
         String classSignature = lastStackItem.getSignature();
-        String slashedClassName = ClassName.extractClassName(classSignature);
-        boolean onValueBasedClass = ValueBasedClassIdentifier.isValueBasedClass(slashedClassName);
-        if (!onValueBasedClass) {
-            return false;
-        }
+        @Nullable
+        @SlashedClassName
+        String className = ClassName.fromFieldSignature(classSignature);
 
-        return true;
+        return ValueBasedClassIdentifier.isValueBasedClass(className);
     }
 
     private boolean isCallToWaitOnValueBasedClass(int seen) {
@@ -95,15 +96,18 @@ public class MonitoringValueBasedClass extends OpcodeStackDetector {
             return false;
         }
 
-        return ValueBasedClassIdentifier.isValueBasedClass(getCallTargetName());
+        @Nullable
+        @SlashedClassName
+        String slashedClassName = getCallTargetName();
+        return ValueBasedClassIdentifier.isValueBasedClass(slashedClassName);
     }
 
-    private @SlashedClassName String getCallTargetName() {
+    private @SlashedClassName @CheckForNull String getCallTargetName() {
         String calledMethod = getMethodDescriptorOperand().getSignature();
         int nrOfArguments = getNumberArguments(calledMethod);
         Item callTargetStackItem = getStack().getStackItem(nrOfArguments);
         String callTargetSignature = callTargetStackItem.getSignature();
-        return ClassName.extractClassName(callTargetSignature);
+        return ClassName.fromFieldSignature(callTargetSignature);
     }
 
 }

@@ -21,6 +21,8 @@ package edu.umd.cs.findbugs.ba.vbc;
 
 import java.util.HashSet;
 
+import javax.annotation.Nullable;
+
 import edu.umd.cs.findbugs.annotations.ValueBased;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.XClass;
@@ -95,10 +97,14 @@ public class ValueBasedClassIdentifier {
      * </ul>
      *
      * @param className
-     *            the fully qualified class name in "slashed form" without descriptor and semicolon, e.g. "java/util/Optional"
-     * @return
+     *            the fully qualified class name in "slashed form" without descriptor and semicolon, e.g. "java/util/Optional";
+     *            may be null
+     * @return whether the class is value based; false if {@code className} is null
      */
-    public static boolean isValueBasedClass(@SlashedClassName String className) {
+    public static boolean isValueBasedClass(@Nullable @SlashedClassName String className) {
+        if (className == null) {
+            return false;
+        }
         return isJdkValueBasedClass(className) || isOtherValueBasedClass(className) || isAnnotatedAsValueBasedClass(className);
     }
 

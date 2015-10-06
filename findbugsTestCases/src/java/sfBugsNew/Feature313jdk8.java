@@ -3,6 +3,7 @@ package sfBugsNew;
 import java.io.IOException;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,6 +30,16 @@ public class Feature313jdk8 {
             System.out.println("Reference comparison of 'Optional' yields: " + same);
         }
 
+        // it would be great if this worked, but 'optionals.get(0)' gets recognized as string
+        // @ExpectWarning("VBC_REF_COMPARISON")
+        public void referenceComparisonOfOptionalFromList() {
+            List<Optional<?>> optionals = new ArrayList<>();
+            Object object = "Bar";
+
+            boolean same = optionals.get(0) == object;
+            System.out.println("Reference comparison of 'Optional' yields: " + same);
+        }
+
         @ExpectWarning("VBC_REF_COMPARISON")
         public void referenceComparisonOfMyValueBasedClass() {
             MyValueBasedClass my = new MyValueBasedClass();
@@ -36,6 +47,15 @@ public class Feature313jdk8 {
 
             boolean same = my == object;
             System.out.println("Reference comparison of 'MyValueBasedClass' yields: " + same);
+        }
+
+        @NoWarning("VBC_REF_COMPARISON")
+        public void referenceComparisonOfLocalDateArray() {
+            LocalDate[] dates = new LocalDate[0];
+            Object object = new LocalDate[0];
+
+            boolean same = dates == object;
+            System.out.println("Reference comparison of 'List' yields: " + same);
         }
 
         @NoWarning("VBC_REF_COMPARISON")
@@ -61,6 +81,13 @@ public class Feature313jdk8 {
         }
 
         @ExpectWarning("VBC_MO_LOCK")
+        public void lockOnOptionalFromList(List<Optional<?>> locks) {
+            synchronized (locks.get(0)) {
+                System.out.println("Locking on Optional.");
+            }
+        }
+
+        @ExpectWarning("VBC_MO_LOCK")
         public void lockOnMyValueBasedClass(MyValueBasedClass lock) {
             synchronized (lock) {
                 System.out.println("Locking on MyValueBasedClass.");
@@ -71,6 +98,13 @@ public class Feature313jdk8 {
         public void lockOnObject(Object lock) {
             synchronized (lock) {
                 System.out.println("Locking on MyValueBasedClass.");
+            }
+        }
+
+        @NoWarning("VBC_MO_LOCK")
+        public void lockOnLocalDateArray(LocalDate[] lock) {
+            synchronized (lock) {
+                System.out.println("Locking on LocalDate array.");
             }
         }
 
@@ -96,6 +130,12 @@ public class Feature313jdk8 {
 
         @NoWarning("VBC_MO_WAIT")
         public void waitOnObject(Object lock) throws InterruptedException {
+            while (true)
+                lock.wait();
+        }
+
+        @NoWarning("VBC_MO_WAIT")
+        public void waitOnLocalDateArray(LocalDate[] lock) throws InterruptedException {
             while (true)
                 lock.wait();
         }
@@ -132,6 +172,12 @@ public class Feature313jdk8 {
         }
 
         @NoWarning("VBC_MO_NOTIFY")
+        public void notifyOnLocalDateArray(LocalDate[] lock) throws InterruptedException {
+            while (true)
+                lock.notify();
+        }
+
+        @NoWarning("VBC_MO_NOTIFY")
         public void noRealNotify(MyValueBasedClass lock) throws InterruptedException {
             while (true)
                 lock.notify("This method is not inherited from object, so no 'real notify'.");
@@ -160,6 +206,12 @@ public class Feature313jdk8 {
         public void notifyAllOnObject(Object lock) throws InterruptedException {
             while (true)
                 lock.notifyAll();
+        }
+
+        @NoWarning("VBC_MO_NOTIFY")
+        public void notifyAllOnLocalDateArray(LocalDate[] lock) throws InterruptedException {
+            while (true)
+                lock.notify();
         }
 
         @NoWarning("VBC_MO_NOTIFY")
@@ -206,8 +258,19 @@ public class Feature313jdk8 {
             System.identityHashCode(argument);
         }
 
+        // it would be great if this worked, but 'optionals.get(0)' gets recognized as string
+        // @ExpectWarning("VBC_IDENTITY_HASHCODE")
+        public void callIdentityHashCodeWithOptional(List<Optional<?>> arguments) {
+            System.identityHashCode(arguments.get(0));
+        }
+
         @ExpectWarning("VBC_IDENTITY_HASHCODE")
         public void callIdentityHashCodeWithValueBasedClass(MyValueBasedClass argument) {
+            System.identityHashCode(argument);
+        }
+
+        @NoWarning("VBC_IDENTITY_HASHCODE")
+        public void callIdentityHashCodeWithLocalDateArray(LocalDate[] argument) {
             System.identityHashCode(argument);
         }
 
