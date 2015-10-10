@@ -76,9 +76,12 @@ ant
 - 16) You can now watch ANT working in the console view. After a few
     seconds, the console view should print "BUILD SUCCESSFUL".
 - 17) Right click on [findBugsEclipsePlugin] to refresh the Eclipse workspace
-    a) In the [findBugsEclipsePlugin]/bin_build folder you will find the file
-    edu.umd.cs.findbugs.plugin.eclipse_<version>.<date>.zip which contains zipped plugin.
-    b) In the [findBugsEclipsePlugin]/dist folder you will find the contents of the
+ - a) In the [findBugsEclipsePlugin]/bin_build folder you will find the file
+
+    ```edu.umd.cs.findbugs.plugin.eclipse_<version>.<date>.zip```
+
+    which contains zipped plugin.
+ - b) In the [findBugsEclipsePlugin]/dist folder you will find the contents of the
     FindBugs Eclipse plugin directory as it should be installed in Eclipse.
 
 - 18) For information on how to install the compiled plug-ins into Eclipse, please refer
