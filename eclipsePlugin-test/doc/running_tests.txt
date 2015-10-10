@@ -1,6 +1,6 @@
 Here is how to run the FindBugs Eclipse Plugin Tests:
 
-Follow instructions in ../eclipsePlugin/doc/building_findbugsplugin.txt
+Follow instructions in ../eclipsePlugin/doc/building_findbugsplugin.md
 
 Go to the Run, Run Configurations... menu and use the 'All FindBugs Plugin
 Tests' launcher to run tests.

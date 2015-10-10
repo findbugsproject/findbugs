@@ -81,6 +81,7 @@
     <patternset id="doc.src.pats">
         <include name="**/*.html"/>
         <include name="**/*.txt"/>
+        <include name="**/*.md"/>
         <include name="**/*.xml"/>
         <include name="**/*.xsl"/>
     </patternset>
@@ -89,6 +90,7 @@
         <include name="**/*.png"/>
         <include name="**/*.css"/>
         <include name="**/*.txt"/>
+        <include name="**/*.md"/>
         <include name="**/*.pdf"/>
     </patternset>
 
@@ -982,6 +984,7 @@
                     <fileset dir="${plugin.dir}">
                         <include name="*.properties"/>
                         <include name="*.txt"/>
+                        <include name="*.md"/>
                     </fileset>
             </jar>
         <input message="Enter keystore password:"  addproperty="password"/>
