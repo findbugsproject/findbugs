@@ -756,8 +756,12 @@ public class FindBugsTask extends AbstractFindBugsTask {
                 String auxClasspathString = auxClasspath.toString();
                 if (!auxClasspathString.isEmpty()) {
                     if (auxClasspathString.length() > 100) {
-                        addArg("-auxclasspathFromInput");
-                        setInputString(auxClasspathString);
+                        addArg("-parseStdinAsOptions");
+
+                        appendToInputString("-auxclasspath");
+                        appendToInputString('\n');
+                        appendToInputString(auxClasspathString);
+                        appendToInputString('\n');
                     } else {
                         addArg("-auxclasspath");
                         addArg(auxClasspathString);
@@ -768,8 +772,20 @@ public class FindBugsTask extends AbstractFindBugsTask {
             }
         }
         if (sourcePath != null) {
-            addArg("-sourcepath");
-            addArg(sourcePath.toString());
+            String sourcePathValue = sourcePath.toString();
+            if (!sourcePathValue.isEmpty()) {
+                if (sourcePathValue.length() > 100) {
+                    addArg("-parseStdinAsOptions");
+
+                    appendToInputString("-sourcepath");
+                    appendToInputString('\n');
+                    appendToInputString(sourcePathValue);
+                    appendToInputString('\n');
+                } else {
+                    addArg("-sourcepath");
+                    addArg(sourcePathValue);
+                }
+            }
         }
         if (outputFileName != null) {
             addArg("-outputFile");

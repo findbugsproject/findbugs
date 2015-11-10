@@ -95,6 +95,8 @@ public abstract class AbstractFindBugsTask extends Task {
 
     public String execResultProperty = "edu.umd.cs.findbugs.anttask.AbstractFindBugsTask" + "." + RESULT_PROPERTY_SUFFIX;
 
+    private StringBuffer inputStringBuffer = null;
+
     /**
      * Constructor.
      */
@@ -353,8 +355,21 @@ public abstract class AbstractFindBugsTask extends Task {
      * Sets the given string to be piped to standard input of the FindBugs JVM
      * upon launching.
      */
+    protected void appendToInputString(String input) {
+        if (null == inputStringBuffer) {
+            inputStringBuffer = new StringBuffer();
+        }
+        inputStringBuffer.append(input);
+    }
+    protected void appendToInputString(char input) {
+        if (null == inputStringBuffer) {
+            inputStringBuffer = new StringBuffer();
+        }
+        inputStringBuffer.append(input);
+    }
     protected void setInputString(String input) {
-        findbugsEngine.setInputString(input);
+        inputStringBuffer = new StringBuffer();
+        inputStringBuffer.append(input);
     }
 
     /**
@@ -369,6 +384,10 @@ public abstract class AbstractFindBugsTask extends Task {
         configureFindbugsEngine();
 
         beforeExecuteJavaProcess();
+
+        if (null != inputStringBuffer) {
+            findbugsEngine.setInputString(inputStringBuffer.toString());
+        }
 
         if (getDebug()) {
             log(getFindbugsEngine().getCommandLine().describeCommand());
