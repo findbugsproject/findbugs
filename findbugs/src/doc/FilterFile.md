@@ -1,48 +1,45 @@
-=============
-How it works:
-=============
+# Filter file
 
-A filter file is an XML file with a top-level "FindBugsFilter" element
-which has some number of "Match" elements as children.  Each Match
+## How it works
+
+A filter file is an XML file with a top-level `FindBugsFilter` element
+which has some number of `Match` elements as children. Each Match
 element represents a predicate which is applied to generated bug instances.
-Usually, a filter will be used to exclude bug instances.  For example:
-
-  findbugs -textui -exclude myExcludeFilter.xml myApp.jar
+Usually, a filter will be used to exclude bug instances. For example:
+```sh
+findbugs -textui -exclude myExcludeFilter.xml myApp.jar
+```
 
 However, a filter could also be used to select bug instances to specifically
 report:
+```sh
+findbugs -textui -include myIncludeFilter.xml myApp.jar
+```
 
-  findbugs -textui -include myIncludeFilter.xml myApp.jar
-
-Match has "class" and "classregex" attributes specifying what class or classes
+Match has `class` and `classregex` attributes specifying what class or classes
 the predicate applies to.
 
 Match contains children, which are conjuncts of the predicate.
 (I.e., each of the children must be true for the predicate to be true.)
 
-=======================
-Types of Match clauses:
-=======================
+## Types of Match clauses
+   `<BugCode>` specifies abbreviations of bugs.
+   The `name` attribute is a comma-seperated list of abbreviations.
 
-   <BugCode> specifies abbreviations of bugs.
-   The "name" attribute is a comma-seperated list of abbreviations.
-
-   <Method> specifies a method.  The "name" attribute is the name
-   of the method.  The "params" attribute is a comma separated list
-   of the types of the method's parameters.  The "returns" attribute is
-   the method's return type.  In "params" and "returns", class names
-   must be fully qualified.  (E.g., "java.lang.String" instead of just
-   "String".)  Note that "params" and "returns" are optional; you can
-   just specify "name", and the clause will match all methods with
-   that name.  However, if you specify either "params" or "returns",
+   `<Method>` specifies a method.  The `name` attribute is the name
+   of the method.  The `params` attribute is a comma separated list
+   of the types of the method's parameters.  The `returns` attribute is
+   the method's return type.  In `params` and `returns`, class names
+   must be fully qualified.  (E.g., `java.lang.String` instead of just
+   `String`.)  Note that `params` and `returns` are optional; you can
+   just specify `name`, and the clause will match all methods with
+   that name.  However, if you specify either `params` or `returns`,
    you must specify both of them.
 
-   <Or> combines Match clauses as disjuncts.  I.e., you can put two
-   "Method" elements in an Or clause in order match either method.
+   `<Or>` combines Match clauses as disjuncts.  I.e., you can put two
+   `Method` elements in an Or clause in order match either method.
 
-========
-Caveats:
-========
+## Caveats
 
 Match clauses can only match information that is actually contained in the
 bug instances.  Every bug instance has a class, so in general, excluding
@@ -53,9 +50,9 @@ bugs report both the class containing the method where the dropped exception
 happens, and the class which represents the type of the dropped exception.
 Only the FIRST (primary) class is matched against Match clauses.
 So, for example, if you want to suppress IC (initialization circularity)
-reports for classes "com.foobar.A" and "com.foobar.B", you would use
+reports for classes `com.foobar.A` and `com.foobar.B`, you would use
 two Match clauses:
-
+```xml
    <Match class="com.foobar.A">
       <BugCode name="IC" />
    </Match>
@@ -63,32 +60,35 @@ two Match clauses:
    <Match class="com.foobar.B">
       <BugCode name="IC" />
    </Match>
+```
 
 Many kinds of bugs report what method they occur in.  For those bug instances,
 you can put Method clauses in the Match element and they should work
 as expected.
 
-=========
-Examples:
-=========
+## Examples
 
   1. Match all bug reports for a class.
-
+ ```xml
      <Match class="com.foobar.MyClass" />
+ ```
 
   2. Match certain tests from a class.
+  ```xml
      <Match class="com.foobar.MyClass">
        <BugCode name="DE,UrF,SIC" />
      </Match>
+  ```
 
   3. Match certain tests from all classes.
-
+  ```xml
      <Match classregex=".*" >
        <BugCode name="DE,UrF,SIC" />
      </Match>
+  ```
 
   4. Match bug types from specified methods of a class.
-
+  ```xml
      <Match class="com.foobar.MyClass">
        <Or>
          <Method name="frob" params="int,java.lang.String" returns="void" />
@@ -96,11 +96,10 @@ Examples:
        </Or>
        <BugCode name="DC" />
      </Match>
+  ```
 
-=================
-Complete Example:
-=================
-
+## Complete Example
+```xml
 <FindBugsFilter>
      <Match class="com.foobar.ClassNotToBeAnalyzed" />
 
@@ -123,3 +122,4 @@ Complete Example:
        <BugCode name="DC" />
      </Match>
 </FindBugsFilter>
+```

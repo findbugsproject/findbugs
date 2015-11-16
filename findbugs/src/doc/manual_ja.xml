@@ -1155,7 +1155,7 @@ Phil Crosby 氏 と Andrey Loskutov 氏は、プラグインの重要な改良�
 <para>
 Eclipse プラグインでは、 独自の &FindBugs; ディテクタを追加することができます。
 (詳しく知りたい方は、
-<ulink url="https://github.com/findbugsproject/findbugs/blob/master/findbugs/src/doc/AddingDetectors.txt">AddingDetectors.txt</ulink>
+<ulink url="https://github.com/findbugsproject/findbugs/blob/master/findbugs/src/doc/AddingDetectors.md">AddingDetectors.md</ulink>
 もご覧ください)。
 独自のプラグインを Eclipse に追加するには以下の2通りの方法があります。
 </para>
@@ -1197,7 +1197,7 @@ Eclipse プラグインでは、 独自の &FindBugs; ディテクタを追加�
     前提条件は現在使用しているディテクタパッケージを Eclipse プラグインに変換しておくことです。
     これはサードパーティのディテクタパッケージも同様です。
     もうひとつの主な差別化要因は、 FindBugs のデフォルト実行時クラスパス に当該サードパーティライブラリーを追加することが必要なことです(くわしくは
-    <ulink url="https://github.com/findbugsproject/findbugs/blob/master/findbugs/src/doc/AddingDetectors.txt">AddingDetectors.txt</ulink>
+    <ulink url="https://github.com/findbugsproject/findbugs/blob/master/findbugs/src/doc/AddingDetectors.md">AddingDetectors.md</ulink>
     をご覧ください)。
     </para>
   </listitem>

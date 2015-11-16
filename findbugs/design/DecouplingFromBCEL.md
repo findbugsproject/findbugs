@@ -1,44 +1,38 @@
-Decoupling FindBugs from BCEL
+# Decoupling FindBugs from BCEL
 
-Document history:
-DHH 7/3/2006: Created
+## Document history:
+ - DHH 7/3/2006: Created
+ - B. Djoudi 10/10/2015: Converted to markdown file
 
-Goals:
+## Goals
 
-- eliminate tight coupling between FindBugs and BCEL
+- Eliminate tight coupling between FindBugs and BCEL
+- Allow other bytecode frameworks (such as ASM and maybe Soot) to be used by detectors
 
-- Allow other bytecode frameworks (such as ASM and maybe Soot) to
-  be used by detectors
+ `***` Detectors could even do their own scanning on the raw classfile data,
+ without any bytecode framework (on either stream or byte array)
 
-   *** Detectors could even do their own scanning on the raw classfile
-       data, without any bytecode framework
-       (on either stream or byte array)
+- Allow visitor-based detectors to use information from dataflow analysis framework.
 
-- Allow visitor-based detectors to use information from
-  dataflow analysis framework.
+## Issues
 
-
-Issues:
-
-- We are reliant on BCEL's Constants and Visitor classes
-
+- We are reliant on BCEL's Constants and Visitor classes.
 - The bytecode analysis (ba) package makes heavy use of
   BCEL tree-based reprentation (generic package) and also
   the BCEL Repository and type classes (both of which have
-  significant shortcomings).  The detectors which use
+  significant shortcomings). The detectors which use
   the bytecode analysis package are also tightly coupled
   to these classes.
 
-
-Strategy:
+## Strategy
 
 - Change the basic visitation strategy to remove dependence
   on the BCEL Repository and JavaClass classes.
 
-  *** We should develop our own CodeBase and Repository abstractions
+  `***` We should develop our own CodeBase and Repository abstractions
 
 - The visitor classes and detectors will probably be the easiest
-  to convert.  We can develop our own Visitor/DismantleBytecode
+  to convert.  We can develop our own `Visitor/DismantleBytecode`
   interfaces, which can be concretely implemented using ASM,
   (or any other bytecode framework).  Obviously the detectors
   should not be aware which bytecode framework is being used.
@@ -55,13 +49,13 @@ Strategy:
   information is computed.  Clients (Detectors) should only be coupled
   to the classes representing WHAT is computed.
 
-Notes:
+## Notes
 
 - We should standardize on VM (slashed) type descriptors in all places
   where a JVM type is being referred to.  Dotted classnames should
   go away except when displaying such types to the user.
-  
-  *** This is how ASM represents types -> efficient
 
-  *** We should probably develop a richer type abstraction eventually
-      for the dataflow-based detectors, etc.
+  `***` This is how ASM represents types -> efficient
+
+  `***` We should probably develop a richer type abstraction eventually
+  for the dataflow-based detectors, etc.

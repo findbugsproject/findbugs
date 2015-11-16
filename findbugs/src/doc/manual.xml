@@ -1814,7 +1814,7 @@ Options you may choose include:
 <title>Extending the Eclipse Plugin (since 2.0.0)</title>
 <para>
 Eclipse plugin supports contribution of custom &FindBugs; detectors (see also
-<ulink url="https://github.com/findbugsproject/findbugs/blob/master/findbugs/src/doc/AddingDetectors.txt">AddingDetectors.txt</ulink>
+<ulink url="https://github.com/findbugsproject/findbugs/blob/master/findbugs/src/doc/AddingDetectors.md">AddingDetectors.md</ulink>
 for more information). There are two ways to contribute custom plugins to the Eclipse:
 </para>
 <itemizedlist>
@@ -1863,7 +1863,7 @@ for more information). There are two ways to contribute custom plugins to the Ec
     Eclipse plugin. You can do this even for third-party detector packages.
     Another major differentiator is the ability to extend the default FindBugs
     classpath at runtime with required third party libraries (see
-    <ulink url="https://github.com/findbugsproject/findbugs/blob/master/findbugs/src/doc/AddingDetectors.txt">AddingDetectors.txt</ulink>
+    <ulink url="https://github.com/findbugsproject/findbugs/blob/master/findbugs/src/doc/AddingDetectors.md">AddingDetectors.md</ulink>
     for more information).
     </para>
   </listitem>
