@@ -33,7 +33,8 @@ public class MutexSchedulingRule implements ISchedulingRule {
 
     /**
      * Guesses optimal number of concurrently executing jobs on current system /
-     * JVM.
+     * JVM. Since analysis jobs are CPU, memory and sometimes IO intensive, we
+     * must take into consideration more than just number of cores.
      *
      * @return optimal number of concurrently executing jobs on current system /
      *         JVM.
@@ -65,7 +66,23 @@ public class MutexSchedulingRule implements ISchedulingRule {
          * done quickly anyway. For bigger projects, analysis will take longer
          * time, so we mustn't make IDE unusable during that.
          */
-        return cores - 1;
+        int limit = cores - 1;
+
+        /*
+         * Guesstimate amount of memory each analysis consumes. Imposes limit on
+         * concurrently running analysis. Of course, this depends on active
+         * detectors, analysis effort, code under analysis and perhaps other
+         * factors -- but those cannot be taken into consideration here.
+         */
+        final long memoryUsagePerAnalysis = 756 * 1024 * 1024;
+
+        long memoryMax = Runtime.getRuntime().maxMemory();
+        long memoryLimit = memoryMax / memoryUsagePerAnalysis;
+        if (memoryLimit > 0 && memoryLimit < Integer.MAX_VALUE) {
+            limit = Math.min(limit, (int) memoryLimit);
+        }
+
+        return limit;
     }
 
     // enable multicore
