@@ -33,7 +33,6 @@ import org.apache.bcel.classfile.ParameterAnnotations;
 import org.apache.bcel.classfile.SimpleElementValue;
 
 import edu.umd.cs.findbugs.SystemProperties;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 import edu.umd.cs.findbugs.util.ClassName;
 
@@ -82,7 +81,6 @@ public class AnnotationVisitor extends PreorderVisitor {
     }
 
     @CheckForNull
-    @SuppressFBWarnings("PZLA_PREFER_ZERO_LENGTH_ARRAYS")
     protected static String[] getAnnotationParameterAsStringArray(Map<String, ElementValue> map, String parameter) {
         try {
             ElementValue e = map.get(parameter);

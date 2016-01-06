@@ -46,7 +46,6 @@ import org.apache.bcel.generic.MethodGen;
 import edu.umd.cs.findbugs.AnalysisLocal;
 import edu.umd.cs.findbugs.OpcodeStack.JumpInfo;
 import edu.umd.cs.findbugs.SystemProperties;
-import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.umd.cs.findbugs.ba.ca.CallListDataflow;
 import edu.umd.cs.findbugs.ba.constant.ConstantDataflow;
 import edu.umd.cs.findbugs.ba.deref.UnconditionalValueDerefDataflow;
@@ -550,7 +549,6 @@ public class ClassContext {
      *         code
      */
     @CheckForNull
-    @SuppressFBWarnings("PZLA_PREFER_ZERO_LENGTH_ARRAYS")
     public short[] getOffsetToOpcodeMap(Method method) {
         UnpackedCode unpackedCode = getMethodAnalysisNoException(UnpackedCode.class, method);
         return unpackedCode != null ? unpackedCode.getOffsetToBytecodeMap() : null;
