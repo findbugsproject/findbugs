@@ -791,10 +791,24 @@ public class FindBugsTask extends AbstractFindBugsTask {
             addArg(excludeFile.getPath());
         }
         if (excludePath != null) {
-            String[] result = excludePath.toString().split(java.io.File.pathSeparator);
-            for (int x = 0; x < result.length; x++) {
-                addArg("-exclude");
-                addArg(result[x]);
+            String excludePathValue = excludePath.toString();
+            if (!excludePathValue.isEmpty()) {
+                if (excludePathValue.length() > 100) {
+                    addArg("-parseStdinAsOptions");
+                    String[] result = excludePathValue.split(java.io.File.pathSeparator);
+                    for (int x = 0; x < result.length; x++) {
+                        appendToInputString("-exclude");
+                        appendToInputString('\n');
+                        appendToInputString(result[x]);
+                        appendToInputString('\n');
+                    }
+                } else {
+                    String[] result = excludePathValue.split(java.io.File.pathSeparator);
+                    for (int x = 0; x < result.length; x++) {
+                        addArg("-exclude");
+                        addArg(result[x]);
+                    }
+                }
             }
         }
         if (includeFile != null) {
@@ -802,10 +816,24 @@ public class FindBugsTask extends AbstractFindBugsTask {
             addArg(includeFile.getPath());
         }
         if (includePath != null) {
-            String[] result = includePath.toString().split(java.io.File.pathSeparator);
-            for (int x = 0; x < result.length; x++) {
-                addArg("-include");
-                addArg(result[x]);
+            String includePathValue = includePath.toString();
+            if (!includePathValue.isEmpty()) {
+                if (includePathValue.length() > 100) {
+                    addArg("-parseStdinAsOptions");
+                    String[] result = includePathValue.split(java.io.File.pathSeparator);
+                    for (int x = 0; x < result.length; x++) {
+                        appendToInputString("-include");
+                        appendToInputString('\n');
+                        appendToInputString(result[x]);
+                        appendToInputString('\n');
+                    }
+                } else {
+                    String[] result = includePathValue.split(java.io.File.pathSeparator);
+                    for (int x = 0; x < result.length; x++) {
+                        addArg("-include");
+                        addArg(result[x]);
+                    }
+                }
             }
         }
         if (visitors != null) {
