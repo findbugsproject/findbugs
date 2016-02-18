@@ -276,8 +276,8 @@ public class OpcodeStack implements Constants2 {
         public static @SpecialKind
         int defineNewSpecialKind(String name) {
             specialKindNames.put(nextSpecialKind, name);
-            @SpecialKind int result = asSpecialKind( nextSpecialKind+1);
-            nextSpecialKind = result;
+            @SpecialKind int result = nextSpecialKind;
+            nextSpecialKind = asSpecialKind(nextSpecialKind + 1);
             return result;
         }
 
