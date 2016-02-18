@@ -31,6 +31,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
@@ -269,15 +272,14 @@ public class OpcodeStack implements Constants2 {
         int TYPE_ONLY = 24;
 
         @edu.umd.cs.findbugs.internalAnnotations.StaticConstant
-        public static final HashMap<Integer, String> specialKindNames = new HashMap<Integer, String>();
+        public static final ConcurrentMap<Integer, String> specialKindNames = new ConcurrentHashMap<Integer, String>();
 
-        private static @SpecialKind int nextSpecialKind = asSpecialKind(TYPE_ONLY + 1);
+        private static AtomicInteger nextSpecialKind = new AtomicInteger(TYPE_ONLY + 1);
 
         public static @SpecialKind
         int defineNewSpecialKind(String name) {
-            specialKindNames.put(nextSpecialKind, name);
-            @SpecialKind int result = nextSpecialKind;
-            nextSpecialKind = asSpecialKind(nextSpecialKind + 1);
+            @SpecialKind int result = asSpecialKind(nextSpecialKind.getAndIncrement());
+            specialKindNames.put(Integer.valueOf(result), name);
             return result;
         }
 
