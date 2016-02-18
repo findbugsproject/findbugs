@@ -186,6 +186,9 @@ public class OpcodeStack implements Constants2 {
 
     public static class Item {
 
+        /**
+         * A type qualifier to mark {@code int} value as SpecialKind type.
+         */
         @Documented
         @TypeQualifier(applicableTo = Integer.class)
         @Retention(RetentionPolicy.RUNTIME)
@@ -276,6 +279,13 @@ public class OpcodeStack implements Constants2 {
 
         private static AtomicInteger nextSpecialKind = new AtomicInteger(TYPE_ONLY + 1);
 
+        /**
+         * Define new SpecialKind with given name, and return its {@code int} value
+         * @param name
+         *      the name of new SpecialKind, can be null
+         * @return
+         *      {@code int} value which expresses new SpecialKind
+         */
         public static @SpecialKind
         int defineNewSpecialKind(String name) {
             @SpecialKind int result = asSpecialKind(nextSpecialKind.getAndIncrement());
