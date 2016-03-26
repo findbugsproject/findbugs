@@ -34,12 +34,8 @@ import java.lang.annotation.Target;
  * at any time, at the beginning of the overriding method, or at the end of the
  * overriding method.
  *
- * @see edu.umd.cs.findbugs.annotations.When
- *
- * @deprecated - Use {@link javax.annotation.OverridingMethodsMustInvokeSuper} instead
  **/
 @Documented
-@Deprecated
 @Target({ ElementType.METHOD })
 @Retention(RetentionPolicy.CLASS)
 public @interface OverrideMustInvoke {

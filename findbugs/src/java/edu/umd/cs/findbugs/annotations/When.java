@@ -22,7 +22,6 @@ package edu.umd.cs.findbugs.annotations;
 /**
  * @author pugh
  */
-@Deprecated
 public enum When {
     FIRST, ANYTIME, LAST
 
