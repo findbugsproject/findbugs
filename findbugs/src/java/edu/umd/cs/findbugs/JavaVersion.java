@@ -26,7 +26,10 @@ import java.util.regex.Pattern;
  * Support for finding out what version of Java we're running on.
  */
 public class JavaVersion {
-    private static final Pattern PATTERN = Pattern.compile("^(\\d+)\\.(\\d+)(\\..*)?$");
+
+    private static final String MAJMIN   = "([1-9][0-9]*(?:(?:\\.0)|(?:\\.[1-9][0-9]*))?)";
+    private static final String REST     = "([_\\-a-zA-Z0-9\\.\\+]*)";
+    private static final Pattern PATTERN = Pattern.compile("^" + MAJMIN + REST + "$");
 
     private final int major;
 
@@ -68,10 +71,11 @@ public class JavaVersion {
             throw new JavaVersionException("Could not parse Java version string: " + versionString);
         }
         try {
-            major = Integer.parseInt(matcher.group(1));
-            minor = Integer.parseInt(matcher.group(2));
-            if (matcher.group(3) != null) {
-                rest = matcher.group(3);
+            String[] vnum = matcher.group(1).split("\\.");
+            major = Integer.parseInt(vnum[0]);
+            minor = Integer.parseInt(vnum.length > 1 ? vnum[1] : "0");
+            if (matcher.group(2) != null) {
+                rest = matcher.group(2);
             } else {
                 rest = "";
             }
