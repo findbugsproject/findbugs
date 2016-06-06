@@ -50,8 +50,8 @@ import org.apache.commons.bcel6.classfile.LocalVariable;
 import org.apache.commons.bcel6.classfile.LocalVariableTable;
 import org.apache.commons.bcel6.classfile.Method;
 import org.apache.commons.bcel6.classfile.ParameterAnnotations;
-import org.apache.commons.bcel6.classfile.StackMapTable;
-import org.apache.commons.bcel6.classfile.StackMapTableEntry;
+import org.apache.commons.bcel6.classfile.StackMap;
+import org.apache.commons.bcel6.classfile.StackMapEntry;
 
 import edu.umd.cs.findbugs.FindBugs;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
@@ -825,11 +825,11 @@ public class PreorderVisitor extends BetterVisitor implements Constants2 {
      * (non-Javadoc)
      *
      * @see
-     * org.apache.commons.bcel6.classfile.Visitor#visitStackMapTable(org.apache.commons.bcel6.
-     * classfile.StackMapTable)
+     * org.apache.commons.bcel6.classfile.Visitor#visitStackMap(org.apache.commons.bcel6.
+     * classfile.StackMap)
      */
     @Override
-    public void visitStackMapTable(StackMapTable arg0) {
+    public void visitStackMap(StackMap arg0) {
         // TODO Auto-generated method stub
 
     }
@@ -838,11 +838,11 @@ public class PreorderVisitor extends BetterVisitor implements Constants2 {
      * (non-Javadoc)
      *
      * @see
-     * org.apache.commons.bcel6.classfile.Visitor#visitStackMapTableEntry(org.apache.
-     * bcel.classfile.StackMapTableEntry)
+     * org.apache.commons.bcel6.classfile.Visitor#visitStackMapEntry(org.apache.
+     * bcel.classfile.StackMapEntry)
      */
     @Override
-    public void visitStackMapTableEntry(StackMapTableEntry arg0) {
+    public void visitStackMapEntry(StackMapEntry arg0) {
         // TODO Auto-generated method stub
 
     }
