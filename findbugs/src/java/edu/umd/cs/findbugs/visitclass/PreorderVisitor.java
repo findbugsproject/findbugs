@@ -29,12 +29,16 @@ import org.apache.commons.bcel6.classfile.AnnotationDefault;
 import org.apache.commons.bcel6.classfile.AnnotationEntry;
 import org.apache.commons.bcel6.classfile.Annotations;
 import org.apache.commons.bcel6.classfile.Attribute;
+import org.apache.commons.bcel6.classfile.BootstrapMethods;
 import org.apache.commons.bcel6.classfile.Code;
 import org.apache.commons.bcel6.classfile.CodeException;
 import org.apache.commons.bcel6.classfile.Constant;
 import org.apache.commons.bcel6.classfile.ConstantCP;
 import org.apache.commons.bcel6.classfile.ConstantClass;
 import org.apache.commons.bcel6.classfile.ConstantInterfaceMethodref;
+import org.apache.commons.bcel6.classfile.ConstantInvokeDynamic;
+import org.apache.commons.bcel6.classfile.ConstantMethodHandle;
+import org.apache.commons.bcel6.classfile.ConstantMethodType;
 import org.apache.commons.bcel6.classfile.ConstantMethodref;
 import org.apache.commons.bcel6.classfile.ConstantNameAndType;
 import org.apache.commons.bcel6.classfile.ConstantPool;
@@ -49,6 +53,8 @@ import org.apache.commons.bcel6.classfile.LineNumberTable;
 import org.apache.commons.bcel6.classfile.LocalVariable;
 import org.apache.commons.bcel6.classfile.LocalVariableTable;
 import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.classfile.MethodParameters;
+import org.apache.commons.bcel6.classfile.ParameterAnnotationEntry;
 import org.apache.commons.bcel6.classfile.ParameterAnnotations;
 import org.apache.commons.bcel6.classfile.StackMap;
 import org.apache.commons.bcel6.classfile.StackMapEntry;
@@ -843,6 +849,42 @@ public class PreorderVisitor extends BetterVisitor implements Constants2 {
      */
     @Override
     public void visitStackMapEntry(StackMapEntry arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void visitBootstrapMethods(BootstrapMethods arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void visitConstantInvokeDynamic(ConstantInvokeDynamic arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void visitConstantMethodHandle(ConstantMethodHandle arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void visitConstantMethodType(ConstantMethodType arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void visitMethodParameters(MethodParameters arg0) {
+        // TODO Auto-generated method stub
+
+    }
+
+    @Override
+    public void visitParameterAnnotationEntry(ParameterAnnotationEntry arg0) {
         // TODO Auto-generated method stub
 
     }
