@@ -44,12 +44,12 @@ public class Version {
     /**
      * Major version number.
      */
-    public static final int MAJOR = 3;
+    public static final int MAJOR = 4;
 
     /**
      * Minor version number.
      */
-    public static final int MINOR = 1;
+    public static final int MINOR = 0;
 
     /**
      * Patch level.
