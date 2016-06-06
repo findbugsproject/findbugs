@@ -24,7 +24,7 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.classfile.ElementValue;
+import org.apache.commons.bcel6.classfile.ElementValue;
 
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 

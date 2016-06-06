@@ -25,33 +25,33 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.regex.Pattern;
 
-import org.apache.bcel.classfile.AnnotationDefault;
-import org.apache.bcel.classfile.AnnotationEntry;
-import org.apache.bcel.classfile.Annotations;
-import org.apache.bcel.classfile.Attribute;
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.CodeException;
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantCP;
-import org.apache.bcel.classfile.ConstantClass;
-import org.apache.bcel.classfile.ConstantInterfaceMethodref;
-import org.apache.bcel.classfile.ConstantMethodref;
-import org.apache.bcel.classfile.ConstantNameAndType;
-import org.apache.bcel.classfile.ConstantPool;
-import org.apache.bcel.classfile.ConstantUtf8;
-import org.apache.bcel.classfile.EnclosingMethod;
-import org.apache.bcel.classfile.Field;
-import org.apache.bcel.classfile.InnerClass;
-import org.apache.bcel.classfile.InnerClasses;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.LineNumber;
-import org.apache.bcel.classfile.LineNumberTable;
-import org.apache.bcel.classfile.LocalVariable;
-import org.apache.bcel.classfile.LocalVariableTable;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.classfile.ParameterAnnotations;
-import org.apache.bcel.classfile.StackMapTable;
-import org.apache.bcel.classfile.StackMapTableEntry;
+import org.apache.commons.bcel6.classfile.AnnotationDefault;
+import org.apache.commons.bcel6.classfile.AnnotationEntry;
+import org.apache.commons.bcel6.classfile.Annotations;
+import org.apache.commons.bcel6.classfile.Attribute;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.CodeException;
+import org.apache.commons.bcel6.classfile.Constant;
+import org.apache.commons.bcel6.classfile.ConstantCP;
+import org.apache.commons.bcel6.classfile.ConstantClass;
+import org.apache.commons.bcel6.classfile.ConstantInterfaceMethodref;
+import org.apache.commons.bcel6.classfile.ConstantMethodref;
+import org.apache.commons.bcel6.classfile.ConstantNameAndType;
+import org.apache.commons.bcel6.classfile.ConstantPool;
+import org.apache.commons.bcel6.classfile.ConstantUtf8;
+import org.apache.commons.bcel6.classfile.EnclosingMethod;
+import org.apache.commons.bcel6.classfile.Field;
+import org.apache.commons.bcel6.classfile.InnerClass;
+import org.apache.commons.bcel6.classfile.InnerClasses;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.LineNumber;
+import org.apache.commons.bcel6.classfile.LineNumberTable;
+import org.apache.commons.bcel6.classfile.LocalVariable;
+import org.apache.commons.bcel6.classfile.LocalVariableTable;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.classfile.ParameterAnnotations;
+import org.apache.commons.bcel6.classfile.StackMapTable;
+import org.apache.commons.bcel6.classfile.StackMapTableEntry;
 
 import edu.umd.cs.findbugs.FindBugs;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
@@ -762,7 +762,7 @@ public class PreorderVisitor extends BetterVisitor implements Constants2 {
      * (non-Javadoc)
      *
      * @see
-     * org.apache.bcel.classfile.Visitor#visitAnnotation(org.apache.bcel.classfile
+     * org.apache.commons.bcel6.classfile.Visitor#visitAnnotation(org.apache.commons.bcel6.classfile
      * .Annotations)
      */
     @Override
@@ -775,7 +775,7 @@ public class PreorderVisitor extends BetterVisitor implements Constants2 {
      * (non-Javadoc)
      *
      * @see
-     * org.apache.bcel.classfile.Visitor#visitAnnotationDefault(org.apache.bcel
+     * org.apache.commons.bcel6.classfile.Visitor#visitAnnotationDefault(org.apache.commons.bcel6
      * .classfile.AnnotationDefault)
      */
     @Override
@@ -788,7 +788,7 @@ public class PreorderVisitor extends BetterVisitor implements Constants2 {
      * (non-Javadoc)
      *
      * @see
-     * org.apache.bcel.classfile.Visitor#visitAnnotationEntry(org.apache.bcel
+     * org.apache.commons.bcel6.classfile.Visitor#visitAnnotationEntry(org.apache.commons.bcel6
      * .classfile.AnnotationEntry)
      */
     @Override
@@ -801,7 +801,7 @@ public class PreorderVisitor extends BetterVisitor implements Constants2 {
      * (non-Javadoc)
      *
      * @see
-     * org.apache.bcel.classfile.Visitor#visitEnclosingMethod(org.apache.bcel
+     * org.apache.commons.bcel6.classfile.Visitor#visitEnclosingMethod(org.apache.commons.bcel6
      * .classfile.EnclosingMethod)
      */
     @Override
@@ -814,7 +814,7 @@ public class PreorderVisitor extends BetterVisitor implements Constants2 {
      * (non-Javadoc)
      *
      * @see
-     * org.apache.bcel.classfile.Visitor#visitParameterAnnotation(org.apache
+     * org.apache.commons.bcel6.classfile.Visitor#visitParameterAnnotation(org.apache
      * .bcel.classfile.ParameterAnnotations)
      */
     @Override
@@ -825,7 +825,7 @@ public class PreorderVisitor extends BetterVisitor implements Constants2 {
      * (non-Javadoc)
      *
      * @see
-     * org.apache.bcel.classfile.Visitor#visitStackMapTable(org.apache.bcel.
+     * org.apache.commons.bcel6.classfile.Visitor#visitStackMapTable(org.apache.commons.bcel6.
      * classfile.StackMapTable)
      */
     @Override
@@ -838,7 +838,7 @@ public class PreorderVisitor extends BetterVisitor implements Constants2 {
      * (non-Javadoc)
      *
      * @see
-     * org.apache.bcel.classfile.Visitor#visitStackMapTableEntry(org.apache.
+     * org.apache.commons.bcel6.classfile.Visitor#visitStackMapTableEntry(org.apache.
      * bcel.classfile.StackMapTableEntry)
      */
     @Override

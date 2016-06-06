@@ -23,13 +23,13 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantClass;
-import org.apache.bcel.classfile.ConstantPool;
-import org.apache.bcel.classfile.Field;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.Constant;
+import org.apache.commons.bcel6.classfile.ConstantClass;
+import org.apache.commons.bcel6.classfile.ConstantPool;
+import org.apache.commons.bcel6.classfile.Field;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;
@@ -83,12 +83,12 @@ public class StaticCalendarDetector extends OpcodeStackDetector {
     private String currentClass;
 
     /**
-     * {@link org.apache.bcel.generic.ObjectType} for {@link java.util.Calendar}
+     * {@link org.apache.commons.bcel6.generic.ObjectType} for {@link java.util.Calendar}
      */
     private final ClassDescriptor calendarType = DescriptorFactory.createClassDescriptor(java.util.Calendar.class);
 
     /**
-     * {@link org.apache.bcel.generic.ObjectType} for
+     * {@link org.apache.commons.bcel6.generic.ObjectType} for
      * {@link java.text.DateFormat}
      */
     private final ClassDescriptor dateFormatType = DescriptorFactory.createClassDescriptor(java.text.DateFormat.class);
@@ -211,7 +211,7 @@ public class StaticCalendarDetector extends OpcodeStackDetector {
      * (non-Javadoc)
      *
      * @see
-     * edu.umd.cs.findbugs.visitclass.BetterVisitor#visitMethod(org.apache.bcel
+     * edu.umd.cs.findbugs.visitclass.BetterVisitor#visitMethod(org.apache.commons.bcel6
      * .classfile.Method)
      */
     @Override
@@ -240,7 +240,7 @@ public class StaticCalendarDetector extends OpcodeStackDetector {
 
     /**
      * Checks for method invocations (
-     * {@link org.apache.bcel.generic.INVOKEVIRTUAL}) call on a static
+     * {@link org.apache.commons.bcel6.generic.INVOKEVIRTUAL}) call on a static
      * {@link java.util.Calendar} or {@link java.text.DateFormat} fields. The
      * {@link OpcodeStack} is used to determine if an invocation is done on such
      * a static field.

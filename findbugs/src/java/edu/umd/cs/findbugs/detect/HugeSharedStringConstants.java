@@ -25,9 +25,9 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantString;
-import org.apache.bcel.classfile.ConstantValue;
+import org.apache.commons.bcel6.classfile.Constant;
+import org.apache.commons.bcel6.classfile.ConstantString;
+import org.apache.commons.bcel6.classfile.ConstantValue;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;

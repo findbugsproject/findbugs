@@ -24,8 +24,8 @@ import java.util.Comparator;
 import java.util.Iterator;
 import java.util.TreeSet;
 
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.MethodGen;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.MethodGen;
 
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.ba.deref.UnconditionalValueDerefAnalysis;
@@ -380,9 +380,9 @@ public class Dataflow<Fact, AnalysisType extends DataflowAnalysis<Fact>> {
 
                 if (DEBUG && SystemProperties.getBoolean("dataflow.blockdebug")) {
                     debug(block, "Dumping flow values for block:\n");
-                    Iterator<org.apache.bcel.generic.InstructionHandle> ii = block.instructionIterator();
+                    Iterator<org.apache.commons.bcel6.generic.InstructionHandle> ii = block.instructionIterator();
                     while (ii.hasNext()) {
-                        org.apache.bcel.generic.InstructionHandle handle = ii.next();
+                        org.apache.commons.bcel6.generic.InstructionHandle handle = ii.next();
                         Fact tmpResult = analysis.createFact();
                         analysis.transfer(block, handle, start, tmpResult);
                         System.out.println("\t" + handle + " " + analysis.factToString(tmpResult));

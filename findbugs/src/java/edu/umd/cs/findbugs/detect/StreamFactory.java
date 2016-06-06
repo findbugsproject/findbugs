@@ -19,8 +19,8 @@
 
 package edu.umd.cs.findbugs.detect;
 
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.ObjectType;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.ObjectType;
 
 import edu.umd.cs.findbugs.ba.Location;
 import edu.umd.cs.findbugs.ba.RepositoryLookupFailureCallback;

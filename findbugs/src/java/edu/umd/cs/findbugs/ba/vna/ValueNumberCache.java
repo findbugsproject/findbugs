@@ -22,7 +22,7 @@ package edu.umd.cs.findbugs.ba.vna;
 import java.util.Arrays;
 import java.util.HashMap;
 
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;

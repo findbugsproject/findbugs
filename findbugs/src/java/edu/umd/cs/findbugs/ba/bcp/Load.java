@@ -19,12 +19,12 @@
 
 package edu.umd.cs.findbugs.ba.bcp;
 
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.FieldInstruction;
-import org.apache.bcel.generic.GETFIELD;
-import org.apache.bcel.generic.GETSTATIC;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.FieldInstruction;
+import org.apache.commons.bcel6.generic.GETFIELD;
+import org.apache.commons.bcel6.generic.GETSTATIC;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 import edu.umd.cs.findbugs.ba.DataflowAnalysisException;
 import edu.umd.cs.findbugs.ba.vna.ValueNumber;

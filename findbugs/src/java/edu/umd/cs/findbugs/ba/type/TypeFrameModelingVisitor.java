@@ -30,10 +30,10 @@ import java.util.regex.Pattern;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.LocalVariable;
-import org.apache.bcel.classfile.LocalVariableTypeTable;
-import org.apache.bcel.generic.*;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.classfile.LocalVariable;
+import org.apache.commons.bcel6.classfile.LocalVariableTypeTable;
+import org.apache.commons.bcel6.generic.*;
 
 import edu.umd.cs.findbugs.OpcodeStack.Item;
 import edu.umd.cs.findbugs.SystemProperties;

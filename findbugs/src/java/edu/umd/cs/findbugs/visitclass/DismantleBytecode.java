@@ -26,22 +26,22 @@ import java.text.NumberFormat;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.CodeException;
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantCP;
-import org.apache.bcel.classfile.ConstantClass;
-import org.apache.bcel.classfile.ConstantDouble;
-import org.apache.bcel.classfile.ConstantFieldref;
-import org.apache.bcel.classfile.ConstantFloat;
-import org.apache.bcel.classfile.ConstantInteger;
-import org.apache.bcel.classfile.ConstantInterfaceMethodref;
-import org.apache.bcel.classfile.ConstantInvokeDynamic;
-import org.apache.bcel.classfile.ConstantLong;
-import org.apache.bcel.classfile.ConstantMethodref;
-import org.apache.bcel.classfile.ConstantNameAndType;
-import org.apache.bcel.classfile.ConstantString;
-import org.apache.bcel.classfile.LineNumberTable;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.CodeException;
+import org.apache.commons.bcel6.classfile.Constant;
+import org.apache.commons.bcel6.classfile.ConstantCP;
+import org.apache.commons.bcel6.classfile.ConstantClass;
+import org.apache.commons.bcel6.classfile.ConstantDouble;
+import org.apache.commons.bcel6.classfile.ConstantFieldref;
+import org.apache.commons.bcel6.classfile.ConstantFloat;
+import org.apache.commons.bcel6.classfile.ConstantInteger;
+import org.apache.commons.bcel6.classfile.ConstantInterfaceMethodref;
+import org.apache.commons.bcel6.classfile.ConstantInvokeDynamic;
+import org.apache.commons.bcel6.classfile.ConstantLong;
+import org.apache.commons.bcel6.classfile.ConstantMethodref;
+import org.apache.commons.bcel6.classfile.ConstantNameAndType;
+import org.apache.commons.bcel6.classfile.ConstantString;
+import org.apache.commons.bcel6.classfile.LineNumberTable;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.umd.cs.findbugs.ba.AnalysisContext;

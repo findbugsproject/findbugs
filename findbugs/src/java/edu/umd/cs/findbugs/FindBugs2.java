@@ -36,7 +36,7 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.bcel.classfile.ClassFormatException;
+import org.apache.commons.bcel6.classfile.ClassFormatException;
 import org.dom4j.DocumentException;
 
 import edu.umd.cs.findbugs.asm.FBClassReader;

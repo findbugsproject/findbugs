@@ -18,13 +18,13 @@
  */
 package edu.umd.cs.findbugs.ba.constant;
 
-import org.apache.bcel.generic.BIPUSH;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.ICONST;
-import org.apache.bcel.generic.IINC;
-import org.apache.bcel.generic.LDC;
-import org.apache.bcel.generic.LDC2_W;
-import org.apache.bcel.generic.SIPUSH;
+import org.apache.commons.bcel6.generic.BIPUSH;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.ICONST;
+import org.apache.commons.bcel6.generic.IINC;
+import org.apache.commons.bcel6.generic.LDC;
+import org.apache.commons.bcel6.generic.LDC2_W;
+import org.apache.commons.bcel6.generic.SIPUSH;
 
 import edu.umd.cs.findbugs.ba.AbstractFrameModelingVisitor;
 

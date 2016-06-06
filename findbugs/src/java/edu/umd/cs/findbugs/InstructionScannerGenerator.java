@@ -30,7 +30,7 @@ public interface InstructionScannerGenerator {
      * Return true if a new scanner should be created starting at this
      * instruction, false otherwise.
      */
-    public boolean start(org.apache.bcel.generic.InstructionHandle handle);
+    public boolean start(org.apache.commons.bcel6.generic.InstructionHandle handle);
 
     /**
      * Create a new scanner.

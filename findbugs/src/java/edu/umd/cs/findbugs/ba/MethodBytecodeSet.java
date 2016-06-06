@@ -21,7 +21,7 @@ package edu.umd.cs.findbugs.ba;
 
 import java.util.BitSet;
 
-import org.apache.bcel.Constants;
+import org.apache.commons.bcel6.Constants;
 
 /**
  * Class representing the set of opcodes used in a method.

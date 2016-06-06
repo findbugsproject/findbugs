@@ -21,20 +21,20 @@ package edu.umd.cs.findbugs.detect;
 
 import java.util.BitSet;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantClass;
-import org.apache.bcel.classfile.ConstantMethodref;
-import org.apache.bcel.classfile.ConstantUtf8;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.GETFIELD;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.InvokeInstruction;
-import org.apache.bcel.generic.MethodGen;
-import org.apache.bcel.generic.RETURN;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.classfile.Constant;
+import org.apache.commons.bcel6.classfile.ConstantClass;
+import org.apache.commons.bcel6.classfile.ConstantMethodref;
+import org.apache.commons.bcel6.classfile.ConstantUtf8;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.GETFIELD;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.InvokeInstruction;
+import org.apache.commons.bcel6.generic.MethodGen;
+import org.apache.commons.bcel6.generic.RETURN;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;

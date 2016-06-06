@@ -21,9 +21,9 @@ package edu.umd.cs.findbugs;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.Repository;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.Repository;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.ba.XFactory;

@@ -24,7 +24,7 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.ba.AbstractDataflow;
 import edu.umd.cs.findbugs.ba.CFG;

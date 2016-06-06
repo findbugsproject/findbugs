@@ -9,7 +9,7 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
-import org.apache.bcel.Constants;
+import org.apache.commons.bcel6.Constants;
 
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;

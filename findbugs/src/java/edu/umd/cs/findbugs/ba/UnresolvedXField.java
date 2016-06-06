@@ -25,7 +25,7 @@ import java.util.Collections;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.Constants;
+import org.apache.commons.bcel6.Constants;
 
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.DescriptorFactory;

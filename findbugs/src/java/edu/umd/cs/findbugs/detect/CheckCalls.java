@@ -22,9 +22,9 @@ package edu.umd.cs.findbugs.detect;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InvokeInstruction;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InvokeInstruction;
 
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;

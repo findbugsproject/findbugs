@@ -19,7 +19,7 @@
 
 package edu.umd.cs.findbugs.classfile.engine.bcel;
 
-import static org.apache.bcel.Constants.*;
+import static org.apache.commons.bcel6.Constants.*;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
@@ -41,30 +41,30 @@ import java.util.TreeMap;
 
 import javax.annotation.Nullable;
 
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantCP;
-import org.apache.bcel.classfile.ConstantNameAndType;
-import org.apache.bcel.classfile.ConstantObject;
-import org.apache.bcel.classfile.ConstantPool;
-import org.apache.bcel.classfile.ConstantUtf8;
-import org.apache.bcel.classfile.LocalVariable;
-import org.apache.bcel.classfile.LocalVariableTable;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.ARRAYLENGTH;
-import org.apache.bcel.generic.CPInstruction;
-import org.apache.bcel.generic.ConstantPushInstruction;
-import org.apache.bcel.generic.GETFIELD;
-import org.apache.bcel.generic.GETSTATIC;
-import org.apache.bcel.generic.IFNE;
-import org.apache.bcel.generic.INVOKEVIRTUAL;
-import org.apache.bcel.generic.IfInstruction;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.LCMP;
-import org.apache.bcel.generic.LoadInstruction;
-import org.apache.bcel.generic.MethodGen;
-import org.apache.bcel.generic.PushInstruction;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.classfile.Constant;
+import org.apache.commons.bcel6.classfile.ConstantCP;
+import org.apache.commons.bcel6.classfile.ConstantNameAndType;
+import org.apache.commons.bcel6.classfile.ConstantObject;
+import org.apache.commons.bcel6.classfile.ConstantPool;
+import org.apache.commons.bcel6.classfile.ConstantUtf8;
+import org.apache.commons.bcel6.classfile.LocalVariable;
+import org.apache.commons.bcel6.classfile.LocalVariableTable;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.generic.ARRAYLENGTH;
+import org.apache.commons.bcel6.generic.CPInstruction;
+import org.apache.commons.bcel6.generic.ConstantPushInstruction;
+import org.apache.commons.bcel6.generic.GETFIELD;
+import org.apache.commons.bcel6.generic.GETSTATIC;
+import org.apache.commons.bcel6.generic.IFNE;
+import org.apache.commons.bcel6.generic.INVOKEVIRTUAL;
+import org.apache.commons.bcel6.generic.IfInstruction;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.LCMP;
+import org.apache.commons.bcel6.generic.LoadInstruction;
+import org.apache.commons.bcel6.generic.MethodGen;
+import org.apache.commons.bcel6.generic.PushInstruction;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.ba.BasicBlock;
 import edu.umd.cs.findbugs.ba.CFG;

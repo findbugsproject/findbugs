@@ -19,7 +19,7 @@
 
 package edu.umd.cs.findbugs.detect;
 
-import static org.apache.bcel.Constants.*;
+import static org.apache.commons.bcel6.Constants.*;
 
 import java.util.BitSet;
 import java.util.HashMap;
@@ -30,22 +30,22 @@ import java.util.Map.Entry;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.apache.bcel.classfile.LocalVariable;
-import org.apache.bcel.classfile.LocalVariableTable;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.ANEWARRAY;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.IINC;
-import org.apache.bcel.generic.INVOKESPECIAL;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.InvokeInstruction;
-import org.apache.bcel.generic.MULTIANEWARRAY;
-import org.apache.bcel.generic.NEWARRAY;
-import org.apache.bcel.generic.POP;
-import org.apache.bcel.generic.POP2;
-import org.apache.bcel.generic.StoreInstruction;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.classfile.LocalVariable;
+import org.apache.commons.bcel6.classfile.LocalVariableTable;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.generic.ANEWARRAY;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.IINC;
+import org.apache.commons.bcel6.generic.INVOKESPECIAL;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.InvokeInstruction;
+import org.apache.commons.bcel6.generic.MULTIANEWARRAY;
+import org.apache.commons.bcel6.generic.NEWARRAY;
+import org.apache.commons.bcel6.generic.POP;
+import org.apache.commons.bcel6.generic.POP2;
+import org.apache.commons.bcel6.generic.StoreInstruction;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;

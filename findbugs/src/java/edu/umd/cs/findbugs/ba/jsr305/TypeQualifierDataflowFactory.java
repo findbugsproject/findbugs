@@ -21,7 +21,7 @@ package edu.umd.cs.findbugs.ba.jsr305;
 
 import java.util.HashMap;
 
-import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
 
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.DataflowAnalysisException;

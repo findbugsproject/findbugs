@@ -22,7 +22,7 @@ package edu.umd.cs.findbugs.util;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import org.apache.bcel.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.JavaClass;
 
 /**
  * Provide a HashMap that can only grow to a specified maximum capacity, with

@@ -26,8 +26,8 @@ import javax.annotation.Nullable;
 
 import junit.framework.TestCase;
 
-import org.apache.bcel.generic.ReferenceType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.generic.ReferenceType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.ba.generic.GenericUtilities.TypeCategory;
 

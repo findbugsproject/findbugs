@@ -26,7 +26,7 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.Constants;
+import org.apache.commons.bcel6.Constants;
 import org.objectweb.asm.Opcodes;
 
 import edu.umd.cs.findbugs.ba.ComparableField;

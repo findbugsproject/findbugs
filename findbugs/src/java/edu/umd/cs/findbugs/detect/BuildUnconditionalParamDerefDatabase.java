@@ -25,15 +25,15 @@ import java.util.Set;
 
 import javax.annotation.meta.When;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.CodeException;
-import org.apache.bcel.classfile.ConstantClass;
-import org.apache.bcel.classfile.ConstantPool;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.ReferenceType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.CodeException;
+import org.apache.commons.bcel6.classfile.ConstantClass;
+import org.apache.commons.bcel6.classfile.ConstantPool;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.generic.ReferenceType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.Detector;

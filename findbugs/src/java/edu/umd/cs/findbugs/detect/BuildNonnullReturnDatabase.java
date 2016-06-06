@@ -21,11 +21,11 @@ package edu.umd.cs.findbugs.detect;
 
 import java.util.Iterator;
 
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.ARETURN;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.ReferenceType;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.generic.ARETURN;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.ReferenceType;
 
 import edu.umd.cs.findbugs.FindBugsAnalysisFeatures;
 import edu.umd.cs.findbugs.SystemProperties;

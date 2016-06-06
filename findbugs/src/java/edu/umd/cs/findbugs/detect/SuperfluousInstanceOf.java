@@ -20,10 +20,10 @@
 
 package edu.umd.cs.findbugs.detect;
 
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.LocalVariable;
-import org.apache.bcel.classfile.LocalVariableTable;
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.LocalVariable;
+import org.apache.commons.bcel6.classfile.LocalVariableTable;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;
@@ -97,7 +97,7 @@ public class SuperfluousInstanceOf extends BytecodeScanningDetector implements S
                             String clsSignature = getDottedClassConstantOperand();
 
                             if (clsSignature.charAt(0) != '[') {
-                                if (org.apache.bcel.Repository.instanceOf(objSignature, clsSignature)) {
+                                if (org.apache.commons.bcel6.Repository.instanceOf(objSignature, clsSignature)) {
                                     bugReporter.reportBug(new BugInstance(this, "SIO_SUPERFLUOUS_INSTANCEOF", LOW_PRIORITY)
                                     .addClassAndMethod(this).addSourceLine(this));
                                 }

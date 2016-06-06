@@ -31,9 +31,9 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.bcel.classfile.Field;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.classfile.Field;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.util.Util;
 import edu.umd.cs.findbugs.xml.XMLOutput;

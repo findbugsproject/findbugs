@@ -31,12 +31,12 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.CodeException;
-import org.apache.bcel.classfile.LineNumberTable;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.classfile.CodeException;
+import org.apache.commons.bcel6.classfile.LineNumberTable;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.FieldAnnotation;

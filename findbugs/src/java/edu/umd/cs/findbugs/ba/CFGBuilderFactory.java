@@ -21,7 +21,7 @@ package edu.umd.cs.findbugs.ba;
 
 import javax.annotation.Nonnull;
 
-import org.apache.bcel.generic.MethodGen;
+import org.apache.commons.bcel6.generic.MethodGen;
 
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
 

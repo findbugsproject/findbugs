@@ -24,7 +24,7 @@ import java.util.List;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.Constants;
+import org.apache.commons.bcel6.Constants;
 
 import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.ba.XField;

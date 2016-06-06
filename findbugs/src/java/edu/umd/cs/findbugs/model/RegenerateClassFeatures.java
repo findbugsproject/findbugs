@@ -25,9 +25,9 @@ import java.util.Enumeration;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipFile;
 
-import org.apache.bcel.Repository;
-import org.apache.bcel.classfile.ClassParser;
-import org.apache.bcel.classfile.JavaClass;
+import org.apache.commons.bcel6.Repository;
+import org.apache.commons.bcel6.classfile.ClassParser;
+import org.apache.commons.bcel6.classfile.JavaClass;
 
 import edu.umd.cs.findbugs.BugCollection;
 import edu.umd.cs.findbugs.SortedBugCollection;

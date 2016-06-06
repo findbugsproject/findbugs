@@ -21,19 +21,19 @@ package edu.umd.cs.findbugs.visitclass;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.Repository;
-import org.apache.bcel.classfile.Attribute;
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.CodeException;
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantClass;
-import org.apache.bcel.classfile.ConstantPool;
-import org.apache.bcel.classfile.InnerClass;
-import org.apache.bcel.classfile.InnerClasses;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.LineNumber;
-import org.apache.bcel.classfile.LineNumberTable;
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.Repository;
+import org.apache.commons.bcel6.classfile.Attribute;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.CodeException;
+import org.apache.commons.bcel6.classfile.Constant;
+import org.apache.commons.bcel6.classfile.ConstantClass;
+import org.apache.commons.bcel6.classfile.ConstantPool;
+import org.apache.commons.bcel6.classfile.InnerClass;
+import org.apache.commons.bcel6.classfile.InnerClasses;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.LineNumber;
+import org.apache.commons.bcel6.classfile.LineNumberTable;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.internalAnnotations.SlashedClassName;
 import edu.umd.cs.findbugs.util.ClassName;

@@ -23,10 +23,10 @@ import java.util.HashSet;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.Field;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.Field;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;

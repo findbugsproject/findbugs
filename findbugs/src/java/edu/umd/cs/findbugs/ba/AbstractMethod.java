@@ -18,7 +18,7 @@
  */
 package edu.umd.cs.findbugs.ba;
 
-import org.apache.bcel.Constants;
+import org.apache.commons.bcel6.Constants;
 
 import edu.umd.cs.findbugs.classfile.DescriptorFactory;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;

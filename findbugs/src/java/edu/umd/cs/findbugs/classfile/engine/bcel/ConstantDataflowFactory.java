@@ -1,6 +1,6 @@
 package edu.umd.cs.findbugs.classfile.engine.bcel;
 
-import org.apache.bcel.generic.MethodGen;
+import org.apache.commons.bcel6.generic.MethodGen;
 
 import edu.umd.cs.findbugs.ba.constant.ConstantAnalysis;
 import edu.umd.cs.findbugs.ba.constant.ConstantDataflow;

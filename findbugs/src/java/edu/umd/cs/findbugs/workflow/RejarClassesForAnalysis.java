@@ -48,8 +48,8 @@ import java.util.zip.ZipOutputStream;
 import javax.annotation.Nonnull;
 import javax.annotation.WillClose;
 
-import org.apache.bcel.classfile.ClassParser;
-import org.apache.bcel.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.ClassParser;
+import org.apache.commons.bcel6.classfile.JavaClass;
 
 import edu.umd.cs.findbugs.FindBugs;
 import edu.umd.cs.findbugs.charsets.UTF8;

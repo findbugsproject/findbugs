@@ -4,17 +4,17 @@ import java.util.BitSet;
 import java.util.IdentityHashMap;
 import java.util.Iterator;
 
-import org.apache.bcel.classfile.LineNumberTable;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.ALOAD;
-import org.apache.bcel.generic.ARETURN;
-import org.apache.bcel.generic.BranchInstruction;
-import org.apache.bcel.generic.GOTO;
-import org.apache.bcel.generic.IFNULL;
-import org.apache.bcel.generic.INVOKEVIRTUAL;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.MethodGen;
+import org.apache.commons.bcel6.classfile.LineNumberTable;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.generic.ALOAD;
+import org.apache.commons.bcel6.generic.ARETURN;
+import org.apache.commons.bcel6.generic.BranchInstruction;
+import org.apache.commons.bcel6.generic.GOTO;
+import org.apache.commons.bcel6.generic.IFNULL;
+import org.apache.commons.bcel6.generic.INVOKEVIRTUAL;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.MethodGen;
 
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugAnnotation;

@@ -24,11 +24,11 @@ import java.math.RoundingMode;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantDouble;
-import org.apache.bcel.classfile.ConstantFloat;
-import org.apache.bcel.classfile.ConstantPool;
-import org.apache.bcel.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.Constant;
+import org.apache.commons.bcel6.classfile.ConstantDouble;
+import org.apache.commons.bcel6.classfile.ConstantFloat;
+import org.apache.commons.bcel6.classfile.ConstantPool;
+import org.apache.commons.bcel6.classfile.JavaClass;
 
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;

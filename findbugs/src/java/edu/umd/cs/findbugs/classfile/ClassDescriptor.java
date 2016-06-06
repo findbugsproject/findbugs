@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.JavaClass;
 
 import edu.umd.cs.findbugs.ba.XClass;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;

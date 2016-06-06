@@ -19,12 +19,12 @@
 
 package edu.umd.cs.findbugs.ba;
 
-//import org.apache.bcel.classfile.Method;
+//import org.apache.commons.bcel6.classfile.Method;
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.generic.CodeExceptionGen;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.ObjectType;
+import org.apache.commons.bcel6.generic.CodeExceptionGen;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.ObjectType;
 
 
 /**
@@ -126,7 +126,7 @@ public class BlockTypeAnalysis extends BasicAbstractDataflowAnalysis<BlockType> 
     // /* (non-Javadoc)
     // * @see
     // edu.umd.cs.findbugs.ba.DataflowTestDriver#createDataflow(edu.umd.cs.findbugs.ba.ClassContext,
-    // org.apache.bcel.classfile.Method)
+    // org.apache.commons.bcel6.classfile.Method)
     // */
     // @Override
     // public Dataflow<BlockType, BlockTypeAnalysis> createDataflow(ClassContext

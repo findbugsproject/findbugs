@@ -19,7 +19,7 @@
 
 package edu.umd.cs.findbugs.ba.obl;
 
-import org.apache.bcel.generic.ObjectType;
+import org.apache.commons.bcel6.generic.ObjectType;
 
 import edu.umd.cs.findbugs.ba.ObjectTypeFactory;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;

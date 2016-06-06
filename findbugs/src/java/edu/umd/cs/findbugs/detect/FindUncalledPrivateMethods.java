@@ -21,14 +21,14 @@ package edu.umd.cs.findbugs.detect;
 
 import java.util.HashSet;
 
-import org.apache.bcel.classfile.AnnotationEntry;
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantCP;
-import org.apache.bcel.classfile.ConstantMethodHandle;
-import org.apache.bcel.classfile.ConstantNameAndType;
-import org.apache.bcel.classfile.ConstantPool;
-import org.apache.bcel.classfile.ConstantUtf8;
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.classfile.AnnotationEntry;
+import org.apache.commons.bcel6.classfile.Constant;
+import org.apache.commons.bcel6.classfile.ConstantCP;
+import org.apache.commons.bcel6.classfile.ConstantMethodHandle;
+import org.apache.commons.bcel6.classfile.ConstantNameAndType;
+import org.apache.commons.bcel6.classfile.ConstantPool;
+import org.apache.commons.bcel6.classfile.ConstantUtf8;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;

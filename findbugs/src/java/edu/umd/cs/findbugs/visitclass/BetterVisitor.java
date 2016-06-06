@@ -21,45 +21,45 @@ package edu.umd.cs.findbugs.visitclass;
 
 import java.io.PrintStream;
 
-import org.apache.bcel.classfile.Attribute;
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.CodeException;
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantCP;
-import org.apache.bcel.classfile.ConstantClass;
-import org.apache.bcel.classfile.ConstantDouble;
-import org.apache.bcel.classfile.ConstantFieldref;
-import org.apache.bcel.classfile.ConstantFloat;
-import org.apache.bcel.classfile.ConstantInteger;
-import org.apache.bcel.classfile.ConstantInterfaceMethodref;
-import org.apache.bcel.classfile.ConstantLong;
-import org.apache.bcel.classfile.ConstantMethodref;
-import org.apache.bcel.classfile.ConstantNameAndType;
-import org.apache.bcel.classfile.ConstantPool;
-import org.apache.bcel.classfile.ConstantString;
-import org.apache.bcel.classfile.ConstantUtf8;
-import org.apache.bcel.classfile.ConstantValue;
-import org.apache.bcel.classfile.ExceptionTable;
-import org.apache.bcel.classfile.Field;
-import org.apache.bcel.classfile.InnerClass;
-import org.apache.bcel.classfile.InnerClasses;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.LineNumber;
-import org.apache.bcel.classfile.LineNumberTable;
-import org.apache.bcel.classfile.LocalVariable;
-import org.apache.bcel.classfile.LocalVariableTable;
-import org.apache.bcel.classfile.LocalVariableTypeTable;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.classfile.Signature;
-import org.apache.bcel.classfile.SourceFile;
-import org.apache.bcel.classfile.StackMap;
-import org.apache.bcel.classfile.StackMapEntry;
-import org.apache.bcel.classfile.Synthetic;
-import org.apache.bcel.classfile.Unknown;
-import org.apache.bcel.classfile.Visitor;
+import org.apache.commons.bcel6.classfile.Attribute;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.CodeException;
+import org.apache.commons.bcel6.classfile.Constant;
+import org.apache.commons.bcel6.classfile.ConstantCP;
+import org.apache.commons.bcel6.classfile.ConstantClass;
+import org.apache.commons.bcel6.classfile.ConstantDouble;
+import org.apache.commons.bcel6.classfile.ConstantFieldref;
+import org.apache.commons.bcel6.classfile.ConstantFloat;
+import org.apache.commons.bcel6.classfile.ConstantInteger;
+import org.apache.commons.bcel6.classfile.ConstantInterfaceMethodref;
+import org.apache.commons.bcel6.classfile.ConstantLong;
+import org.apache.commons.bcel6.classfile.ConstantMethodref;
+import org.apache.commons.bcel6.classfile.ConstantNameAndType;
+import org.apache.commons.bcel6.classfile.ConstantPool;
+import org.apache.commons.bcel6.classfile.ConstantString;
+import org.apache.commons.bcel6.classfile.ConstantUtf8;
+import org.apache.commons.bcel6.classfile.ConstantValue;
+import org.apache.commons.bcel6.classfile.ExceptionTable;
+import org.apache.commons.bcel6.classfile.Field;
+import org.apache.commons.bcel6.classfile.InnerClass;
+import org.apache.commons.bcel6.classfile.InnerClasses;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.LineNumber;
+import org.apache.commons.bcel6.classfile.LineNumberTable;
+import org.apache.commons.bcel6.classfile.LocalVariable;
+import org.apache.commons.bcel6.classfile.LocalVariableTable;
+import org.apache.commons.bcel6.classfile.LocalVariableTypeTable;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.classfile.Signature;
+import org.apache.commons.bcel6.classfile.SourceFile;
+import org.apache.commons.bcel6.classfile.StackMap;
+import org.apache.commons.bcel6.classfile.StackMapEntry;
+import org.apache.commons.bcel6.classfile.Synthetic;
+import org.apache.commons.bcel6.classfile.Unknown;
+import org.apache.commons.bcel6.classfile.Visitor;
 
 /**
- * Fixedup of from org.apache.bcel.classfile.Visitor
+ * Fixedup of from org.apache.commons.bcel6.classfile.Visitor
  *
  * @author <A HREF="http://www.cs.umd.edu/~pugh">William Pugh</A>
  * @version 980818
@@ -184,7 +184,7 @@ public abstract class BetterVisitor implements Visitor {
         visit((Attribute) obj);
     }
 
-    public void visit(org.apache.bcel.classfile.Deprecated obj) {
+    public void visit(org.apache.commons.bcel6.classfile.Deprecated obj) {
         visit((Attribute) obj);
     }
 
@@ -290,7 +290,7 @@ public abstract class BetterVisitor implements Visitor {
     }
 
     @Override
-    public void visitDeprecated(org.apache.bcel.classfile.Deprecated obj) {
+    public void visitDeprecated(org.apache.commons.bcel6.classfile.Deprecated obj) {
         visit(obj);
     }
 

@@ -19,9 +19,9 @@
 
 package edu.umd.cs.findbugs.ba.type;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.generic.ObjectType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.generic.ObjectType;
+import org.apache.commons.bcel6.generic.Type;
 
 /**
  * Special ReferenceType representing the type of a caught exception. Keeps

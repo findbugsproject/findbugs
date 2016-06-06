@@ -21,7 +21,7 @@ package edu.umd.cs.findbugs.ba;
 
 import java.io.PrintStream;
 
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 /**
  * CFGPrinter class which prints dataflow values at each basic block and

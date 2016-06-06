@@ -26,8 +26,8 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.MethodGen;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.generic.MethodGen;
 
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.AnalysisFeatures;

@@ -25,10 +25,10 @@ import java.util.List;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.generic.ArrayType;
-import org.apache.bcel.generic.ObjectType;
-import org.apache.bcel.generic.ReferenceType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.generic.ArrayType;
+import org.apache.commons.bcel6.generic.ObjectType;
+import org.apache.commons.bcel6.generic.ReferenceType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.type.NullType;

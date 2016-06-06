@@ -21,7 +21,7 @@ package edu.umd.cs.findbugs.visitclass;
 
 import junit.framework.TestCase;
 
-import org.apache.bcel.Constants;
+import org.apache.commons.bcel6.Constants;
 
 /**
  * @author pugh

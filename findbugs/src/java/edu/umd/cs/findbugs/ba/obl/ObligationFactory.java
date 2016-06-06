@@ -27,8 +27,8 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.generic.ObjectType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.generic.ObjectType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import edu.umd.cs.findbugs.ba.Hierarchy;

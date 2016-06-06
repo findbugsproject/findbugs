@@ -29,11 +29,11 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.WillClose;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.ObjectType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.ObjectType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.ba.BasicBlock;

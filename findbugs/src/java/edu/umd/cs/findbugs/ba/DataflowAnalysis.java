@@ -21,7 +21,7 @@ package edu.umd.cs.findbugs.ba;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 
 /**

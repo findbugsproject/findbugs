@@ -19,8 +19,8 @@
 
 package edu.umd.cs.findbugs.ba;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.generic.*;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.generic.*;
 
 import edu.umd.cs.findbugs.bcel.generic.NONNULL2Z;
 import edu.umd.cs.findbugs.bcel.generic.NULL2Z;

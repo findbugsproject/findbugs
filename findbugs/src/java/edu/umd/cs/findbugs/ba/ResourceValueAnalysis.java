@@ -19,14 +19,14 @@
 
 package edu.umd.cs.findbugs.ba;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.generic.IFNONNULL;
-import org.apache.bcel.generic.IFNULL;
-import org.apache.bcel.generic.IF_ACMPEQ;
-import org.apache.bcel.generic.IF_ACMPNE;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.MethodGen;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.generic.IFNONNULL;
+import org.apache.commons.bcel6.generic.IFNULL;
+import org.apache.commons.bcel6.generic.IF_ACMPEQ;
+import org.apache.commons.bcel6.generic.IF_ACMPNE;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.MethodGen;
 
 import edu.umd.cs.findbugs.SystemProperties;
 

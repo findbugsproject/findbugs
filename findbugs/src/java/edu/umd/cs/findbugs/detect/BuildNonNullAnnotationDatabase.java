@@ -24,9 +24,9 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.classfile.ArrayElementValue;
-import org.apache.bcel.classfile.ClassElementValue;
-import org.apache.bcel.classfile.ElementValue;
+import org.apache.commons.bcel6.classfile.ArrayElementValue;
+import org.apache.commons.bcel6.classfile.ClassElementValue;
+import org.apache.commons.bcel6.classfile.ElementValue;
 
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.ba.AnnotationDatabase;

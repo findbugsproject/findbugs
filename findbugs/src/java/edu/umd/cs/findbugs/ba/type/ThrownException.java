@@ -19,7 +19,7 @@
 
 package edu.umd.cs.findbugs.ba.type;
 
-import org.apache.bcel.generic.ObjectType;
+import org.apache.commons.bcel6.generic.ObjectType;
 
 /**
  * An exception thrown from an instruction. These can be implicit (i.e., runtime

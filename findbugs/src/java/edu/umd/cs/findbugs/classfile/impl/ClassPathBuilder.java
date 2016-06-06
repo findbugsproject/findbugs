@@ -375,7 +375,7 @@ public class ClassPathBuilder implements IClassPathBuilder {
 
     private LinkedList<WorkListItem> buildSystemCodebaseList() {
         // This method is based on the
-        // org.apache.bcel.util.ClassPath.getClassPath()
+        // org.apache.commons.bcel6.util.ClassPath.getClassPath()
         // method.
 
         LinkedList<WorkListItem> workList = new LinkedList<WorkListItem>();

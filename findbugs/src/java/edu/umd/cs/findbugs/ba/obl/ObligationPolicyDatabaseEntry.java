@@ -21,7 +21,7 @@ package edu.umd.cs.findbugs.ba.obl;
 
 import java.util.Collection;
 
-import org.apache.bcel.generic.ReferenceType;
+import org.apache.commons.bcel6.generic.ReferenceType;
 
 /**
  * Interface defining an entry in the ObligationPolicyDatabase. Checks called

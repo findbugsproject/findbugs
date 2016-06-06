@@ -24,8 +24,8 @@ import java.util.Collection;
 import java.util.Iterator;
 import java.util.StringTokenizer;
 
-import org.apache.bcel.generic.ReferenceType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.generic.ReferenceType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.ba.interproc.FieldPropertyDatabase;
 import edu.umd.cs.findbugs.ba.interproc.PropertyDatabaseFormatException;

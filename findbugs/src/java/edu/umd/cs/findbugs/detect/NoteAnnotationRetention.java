@@ -21,9 +21,9 @@ package edu.umd.cs.findbugs.detect;
 
 import java.util.Map;
 
-import org.apache.bcel.classfile.ElementValue;
-import org.apache.bcel.classfile.EnumElementValue;
-import org.apache.bcel.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.ElementValue;
+import org.apache.commons.bcel6.classfile.EnumElementValue;
+import org.apache.commons.bcel6.classfile.JavaClass;
 
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;

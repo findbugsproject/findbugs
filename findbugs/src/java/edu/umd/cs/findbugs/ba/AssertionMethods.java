@@ -24,21 +24,21 @@ import java.util.BitSet;
 import java.util.List;
 import java.util.StringTokenizer;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.ClassFormatException;
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantMethodref;
-import org.apache.bcel.classfile.ConstantNameAndType;
-import org.apache.bcel.classfile.ConstantPool;
-import org.apache.bcel.classfile.ConstantUtf8;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.GETSTATIC;
-import org.apache.bcel.generic.INVOKEINTERFACE;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.InvokeInstruction;
-import org.apache.bcel.generic.SIPUSH;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.classfile.ClassFormatException;
+import org.apache.commons.bcel6.classfile.Constant;
+import org.apache.commons.bcel6.classfile.ConstantMethodref;
+import org.apache.commons.bcel6.classfile.ConstantNameAndType;
+import org.apache.commons.bcel6.classfile.ConstantPool;
+import org.apache.commons.bcel6.classfile.ConstantUtf8;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.GETSTATIC;
+import org.apache.commons.bcel6.generic.INVOKEINTERFACE;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.InvokeInstruction;
+import org.apache.commons.bcel6.generic.SIPUSH;
 
 import edu.umd.cs.findbugs.SystemProperties;
 

@@ -22,7 +22,7 @@ package edu.umd.cs.findbugs.ba;
 import java.security.MessageDigest;
 import java.util.Arrays;
 
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.util.Util;
 

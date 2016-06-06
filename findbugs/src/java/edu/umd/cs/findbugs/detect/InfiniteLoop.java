@@ -28,7 +28,7 @@ import java.util.List;
 
 import javax.annotation.Nonnull;
 
-import org.apache.bcel.classfile.Code;
+import org.apache.commons.bcel6.classfile.Code;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;

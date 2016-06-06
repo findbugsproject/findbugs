@@ -19,10 +19,10 @@
 
 package edu.umd.cs.findbugs.ba;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 /**
  * A really simple forward dataflow analysis to find the depth of the Java

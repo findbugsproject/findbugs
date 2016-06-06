@@ -19,10 +19,10 @@
 
 package edu.umd.cs.findbugs.bcel.generic;
 
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.ConversionInstruction;
-import org.apache.bcel.generic.Type;
-import org.apache.bcel.generic.Visitor;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.ConversionInstruction;
+import org.apache.commons.bcel6.generic.Type;
+import org.apache.commons.bcel6.generic.Visitor;
 
 /** A synthetic instruction that converts a the nullness of a reference to a boolean value.
  *

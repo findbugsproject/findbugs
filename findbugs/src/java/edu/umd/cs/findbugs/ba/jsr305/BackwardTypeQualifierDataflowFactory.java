@@ -21,7 +21,7 @@ package edu.umd.cs.findbugs.ba.jsr305;
 
 import javax.annotation.meta.When;
 
-import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
 
 import edu.umd.cs.findbugs.ba.BasicBlock;
 import edu.umd.cs.findbugs.ba.CFG;
@@ -64,7 +64,7 @@ TypeQualifierDataflowFactory<BackwardTypeQualifierDataflowAnalysis, BackwardType
      * (edu.umd.cs.findbugs.ba.DepthFirstSearch, edu.umd.cs.findbugs.ba.XMethod,
      * edu.umd.cs.findbugs.ba.CFG,
      * edu.umd.cs.findbugs.ba.vna.ValueNumberDataflow,
-     * org.apache.bcel.generic.ConstantPoolGen,
+     * org.apache.commons.bcel6.generic.ConstantPoolGen,
      * edu.umd.cs.findbugs.classfile.IAnalysisCache,
      * edu.umd.cs.findbugs.classfile.MethodDescriptor,
      * edu.umd.cs.findbugs.ba.jsr305.TypeQualifierValue)

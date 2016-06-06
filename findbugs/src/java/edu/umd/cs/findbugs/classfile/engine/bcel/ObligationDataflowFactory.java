@@ -18,7 +18,7 @@
  */
 package edu.umd.cs.findbugs.classfile.engine.bcel;
 
-import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
 
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.ba.CFG;

@@ -3,11 +3,11 @@ package edu.umd.cs.findbugs;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.bcel.Repository;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.generic.ArrayType;
-import org.apache.bcel.generic.ReferenceType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.Repository;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.generic.ArrayType;
+import org.apache.commons.bcel6.generic.ReferenceType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.ch.Subtypes2;

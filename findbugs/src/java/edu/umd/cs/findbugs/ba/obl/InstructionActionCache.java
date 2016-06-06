@@ -29,17 +29,17 @@ import java.util.Map;
 
 import javax.annotation.WillClose;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.generic.ARETURN;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.InvokeInstruction;
-import org.apache.bcel.generic.ObjectType;
-import org.apache.bcel.generic.PUTFIELD;
-import org.apache.bcel.generic.PUTSTATIC;
-import org.apache.bcel.generic.ReferenceType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.generic.ARETURN;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.InvokeInstruction;
+import org.apache.commons.bcel6.generic.ObjectType;
+import org.apache.commons.bcel6.generic.PUTFIELD;
+import org.apache.commons.bcel6.generic.PUTSTATIC;
+import org.apache.commons.bcel6.generic.ReferenceType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.ba.AnalysisContext;

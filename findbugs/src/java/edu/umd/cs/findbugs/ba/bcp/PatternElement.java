@@ -21,8 +21,8 @@ package edu.umd.cs.findbugs.ba.bcp;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.ba.DataflowAnalysisException;

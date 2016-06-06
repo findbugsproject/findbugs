@@ -24,17 +24,17 @@ import java.util.Iterator;
 import javax.annotation.CheckForNull;
 import javax.annotation.meta.When;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.generic.ACONST_NULL;
-import org.apache.bcel.generic.CHECKCAST;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.ConstantPushInstruction;
-import org.apache.bcel.generic.FieldInstruction;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InvokeInstruction;
-import org.apache.bcel.generic.LDC;
-import org.apache.bcel.generic.LDC2_W;
-import org.apache.bcel.generic.LocalVariableInstruction;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.generic.ACONST_NULL;
+import org.apache.commons.bcel6.generic.CHECKCAST;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.ConstantPushInstruction;
+import org.apache.commons.bcel6.generic.FieldInstruction;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InvokeInstruction;
+import org.apache.commons.bcel6.generic.LDC;
+import org.apache.commons.bcel6.generic.LDC2_W;
+import org.apache.commons.bcel6.generic.LocalVariableInstruction;
 
 import edu.umd.cs.findbugs.ba.BlockOrder;
 import edu.umd.cs.findbugs.ba.CFG;

@@ -34,8 +34,8 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.bcel.Repository;
-import org.apache.bcel.classfile.JavaClass;
+import org.apache.commons.bcel6.Repository;
+import org.apache.commons.bcel6.classfile.JavaClass;
 
 import edu.umd.cs.findbugs.AbstractBugReporter;
 import edu.umd.cs.findbugs.AnalysisCacheToRepositoryAdapter;
@@ -127,7 +127,7 @@ public class AnalysisContext {
      * which we can reuse. (A URLClassPathRepository gets closed after
      * analysis.)
      */
-    private static final org.apache.bcel.util.Repository originalRepository = Repository.getRepository(); // BCEL
+    private static final org.apache.commons.bcel6.util.Repository originalRepository = Repository.getRepository(); // BCEL
     // SyntheticRepository
 
     /**

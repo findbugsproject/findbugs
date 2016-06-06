@@ -22,7 +22,7 @@ package edu.umd.cs.findbugs.detect;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;

@@ -26,7 +26,7 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.classfile.Code;
+import org.apache.commons.bcel6.classfile.Code;
 
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;

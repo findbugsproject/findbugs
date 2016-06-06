@@ -22,26 +22,26 @@ package edu.umd.cs.findbugs.ba.npe;
 import java.util.Map;
 import java.util.Set;
 
-import org.apache.bcel.generic.ACONST_NULL;
-import org.apache.bcel.generic.ANEWARRAY;
-import org.apache.bcel.generic.CHECKCAST;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.GETFIELD;
-import org.apache.bcel.generic.GETSTATIC;
-import org.apache.bcel.generic.INVOKEINTERFACE;
-import org.apache.bcel.generic.INVOKESPECIAL;
-import org.apache.bcel.generic.INVOKESTATIC;
-import org.apache.bcel.generic.INVOKEVIRTUAL;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InvokeInstruction;
-import org.apache.bcel.generic.LDC;
-import org.apache.bcel.generic.LDC2_W;
-import org.apache.bcel.generic.MULTIANEWARRAY;
-import org.apache.bcel.generic.NEW;
-import org.apache.bcel.generic.NEWARRAY;
-import org.apache.bcel.generic.PUTFIELD;
-import org.apache.bcel.generic.ReferenceType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.generic.ACONST_NULL;
+import org.apache.commons.bcel6.generic.ANEWARRAY;
+import org.apache.commons.bcel6.generic.CHECKCAST;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.GETFIELD;
+import org.apache.commons.bcel6.generic.GETSTATIC;
+import org.apache.commons.bcel6.generic.INVOKEINTERFACE;
+import org.apache.commons.bcel6.generic.INVOKESPECIAL;
+import org.apache.commons.bcel6.generic.INVOKESTATIC;
+import org.apache.commons.bcel6.generic.INVOKEVIRTUAL;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InvokeInstruction;
+import org.apache.commons.bcel6.generic.LDC;
+import org.apache.commons.bcel6.generic.LDC2_W;
+import org.apache.commons.bcel6.generic.MULTIANEWARRAY;
+import org.apache.commons.bcel6.generic.NEW;
+import org.apache.commons.bcel6.generic.NEWARRAY;
+import org.apache.commons.bcel6.generic.PUTFIELD;
+import org.apache.commons.bcel6.generic.ReferenceType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.OpcodeStack.Item;
 import edu.umd.cs.findbugs.SystemProperties;
@@ -94,7 +94,7 @@ public class IsNullValueFrameModelingVisitor extends AbstractFrameModelingVisito
      *
      * @see
      * edu.umd.cs.findbugs.ba.AbstractFrameModelingVisitor#analyzeInstruction
-     * (org.apache.bcel.generic.Instruction)
+     * (org.apache.commons.bcel6.generic.Instruction)
      */
     @Override
     public void analyzeInstruction(Instruction ins) throws DataflowAnalysisException {

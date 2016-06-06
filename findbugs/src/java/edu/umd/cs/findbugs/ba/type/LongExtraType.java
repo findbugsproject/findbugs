@@ -19,7 +19,7 @@
 
 package edu.umd.cs.findbugs.ba.type;
 
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.generic.Type;
 
 /**
  * Special type used to represent the "extra" part of a long value. We say that

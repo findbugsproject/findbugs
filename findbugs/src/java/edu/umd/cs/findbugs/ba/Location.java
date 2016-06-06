@@ -23,7 +23,7 @@ import java.util.Objects;
 
 import javax.annotation.Nonnull;
 
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 
 /**

@@ -22,9 +22,9 @@ package edu.umd.cs.findbugs.ba.vna;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.ACONST_NULL;
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.generic.ACONST_NULL;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.FieldAnnotation;

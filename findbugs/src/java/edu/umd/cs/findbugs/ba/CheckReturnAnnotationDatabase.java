@@ -24,8 +24,8 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ScheduledThreadPoolExecutor;
 import java.util.concurrent.ThreadPoolExecutor;
 
-import org.apache.bcel.Repository;
-import org.apache.bcel.classfile.JavaClass;
+import org.apache.commons.bcel6.Repository;
+import org.apache.commons.bcel6.classfile.JavaClass;
 
 /**
  * @author pugh

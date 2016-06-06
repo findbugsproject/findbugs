@@ -21,11 +21,11 @@ package edu.umd.cs.findbugs.props;
 import java.util.BitSet;
 import java.util.Iterator;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.ReferenceType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.ReferenceType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.ba.CFG;
 import edu.umd.cs.findbugs.ba.CFGBuilderException;

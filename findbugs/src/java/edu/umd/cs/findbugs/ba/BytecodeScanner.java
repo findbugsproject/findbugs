@@ -27,7 +27,7 @@ import edu.umd.cs.findbugs.SystemProperties;
  *
  * @author David Hovemeyer
  */
-public class BytecodeScanner implements org.apache.bcel.Constants {
+public class BytecodeScanner implements org.apache.commons.bcel6.Constants {
     private static final boolean DEBUG = SystemProperties.getBoolean("bs.debug");
 
     /**

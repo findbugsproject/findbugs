@@ -26,10 +26,10 @@ import java.util.IdentityHashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.apache.bcel.Repository;
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.CodeException;
-import org.apache.bcel.classfile.JavaClass;
+import org.apache.commons.bcel6.Repository;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.CodeException;
+import org.apache.commons.bcel6.classfile.JavaClass;
 
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugAnnotation;

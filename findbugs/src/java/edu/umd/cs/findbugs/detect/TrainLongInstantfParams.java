@@ -21,9 +21,9 @@ package edu.umd.cs.findbugs.detect;
 
 import java.util.Iterator;
 
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.LocalVariable;
-import org.apache.bcel.classfile.LocalVariableTable;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.LocalVariable;
+import org.apache.commons.bcel6.classfile.LocalVariableTable;
 
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;

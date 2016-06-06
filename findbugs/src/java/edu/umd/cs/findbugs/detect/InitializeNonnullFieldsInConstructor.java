@@ -21,10 +21,10 @@ package edu.umd.cs.findbugs.detect;
 
 import java.util.HashSet;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.Field;
-import org.apache.bcel.classfile.JavaClass;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.Field;
+import org.apache.commons.bcel6.classfile.JavaClass;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;

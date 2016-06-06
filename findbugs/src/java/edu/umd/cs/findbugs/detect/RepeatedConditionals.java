@@ -23,11 +23,11 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.Map;
 
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.generic.BranchInstruction;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.MethodGen;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.generic.BranchInstruction;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.MethodGen;
 import org.objectweb.asm.Opcodes;
 
 import edu.umd.cs.findbugs.BugInstance;

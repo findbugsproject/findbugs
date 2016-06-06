@@ -19,7 +19,7 @@
 
 package edu.umd.cs.findbugs.ba.type;
 
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.generic.Type;
 
 /**
  * Special "bottom" type. It is the zero element for the type merge operation.

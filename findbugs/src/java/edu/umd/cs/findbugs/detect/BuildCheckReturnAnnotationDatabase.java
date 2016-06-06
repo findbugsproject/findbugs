@@ -22,10 +22,10 @@ package edu.umd.cs.findbugs.detect;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.bcel.classfile.ArrayElementValue;
-import org.apache.bcel.classfile.ClassElementValue;
-import org.apache.bcel.classfile.ElementValue;
-import org.apache.bcel.classfile.EnumElementValue;
+import org.apache.commons.bcel6.classfile.ArrayElementValue;
+import org.apache.commons.bcel6.classfile.ClassElementValue;
+import org.apache.commons.bcel6.classfile.ElementValue;
+import org.apache.commons.bcel6.classfile.EnumElementValue;
 
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.AnnotationDatabase;

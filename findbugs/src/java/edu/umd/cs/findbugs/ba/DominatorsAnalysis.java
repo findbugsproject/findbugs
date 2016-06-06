@@ -67,7 +67,7 @@ public class DominatorsAnalysis extends AbstractDominatorsAnalysis {
     // /* (non-Javadoc)
     // * @see
     // edu.umd.cs.findbugs.ba.DataflowTestDriver#createDataflow(edu.umd.cs.findbugs.ba.ClassContext,
-    // org.apache.bcel.classfile.Method)
+    // org.apache.commons.bcel6.classfile.Method)
     // */
     // @Override
     // public Dataflow<BitSet, DominatorsAnalysis> createDataflow(ClassContext

@@ -25,7 +25,7 @@ import java.util.TreeSet;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.Constants;
+import org.apache.commons.bcel6.Constants;
 import org.objectweb.asm.Attribute;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassVisitor;

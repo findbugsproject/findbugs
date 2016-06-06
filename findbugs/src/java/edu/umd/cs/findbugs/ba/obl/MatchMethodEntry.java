@@ -21,7 +21,7 @@ package edu.umd.cs.findbugs.ba.obl;
 import java.util.Arrays;
 import java.util.Collection;
 
-import org.apache.bcel.generic.ReferenceType;
+import org.apache.commons.bcel6.generic.ReferenceType;
 
 import edu.umd.cs.findbugs.ba.XMethod;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;

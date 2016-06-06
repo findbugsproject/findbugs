@@ -23,7 +23,7 @@ import java.util.List;
 
 import junit.framework.TestCase;
 
-import org.apache.bcel.generic.ReferenceType;
+import org.apache.commons.bcel6.generic.ReferenceType;
 
 /**
  * @author pugh

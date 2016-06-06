@@ -21,15 +21,15 @@ package edu.umd.cs.findbugs.ba;
 
 import java.util.BitSet;
 
-import org.apache.bcel.generic.IINC;
-import org.apache.bcel.generic.IndexedInstruction;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.LoadInstruction;
-import org.apache.bcel.generic.LocalVariableInstruction;
-import org.apache.bcel.generic.MethodGen;
-import org.apache.bcel.generic.RET;
-import org.apache.bcel.generic.StoreInstruction;
+import org.apache.commons.bcel6.generic.IINC;
+import org.apache.commons.bcel6.generic.IndexedInstruction;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.LoadInstruction;
+import org.apache.commons.bcel6.generic.LocalVariableInstruction;
+import org.apache.commons.bcel6.generic.MethodGen;
+import org.apache.commons.bcel6.generic.RET;
+import org.apache.commons.bcel6.generic.StoreInstruction;
 
 /**
  * Dataflow analysis to find live stores of locals. This is just a backward

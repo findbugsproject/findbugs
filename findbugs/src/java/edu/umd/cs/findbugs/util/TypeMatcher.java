@@ -19,7 +19,7 @@
 
 package edu.umd.cs.findbugs.util;
 
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.generic.Type;
 
 /**
  * Predicate for matching types.

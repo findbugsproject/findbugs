@@ -23,16 +23,16 @@ import java.util.BitSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.ARETURN;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.FieldInstruction;
-import org.apache.bcel.generic.IFNONNULL;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.InvokeInstruction;
-import org.apache.bcel.generic.PUTFIELD;
-import org.apache.bcel.generic.PUTSTATIC;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.generic.ARETURN;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.FieldInstruction;
+import org.apache.commons.bcel6.generic.IFNONNULL;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.InvokeInstruction;
+import org.apache.commons.bcel6.generic.PUTFIELD;
+import org.apache.commons.bcel6.generic.PUTSTATIC;
 
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.ba.AnalysisContext;

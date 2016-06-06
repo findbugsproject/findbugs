@@ -19,7 +19,7 @@
 
 package edu.umd.cs.findbugs.ba;
 
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 public class ReturnPathAnalysis extends ForwardDataflowAnalysis<ReturnPath> implements EdgeTypes {
     public ReturnPathAnalysis(DepthFirstSearch dfs) {

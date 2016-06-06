@@ -24,12 +24,12 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apache.bcel.Repository;
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.Field;
-import org.apache.bcel.classfile.FieldOrMethod;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.Repository;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.Field;
+import org.apache.commons.bcel6.classfile.FieldOrMethod;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.ba.Hierarchy;
 import edu.umd.cs.findbugs.ba.JavaClassAndMethod;

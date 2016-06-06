@@ -14,7 +14,7 @@ import java.util.regex.Pattern;
 
 import javax.annotation.WillClose;
 
-import org.apache.bcel.Constants;
+import org.apache.commons.bcel6.Constants;
 
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 import edu.umd.cs.findbugs.util.Util;

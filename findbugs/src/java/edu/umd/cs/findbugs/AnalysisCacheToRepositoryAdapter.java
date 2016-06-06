@@ -19,9 +19,9 @@
 
 package edu.umd.cs.findbugs;
 
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.util.ClassPath;
-import org.apache.bcel.util.Repository;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.util.ClassPath;
+import org.apache.commons.bcel6.util.Repository;
 
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
@@ -31,7 +31,7 @@ import edu.umd.cs.findbugs.internalAnnotations.SlashedClassName;
 import edu.umd.cs.findbugs.util.ClassName;
 
 /**
- * An implementation of org.apache.bcel.util.Repository that uses the
+ * An implementation of org.apache.commons.bcel6.util.Repository that uses the
  * AnalysisCache as its backing store.
  *
  * @author David Hovemeyer
@@ -46,7 +46,7 @@ public class AnalysisCacheToRepositoryAdapter implements Repository {
     /*
      * (non-Javadoc)
      *
-     * @see org.apache.bcel.util.Repository#clear()
+     * @see org.apache.commons.bcel6.util.Repository#clear()
      */
     @Override
     public void clear() {
@@ -56,7 +56,7 @@ public class AnalysisCacheToRepositoryAdapter implements Repository {
     /*
      * (non-Javadoc)
      *
-     * @see org.apache.bcel.util.Repository#findClass(java.lang.String)
+     * @see org.apache.commons.bcel6.util.Repository#findClass(java.lang.String)
      */
     @Override
     public JavaClass findClass(String className) {
@@ -69,7 +69,7 @@ public class AnalysisCacheToRepositoryAdapter implements Repository {
     /*
      * (non-Javadoc)
      *
-     * @see org.apache.bcel.util.Repository#getClassPath()
+     * @see org.apache.commons.bcel6.util.Repository#getClassPath()
      */
     @Override
     public ClassPath getClassPath() {
@@ -79,7 +79,7 @@ public class AnalysisCacheToRepositoryAdapter implements Repository {
     /*
      * (non-Javadoc)
      *
-     * @see org.apache.bcel.util.Repository#loadClass(java.lang.String)
+     * @see org.apache.commons.bcel6.util.Repository#loadClass(java.lang.String)
      */
     @Override
     public JavaClass loadClass(String className) throws ClassNotFoundException {
@@ -98,7 +98,7 @@ public class AnalysisCacheToRepositoryAdapter implements Repository {
     /*
      * (non-Javadoc)
      *
-     * @see org.apache.bcel.util.Repository#loadClass(java.lang.Class)
+     * @see org.apache.commons.bcel6.util.Repository#loadClass(java.lang.Class)
      */
     @Override
     public JavaClass loadClass(Class<?> cls) throws ClassNotFoundException {
@@ -109,7 +109,7 @@ public class AnalysisCacheToRepositoryAdapter implements Repository {
      * (non-Javadoc)
      *
      * @see
-     * org.apache.bcel.util.Repository#removeClass(org.apache.bcel.classfile
+     * org.apache.commons.bcel6.util.Repository#removeClass(org.apache.commons.bcel6.classfile
      * .JavaClass)
      */
     @Override
@@ -121,7 +121,7 @@ public class AnalysisCacheToRepositoryAdapter implements Repository {
      * (non-Javadoc)
      *
      * @see
-     * org.apache.bcel.util.Repository#storeClass(org.apache.bcel.classfile.
+     * org.apache.commons.bcel6.util.Repository#storeClass(org.apache.commons.bcel6.classfile.
      * JavaClass)
      */
     @Override

@@ -28,9 +28,9 @@ import java.util.TreeSet;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.Repository;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.Repository;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.classfile.CheckedAnalysisException;

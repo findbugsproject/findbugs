@@ -26,12 +26,12 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.ObjectType;
-import org.apache.bcel.generic.Type;
-import org.apache.bcel.generic.TypedInstruction;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.ObjectType;
+import org.apache.commons.bcel6.generic.Type;
+import org.apache.commons.bcel6.generic.TypedInstruction;
 
 import edu.umd.cs.findbugs.ResourceCollection;
 import edu.umd.cs.findbugs.ba.BasicBlock;

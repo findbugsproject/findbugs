@@ -25,15 +25,15 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.generic.ATHROW;
-import org.apache.bcel.generic.CodeExceptionGen;
-import org.apache.bcel.generic.IF_ACMPNE;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.MethodGen;
-import org.apache.bcel.generic.ObjectType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.generic.ATHROW;
+import org.apache.commons.bcel6.generic.CodeExceptionGen;
+import org.apache.commons.bcel6.generic.IF_ACMPNE;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.MethodGen;
+import org.apache.commons.bcel6.generic.ObjectType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.ba.AnalysisContext;
@@ -137,25 +137,25 @@ IsNullValueAnalysisFeatures {
             Instruction ins = loc.getHandle().getInstruction();
             switch (state) {
             case INIT:
-                assert ins instanceof org.apache.bcel.generic.NOP;
+                assert ins instanceof org.apache.commons.bcel6.generic.NOP;
                 state = PointerEqualityCheckState.START;
                 break;
             case START:
-                if (ins instanceof org.apache.bcel.generic.ALOAD) {
+                if (ins instanceof org.apache.commons.bcel6.generic.ALOAD) {
                     state = PointerEqualityCheckState.SAW1;
                 } else {
                     return null;
                 }
                 break;
             case SAW1:
-                if (ins instanceof org.apache.bcel.generic.ALOAD) {
+                if (ins instanceof org.apache.commons.bcel6.generic.ALOAD) {
                     state = PointerEqualityCheckState.SAW2;
                 } else {
                     return null;
                 }
                 break;
             case SAW2:
-                if (ins instanceof org.apache.bcel.generic.IF_ACMPNE) {
+                if (ins instanceof org.apache.commons.bcel6.generic.IF_ACMPNE) {
                     state = PointerEqualityCheckState.IFEQUAL;
                     target = ((IF_ACMPNE) ins).getIndex() + loc.getHandle().getPosition();
                     test = loc;
@@ -164,9 +164,9 @@ IsNullValueAnalysisFeatures {
                 }
                 break;
             case IFEQUAL:
-                if (ins instanceof org.apache.bcel.generic.ReturnInstruction || ins instanceof ATHROW) {
+                if (ins instanceof org.apache.commons.bcel6.generic.ReturnInstruction || ins instanceof ATHROW) {
                     state = PointerEqualityCheckState.IFNOTEQUAL;
-                } else if (ins instanceof org.apache.bcel.generic.BranchInstruction) {
+                } else if (ins instanceof org.apache.commons.bcel6.generic.BranchInstruction) {
                     return null;
                 }
                 break;

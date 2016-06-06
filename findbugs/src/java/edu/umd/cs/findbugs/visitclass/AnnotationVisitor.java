@@ -23,14 +23,14 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.classfile.AnnotationEntry;
-import org.apache.bcel.classfile.Annotations;
-import org.apache.bcel.classfile.ArrayElementValue;
-import org.apache.bcel.classfile.ElementValue;
-import org.apache.bcel.classfile.ElementValuePair;
-import org.apache.bcel.classfile.ParameterAnnotationEntry;
-import org.apache.bcel.classfile.ParameterAnnotations;
-import org.apache.bcel.classfile.SimpleElementValue;
+import org.apache.commons.bcel6.classfile.AnnotationEntry;
+import org.apache.commons.bcel6.classfile.Annotations;
+import org.apache.commons.bcel6.classfile.ArrayElementValue;
+import org.apache.commons.bcel6.classfile.ElementValue;
+import org.apache.commons.bcel6.classfile.ElementValuePair;
+import org.apache.commons.bcel6.classfile.ParameterAnnotationEntry;
+import org.apache.commons.bcel6.classfile.ParameterAnnotations;
+import org.apache.commons.bcel6.classfile.SimpleElementValue;
 
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
@@ -284,7 +284,7 @@ public class AnnotationVisitor extends PreorderVisitor {
      * (non-Javadoc)
      *
      * @see
-     * org.apache.bcel.classfile.Visitor#visitAnnotation(org.apache.bcel.classfile
+     * org.apache.commons.bcel6.classfile.Visitor#visitAnnotation(org.apache.commons.bcel6.classfile
      * .Annotations)
      */
     @Override

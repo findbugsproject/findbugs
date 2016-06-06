@@ -30,7 +30,7 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.OpcodeStack;
 import edu.umd.cs.findbugs.OpcodeStack.Item;

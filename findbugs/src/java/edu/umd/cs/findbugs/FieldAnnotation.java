@@ -21,16 +21,16 @@ package edu.umd.cs.findbugs;
 
 import java.io.IOException;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.Field;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.FieldInstruction;
-import org.apache.bcel.generic.GETFIELD;
-import org.apache.bcel.generic.GETSTATIC;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.PUTFIELD;
-import org.apache.bcel.generic.PUTSTATIC;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.classfile.Field;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.FieldInstruction;
+import org.apache.commons.bcel6.generic.GETFIELD;
+import org.apache.commons.bcel6.generic.GETSTATIC;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.PUTFIELD;
+import org.apache.commons.bcel6.generic.PUTSTATIC;
 
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.SignatureConverter;

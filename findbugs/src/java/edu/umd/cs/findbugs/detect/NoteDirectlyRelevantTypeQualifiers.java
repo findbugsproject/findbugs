@@ -23,8 +23,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.JavaClass;
 
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector;

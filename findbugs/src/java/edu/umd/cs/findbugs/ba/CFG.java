@@ -27,9 +27,9 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.TreeSet;
 
-import org.apache.bcel.generic.ATHROW;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.MethodGen;
+import org.apache.commons.bcel6.generic.ATHROW;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.MethodGen;
 
 import edu.umd.cs.findbugs.ba.Edge.Type;
 import edu.umd.cs.findbugs.graph.AbstractGraph;

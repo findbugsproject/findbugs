@@ -22,9 +22,9 @@ package edu.umd.cs.findbugs.ba;
 import java.io.IOException;
 import java.io.InputStream;
 
-import org.apache.bcel.Repository;
-import org.apache.bcel.classfile.ClassParser;
-import org.apache.bcel.classfile.JavaClass;
+import org.apache.commons.bcel6.Repository;
+import org.apache.commons.bcel6.classfile.ClassParser;
+import org.apache.commons.bcel6.classfile.JavaClass;
 
 /**
  * A special version of ClassParser that automatically enters parsed classes

@@ -26,9 +26,9 @@ import java.util.NoSuchElementException;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nullable;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.generic.CodeExceptionGen;
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.generic.CodeExceptionGen;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 import edu.umd.cs.findbugs.ba.type.TypeMerger;
 import edu.umd.cs.findbugs.graph.AbstractVertex;

@@ -21,7 +21,7 @@ package edu.umd.cs.findbugs.ba;
 
 import java.util.Iterator;
 
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 /**
  * A Path is a sequence of basic blocks.

@@ -19,9 +19,9 @@
 
 package edu.umd.cs.findbugs.classfile;
 
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.INVOKESTATIC;
-import org.apache.bcel.generic.InvokeInstruction;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.INVOKESTATIC;
+import org.apache.commons.bcel6.generic.InvokeInstruction;
 
 import edu.umd.cs.findbugs.ba.ComparableMethod;
 import edu.umd.cs.findbugs.internalAnnotations.SlashedClassName;

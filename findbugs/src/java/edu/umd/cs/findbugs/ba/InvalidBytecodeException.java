@@ -18,8 +18,8 @@
  */
 package edu.umd.cs.findbugs.ba;
 
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.MethodGen;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.MethodGen;
 
 /**
  * An exception that may be thrown by frame modeling visitor classes to indicate

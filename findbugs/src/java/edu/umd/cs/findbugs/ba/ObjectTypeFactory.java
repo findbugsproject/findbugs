@@ -22,7 +22,7 @@ package edu.umd.cs.findbugs.ba;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apache.bcel.generic.ObjectType;
+import org.apache.commons.bcel6.generic.ObjectType;
 
 import edu.umd.cs.findbugs.FindBugs;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;

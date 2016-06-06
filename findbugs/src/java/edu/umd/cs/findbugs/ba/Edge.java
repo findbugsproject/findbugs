@@ -28,7 +28,7 @@ import java.util.Set;
 import javax.annotation.Nonnull;
 import javax.annotation.meta.TypeQualifier;
 
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 import edu.umd.cs.findbugs.graph.AbstractEdge;
 

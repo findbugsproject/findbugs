@@ -26,20 +26,20 @@ import java.util.Set;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.Repository;
-import org.apache.bcel.classfile.Field;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.ArrayType;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.FieldInstruction;
-import org.apache.bcel.generic.INVOKESTATIC;
-import org.apache.bcel.generic.Instruction;
-import org.apache.bcel.generic.InvokeInstruction;
-import org.apache.bcel.generic.ObjectType;
-import org.apache.bcel.generic.ReferenceType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.Repository;
+import org.apache.commons.bcel6.classfile.Field;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.generic.ArrayType;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.FieldInstruction;
+import org.apache.commons.bcel6.generic.INVOKESTATIC;
+import org.apache.commons.bcel6.generic.Instruction;
+import org.apache.commons.bcel6.generic.InvokeInstruction;
+import org.apache.commons.bcel6.generic.ObjectType;
+import org.apache.commons.bcel6.generic.ReferenceType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.ba.ch.Subtypes2;
@@ -53,7 +53,7 @@ import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 
 /**
  * Facade for class hierarchy queries. These typically access the class
- * hierarchy using the {@link org.apache.bcel.Repository} class. Callers should
+ * hierarchy using the {@link org.apache.commons.bcel6.Repository} class. Callers should
  * generally expect to handle ClassNotFoundException for when referenced classes
  * can't be found.
  *

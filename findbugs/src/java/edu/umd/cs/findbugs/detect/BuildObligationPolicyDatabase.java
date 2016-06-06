@@ -28,8 +28,8 @@ import javax.annotation.WillClose;
 import javax.annotation.WillCloseWhenClosed;
 import javax.annotation.WillNotClose;
 
-import org.apache.bcel.generic.ObjectType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.generic.ObjectType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.Detector2;

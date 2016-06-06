@@ -26,8 +26,8 @@ import java.util.NoSuchElementException;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.InvokeInstruction;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.InvokeInstruction;
 
 /**
  * A simple class to parse method signatures.

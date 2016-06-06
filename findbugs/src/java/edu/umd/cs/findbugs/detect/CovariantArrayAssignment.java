@@ -19,9 +19,9 @@
 
 package edu.umd.cs.findbugs.detect;
 
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.LocalVariable;
-import org.apache.bcel.classfile.LocalVariableTable;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.LocalVariable;
+import org.apache.commons.bcel6.classfile.LocalVariableTable;
 
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;

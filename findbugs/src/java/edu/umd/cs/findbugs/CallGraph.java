@@ -21,7 +21,7 @@ package edu.umd.cs.findbugs;
 
 import java.util.IdentityHashMap;
 
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.graph.AbstractGraph;
 

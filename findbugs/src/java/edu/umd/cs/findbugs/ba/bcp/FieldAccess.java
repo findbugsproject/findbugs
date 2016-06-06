@@ -19,9 +19,9 @@
 
 package edu.umd.cs.findbugs.ba.bcp;
 
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.FieldInstruction;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.FieldInstruction;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.ba.DataflowAnalysisException;
 import edu.umd.cs.findbugs.ba.vna.ValueNumber;
@@ -35,7 +35,7 @@ import edu.umd.cs.findbugs.ba.vna.ValueNumberFrame;
  * @see Load
  * @see Store
  */
-public abstract class FieldAccess extends SingleInstruction implements org.apache.bcel.Constants {
+public abstract class FieldAccess extends SingleInstruction implements org.apache.commons.bcel6.Constants {
     private final String fieldVarName;
 
     private final String valueVarName;

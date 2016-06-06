@@ -22,14 +22,14 @@ package edu.umd.cs.findbugs.ba;
 import java.util.Iterator;
 import java.util.LinkedList;
 
-import org.apache.bcel.generic.ATHROW;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.GotoInstruction;
-import org.apache.bcel.generic.INVOKESTATIC;
-import org.apache.bcel.generic.IfInstruction;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.ReturnInstruction;
-import org.apache.bcel.generic.Select;
+import org.apache.commons.bcel6.generic.ATHROW;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.GotoInstruction;
+import org.apache.commons.bcel6.generic.INVOKESTATIC;
+import org.apache.commons.bcel6.generic.IfInstruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.ReturnInstruction;
+import org.apache.commons.bcel6.generic.Select;
 
 /**
  * Visitor to find all of the targets of an instruction whose InstructionHandle
@@ -38,7 +38,7 @@ import org.apache.bcel.generic.Select;
  * @author David Hovemeyer
  * @author Chadd Williams
  */
-public class TargetEnumeratingVisitor extends org.apache.bcel.generic.EmptyVisitor implements EdgeTypes {
+public class TargetEnumeratingVisitor extends org.apache.commons.bcel6.generic.EmptyVisitor implements EdgeTypes {
 
     private final InstructionHandle handle;
 

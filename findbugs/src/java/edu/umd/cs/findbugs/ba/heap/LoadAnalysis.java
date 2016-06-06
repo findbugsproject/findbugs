@@ -19,7 +19,7 @@
 
 package edu.umd.cs.findbugs.ba.heap;
 
-import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
 
 import edu.umd.cs.findbugs.ba.DepthFirstSearch;
 import edu.umd.cs.findbugs.ba.XField;

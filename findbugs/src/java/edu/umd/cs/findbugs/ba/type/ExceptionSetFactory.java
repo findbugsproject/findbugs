@@ -23,7 +23,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import org.apache.bcel.generic.ObjectType;
+import org.apache.commons.bcel6.generic.ObjectType;
 
 public class ExceptionSetFactory implements Serializable {
     /**

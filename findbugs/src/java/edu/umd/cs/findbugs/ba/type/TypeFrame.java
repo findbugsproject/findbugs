@@ -21,7 +21,7 @@ package edu.umd.cs.findbugs.ba.type;
 
 import java.util.BitSet;
 
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.ba.DataflowAnalysisException;
 import edu.umd.cs.findbugs.ba.Frame;

@@ -26,7 +26,7 @@ import java.util.HashSet;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.JavaClass;
 
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.SourceFinder;

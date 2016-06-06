@@ -19,7 +19,7 @@
 
 package edu.umd.cs.findbugs.ba;
 
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.classfile.Method;
 
 /**
  * Interface for choosing methods.

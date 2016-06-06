@@ -19,20 +19,20 @@
 
 package edu.umd.cs.findbugs.ba;
 
-import org.apache.bcel.generic.AASTORE;
-import org.apache.bcel.generic.ARETURN;
-import org.apache.bcel.generic.ArrayInstruction;
-import org.apache.bcel.generic.CHECKCAST;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.FieldInstruction;
-import org.apache.bcel.generic.INVOKEINTERFACE;
-import org.apache.bcel.generic.INVOKESPECIAL;
-import org.apache.bcel.generic.INVOKESTATIC;
-import org.apache.bcel.generic.INVOKEVIRTUAL;
-import org.apache.bcel.generic.InstructionHandle;
-import org.apache.bcel.generic.InvokeInstruction;
-import org.apache.bcel.generic.PUTFIELD;
-import org.apache.bcel.generic.PUTSTATIC;
+import org.apache.commons.bcel6.generic.AASTORE;
+import org.apache.commons.bcel6.generic.ARETURN;
+import org.apache.commons.bcel6.generic.ArrayInstruction;
+import org.apache.commons.bcel6.generic.CHECKCAST;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.FieldInstruction;
+import org.apache.commons.bcel6.generic.INVOKEINTERFACE;
+import org.apache.commons.bcel6.generic.INVOKESPECIAL;
+import org.apache.commons.bcel6.generic.INVOKESTATIC;
+import org.apache.commons.bcel6.generic.INVOKEVIRTUAL;
+import org.apache.commons.bcel6.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.InvokeInstruction;
+import org.apache.commons.bcel6.generic.PUTFIELD;
+import org.apache.commons.bcel6.generic.PUTSTATIC;
 
 public abstract class ResourceValueFrameModelingVisitor extends AbstractFrameModelingVisitor<ResourceValue, ResourceValueFrame> {
     public ResourceValueFrameModelingVisitor(ConstantPoolGen cpg) {

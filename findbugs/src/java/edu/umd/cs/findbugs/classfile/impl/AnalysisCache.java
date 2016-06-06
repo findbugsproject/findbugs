@@ -29,8 +29,8 @@ import java.util.Map;
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
 
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
 
 import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.SystemProperties;

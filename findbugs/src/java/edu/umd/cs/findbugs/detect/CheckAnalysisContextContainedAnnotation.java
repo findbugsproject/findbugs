@@ -19,9 +19,9 @@
 
 package edu.umd.cs.findbugs.detect;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.Field;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.Field;
 
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;

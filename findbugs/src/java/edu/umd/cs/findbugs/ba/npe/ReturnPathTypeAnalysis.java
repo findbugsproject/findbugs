@@ -19,7 +19,7 @@
 
 package edu.umd.cs.findbugs.ba.npe;
 
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 import edu.umd.cs.findbugs.ba.BasicAbstractDataflowAnalysis;
 import edu.umd.cs.findbugs.ba.BasicBlock;

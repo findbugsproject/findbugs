@@ -26,9 +26,9 @@ import java.lang.reflect.Modifier;
  * we check whether the ones extended in FindBugs code are non-final. The
  * following BCEL classes are extended in FindBugs code:
  *
- * org.apache.bcel.generic.ObjectType; org.apache.bcel.generic.Type;
- * org.apache.bcel.Constants; org.apache.bcel.classfile.EmptyVisitor
- * org.apache.bcel.Repository;
+ * org.apache.commons.bcel6.generic.ObjectType; org.apache.commons.bcel6.generic.Type;
+ * org.apache.commons.bcel6.Constants; org.apache.commons.bcel6.classfile.EmptyVisitor
+ * org.apache.commons.bcel6.Repository;
  *
  * @author langmead
  */
@@ -38,27 +38,27 @@ public class CheckBcel {
     /**
      *
      */
-    private static final String ORG_APACHE_BCEL_REPOSITORY = "org.apache.bcel.Repository";
+    private static final String ORG_APACHE_BCEL_REPOSITORY = "org.apache.commons.bcel6.Repository";
 
     /**
      *
      */
-    private static final String ORG_APACHE_BCEL_CLASSFILE_EMPTY_VISITOR = "org.apache.bcel.classfile.EmptyVisitor";
+    private static final String ORG_APACHE_BCEL_CLASSFILE_EMPTY_VISITOR = "org.apache.commons.bcel6.classfile.EmptyVisitor";
 
     /**
      *
      */
-    private static final String ORG_APACHE_BCEL_CONSTANTS = "org.apache.bcel.Constants";
+    private static final String ORG_APACHE_BCEL_CONSTANTS = "org.apache.commons.bcel6.Constants";
 
     /**
      *
      */
-    private static final String ORG_APACHE_BCEL_GENERIC_TYPE = "org.apache.bcel.generic.Type";
+    private static final String ORG_APACHE_BCEL_GENERIC_TYPE = "org.apache.commons.bcel6.generic.Type";
 
     /**
      *
      */
-    private static final String ORG_APACHE_BCEL_GENERIC_OBJECT_TYPE = "org.apache.bcel.generic.ObjectType";
+    private static final String ORG_APACHE_BCEL_GENERIC_OBJECT_TYPE = "org.apache.commons.bcel6.generic.ObjectType";
 
     /**
      * Check whether given Class is declared final

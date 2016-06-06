@@ -19,7 +19,7 @@
 
 package edu.umd.cs.findbugs.ba;
 
-import org.apache.bcel.Constants;
+import org.apache.commons.bcel6.Constants;
 
 public class AssignedFieldMap implements Constants {
     /*

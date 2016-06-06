@@ -24,13 +24,13 @@ import java.util.NoSuchElementException;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.classfile.Attribute;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.classfile.Signature;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.InvokeInstruction;
-import org.apache.bcel.generic.ObjectType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.classfile.Attribute;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.classfile.Signature;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.InvokeInstruction;
+import org.apache.commons.bcel6.generic.ObjectType;
+import org.apache.commons.bcel6.generic.Type;
 
 
 /**

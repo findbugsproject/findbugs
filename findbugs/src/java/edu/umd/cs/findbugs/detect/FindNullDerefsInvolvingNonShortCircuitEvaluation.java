@@ -24,9 +24,9 @@ import java.util.Set;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.generic.IfInstruction;
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.generic.IfInstruction;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 import edu.umd.cs.findbugs.BugAnnotation;
 import edu.umd.cs.findbugs.BugInstance;

@@ -19,17 +19,17 @@
 
 package edu.umd.cs.findbugs.bcel;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.Attribute;
-import org.apache.bcel.classfile.FieldOrMethod;
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.classfile.Synthetic;
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.FieldGenOrMethodGen;
-import org.apache.bcel.generic.FieldInstruction;
-import org.apache.bcel.generic.InvokeInstruction;
-import org.apache.bcel.generic.ObjectType;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.classfile.Attribute;
+import org.apache.commons.bcel6.classfile.FieldOrMethod;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.classfile.Synthetic;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.FieldGenOrMethodGen;
+import org.apache.commons.bcel6.generic.FieldInstruction;
+import org.apache.commons.bcel6.generic.InvokeInstruction;
+import org.apache.commons.bcel6.generic.ObjectType;
 
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.DescriptorFactory;

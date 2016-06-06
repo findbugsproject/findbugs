@@ -19,7 +19,7 @@
 
 package edu.umd.cs.findbugs.classfile.engine.bcel;
 
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.ba.ClassContext;
 import edu.umd.cs.findbugs.ba.npe.DerefFinder;

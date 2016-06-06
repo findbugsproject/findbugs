@@ -19,8 +19,8 @@
 
 package edu.umd.cs.findbugs.classfile.engine.bcel;
 
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.generic.MethodGen;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.generic.MethodGen;
 
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.AnalysisFeatures;

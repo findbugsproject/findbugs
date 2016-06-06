@@ -21,7 +21,7 @@ package edu.umd.cs.findbugs.bcel;
 
 import javax.annotation.OverridingMethodsMustInvokeSuper;
 
-import org.apache.bcel.classfile.Code;
+import org.apache.commons.bcel6.classfile.Code;
 
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.OpcodeStack;

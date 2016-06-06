@@ -19,8 +19,8 @@
 
 package edu.umd.cs.findbugs.ba;
 
-import org.apache.bcel.generic.ConstantPoolGen;
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.ConstantPoolGen;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 /**
  * A ResourceTracker is used with ResourceValueAnalysis to determine where in a

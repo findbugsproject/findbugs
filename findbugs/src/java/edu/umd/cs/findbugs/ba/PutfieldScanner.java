@@ -22,8 +22,8 @@ package edu.umd.cs.findbugs.ba;
 import java.util.Map;
 import java.util.TreeMap;
 
-import org.apache.bcel.classfile.JavaClass;
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.classfile.JavaClass;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.OpcodeStack;
 import edu.umd.cs.findbugs.bcel.OpcodeStackDetector;

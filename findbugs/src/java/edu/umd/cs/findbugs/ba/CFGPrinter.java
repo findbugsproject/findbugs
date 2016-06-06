@@ -22,8 +22,8 @@ package edu.umd.cs.findbugs.ba;
 import java.io.PrintStream;
 import java.util.Iterator;
 
-import org.apache.bcel.generic.CodeExceptionGen;
-import org.apache.bcel.generic.InstructionHandle;
+import org.apache.commons.bcel6.generic.CodeExceptionGen;
+import org.apache.commons.bcel6.generic.InstructionHandle;
 
 /**
  * Print out a representation of a control-flow graph. For debugging.

@@ -22,9 +22,9 @@ package edu.umd.cs.findbugs.ba.type;
 import java.util.HashSet;
 import java.util.Iterator;
 
-import org.apache.bcel.classfile.ClassFormatException;
-import org.apache.bcel.generic.ReferenceType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.classfile.ClassFormatException;
+import org.apache.commons.bcel6.generic.ReferenceType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.ba.AnalysisContext;
 import edu.umd.cs.findbugs.ba.Hierarchy;

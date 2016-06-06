@@ -19,10 +19,10 @@
 
 package edu.umd.cs.findbugs.detect;
 
-import org.apache.bcel.classfile.Field;
-import org.apache.bcel.classfile.FieldOrMethod;
-import org.apache.bcel.classfile.LocalVariable;
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.classfile.Field;
+import org.apache.commons.bcel6.classfile.FieldOrMethod;
+import org.apache.commons.bcel6.classfile.LocalVariable;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;

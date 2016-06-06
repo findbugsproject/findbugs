@@ -23,8 +23,8 @@ package edu.umd.cs.findbugs.detect;
 import java.util.Collections;
 import java.util.Set;
 
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.Method;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.Method;
 
 import edu.umd.cs.findbugs.BugAccumulator;
 import edu.umd.cs.findbugs.BugInstance;

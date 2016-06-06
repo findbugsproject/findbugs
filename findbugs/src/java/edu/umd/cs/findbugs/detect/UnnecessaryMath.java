@@ -24,11 +24,11 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.Constant;
-import org.apache.bcel.classfile.ConstantDouble;
-import org.apache.bcel.classfile.ConstantFloat;
-import org.apache.bcel.classfile.ConstantLong;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.Constant;
+import org.apache.commons.bcel6.classfile.ConstantDouble;
+import org.apache.commons.bcel6.classfile.ConstantFloat;
+import org.apache.commons.bcel6.classfile.ConstantLong;
 
 import edu.umd.cs.findbugs.BugInstance;
 import edu.umd.cs.findbugs.BugReporter;

@@ -19,7 +19,7 @@
 
 package edu.umd.cs.findbugs.detect;
 
-import static org.apache.bcel.Constants.*;
+import static org.apache.commons.bcel6.Constants.*;
 
 import org.objectweb.asm.FieldVisitor;
 import org.objectweb.asm.MethodVisitor;

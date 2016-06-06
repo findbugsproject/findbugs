@@ -30,16 +30,16 @@ import java.util.Map;
 
 import javax.annotation.CheckForNull;
 
-import org.apache.bcel.Constants;
-import org.apache.bcel.classfile.Attribute;
-import org.apache.bcel.classfile.ClassFormatException;
-import org.apache.bcel.classfile.Code;
-import org.apache.bcel.classfile.ConstantClass;
-import org.apache.bcel.classfile.Method;
-import org.apache.bcel.classfile.StackMapTable;
-import org.apache.bcel.classfile.StackMapTableEntry;
-import org.apache.bcel.classfile.StackMapType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.Constants;
+import org.apache.commons.bcel6.classfile.Attribute;
+import org.apache.commons.bcel6.classfile.ClassFormatException;
+import org.apache.commons.bcel6.classfile.Code;
+import org.apache.commons.bcel6.classfile.ConstantClass;
+import org.apache.commons.bcel6.classfile.Method;
+import org.apache.commons.bcel6.classfile.StackMapTable;
+import org.apache.commons.bcel6.classfile.StackMapTableEntry;
+import org.apache.commons.bcel6.classfile.StackMapType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.OpcodeStack.Item;
 import edu.umd.cs.findbugs.OpcodeStack.JumpInfo;

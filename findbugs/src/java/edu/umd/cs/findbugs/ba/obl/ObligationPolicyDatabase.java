@@ -26,7 +26,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.bcel.generic.ReferenceType;
+import org.apache.commons.bcel6.generic.ReferenceType;
 
 import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.ba.XMethod;

@@ -19,9 +19,9 @@
 
 package edu.umd.cs.findbugs.ba.ch;
 
-import org.apache.bcel.generic.ArrayType;
-import org.apache.bcel.generic.ObjectType;
-import org.apache.bcel.generic.Type;
+import org.apache.commons.bcel6.generic.ArrayType;
+import org.apache.commons.bcel6.generic.ObjectType;
+import org.apache.commons.bcel6.generic.Type;
 
 import edu.umd.cs.findbugs.FindBugsTestCase;
 import edu.umd.cs.findbugs.RunnableWithExceptions;
