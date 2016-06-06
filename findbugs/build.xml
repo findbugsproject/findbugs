@@ -447,7 +447,7 @@
               projectName="Byte code Engineering Library (BCEL)"
               outputFile="${sampleoutput.dir}/bcel.xml"
             >
-      <class location="${jar.dir}/bcel-6.0-SNAPSHOT.jar" />
+      <class location="${jar.dir}/commons-bcel6-6.0-SNAPSHOT.jar" />
     </findbugs>
     <findbugs home="${basedir}"
               output="xml:withMessages"
@@ -455,7 +455,7 @@
               jvmargs="-ea -Xmx1200m"
               projectName="Byte code Engineering Library (BCEL)"
               outputFile="${sampleoutput.dir}/bcel-cloud-appengine.xml" >
-      <class location="${jar.dir}/bcel-6.0-SNAPSHOT.jar" />
+      <class location="${jar.dir}/commons-bcel6-6.0-SNAPSHOT.jar" />
     </findbugs>
 
 
@@ -1180,7 +1180,7 @@
         </delete>
     </target>
 
-    <target name="init" depends="properties,getasm6">
+    <target name="init" depends="properties,getasm6,getbcel6">
         <mkdir dir="${scripts.dir}"/>
         <mkdir dir="${build.dir}"/>
         <mkdir dir="${doc.dir}"/>
@@ -1209,6 +1209,9 @@
        </condition>
       <condition property="asm6.exists">
           <available file="${jar.dir}/asm-debug-all-6.0-SNAPSHOT.jar" />
+      </condition>
+      <condition property="bcel6.exists">
+          <available file="${jar.dir}/commons-bcel6-6.0-SNAPSHOT.jar" />
       </condition>
     </target>
 
@@ -1242,6 +1245,12 @@
     <target name="getasm6" unless="asm6.exists">
         <get src="https://github.com/findbugsproject/findbugs/releases/download/3.1.0_preview1/asm-debug-all-6.0-SNAPSHOT.jar"
              dest="${jar.dir}/asm-debug-all-6.0-SNAPSHOT.jar"
+         verbose="on"/>
+    </target>
+
+    <target name="getbcel6" unless="bcel6.exists">
+        <get src="https://github.com/findbugsproject/findbugs/files/300160/commons-bcel6-6.0-SNAPSHOT.zip"
+             dest="${jar.dir}/commons-bcel6-6.0-SNAPSHOT.jar"
          verbose="on"/>
     </target>
 

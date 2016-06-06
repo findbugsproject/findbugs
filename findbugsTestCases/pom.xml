@@ -17,8 +17,8 @@
       <artifactId>findbugs</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>bcel</artifactId>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-bcel6</artifactId>
     </dependency>
     <dependency>
       <groupId>dom4j</groupId>

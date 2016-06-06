@@ -187,9 +187,9 @@
       <version>2.0.1</version>
     </dependency>
     <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>bcel-findbugs</artifactId>
-      <version>6.0</version>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-bcel6</artifactId>
+      <version>6.0-SNAPSHOT</version>
     </dependency>
     <dependency>
       <groupId>com.google.code.findbugs</groupId>
