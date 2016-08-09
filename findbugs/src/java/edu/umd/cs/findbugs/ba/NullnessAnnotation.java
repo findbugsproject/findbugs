@@ -44,6 +44,7 @@ public class NullnessAnnotation extends AnnotationEnumeration<NullnessAnnotation
             className = ClassName.toDottedClassName(className);
             if ("com.google.common.base.Nullable".equals(className)
                     || "org.eclipse.jdt.annotation.Nullable".equals(className)
+                    || "android.support.annotation.Nullable".equals(className)
                     || "org.jetbrains.annotations.Nullable".equals(className)) {
                 return CHECK_FOR_NULL;
             }
