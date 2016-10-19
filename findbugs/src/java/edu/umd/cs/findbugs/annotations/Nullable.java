@@ -24,9 +24,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import javax.annotation.meta.TypeQualifierNickname;
-import javax.annotation.meta.When;
-
 /**
  * The annotated element could be null under some circumstances.
  *
@@ -37,14 +34,10 @@ import javax.annotation.meta.When;
  * When this annotation is applied to a method it applies to the method return
  * value.
  *
- * @deprecated - use {@link javax.annotation.Nullable} instead.
  **/
 @Documented
 @Target({ ElementType.FIELD, ElementType.METHOD, ElementType.PARAMETER, ElementType.LOCAL_VARIABLE })
 @Retention(RetentionPolicy.CLASS)
-@javax.annotation.Nonnull(when = When.UNKNOWN)
-@TypeQualifierNickname
-@Deprecated
 public @interface Nullable {
 
 }

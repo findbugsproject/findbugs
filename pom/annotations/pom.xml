@@ -40,12 +40,6 @@
       <version>1.0</version>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
-      <version>3.0.1</version>
-      <scope>compile</scope>
-    </dependency>
   </dependencies>
 
   <developers>
@@ -96,7 +90,7 @@
            <goal>jar</goal>
           </goals>
           <configuration>
-           <subpackages>edu.umd.cs.findbugs.annotations:net.jcip.annotations:javax.annotation:javax.annotation.meta:javax.annotation.concurrent</subpackages>
+           <subpackages>edu.umd.cs.findbugs.annotations:net.jcip.annotations</subpackages>
            <includeDependencySources>true</includeDependencySources>
            <quiet>true</quiet>
           </configuration>
@@ -154,7 +148,7 @@
          <Bundle-Name>${project.name}</Bundle-Name>
          <Bundle-RequiredExecutionEnvironment>J2SE-1.5</Bundle-RequiredExecutionEnvironment>
          <Import-Package></Import-Package>
-         <Export-Package>edu.umd.cs.findbugs.annotations;javax.annotation;javax.annotation.concurrent;javax.annotation.meta;net.jcip.annotations</Export-Package>
+         <Export-Package>edu.umd.cs.findbugs.annotations;net.jcip.annotations</Export-Package>
         </instructions>
        </configuration>
       </plugin>

@@ -33,16 +33,6 @@
     <url>https://github.com/findbugsproject/findbugs/</url>
   </scm>
 
-  <dependencies>
-    <dependency>
-      <groupId>com.google.code.findbugs</groupId>
-      <artifactId>jsr305</artifactId>
-      <version>3.0.1</version>
-      <scope>compile</scope>
-      <optional>true</optional>
-    </dependency>
-  </dependencies>
-
   <developers>
     <developer>
       <id>bp</id>
