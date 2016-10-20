@@ -76,7 +76,6 @@ public class GenericSignatureParser {
 
                 case 'L':
                 case 'T':
-                    String tmp = "";
                     int startsemi = index;
                     int leftCount = 0;
                     int i = startsemi + 1;

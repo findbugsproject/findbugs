@@ -253,7 +253,6 @@ public class SystemProperties {
         if (URL_REWRITE_PATTERN_STRING != null && URL_REWRITE_FORMAT != null) {
             try {
                 p = Pattern.compile(URL_REWRITE_PATTERN_STRING);
-                String ignored = String.format(URL_REWRITE_FORMAT, "");
             } catch (PatternSyntaxException e) {
                 throw new IllegalArgumentException("Bad findbugs.urlRewritePattern '" + URL_REWRITE_PATTERN_STRING + "' - "
                         + e.getClass().getSimpleName() + ": "+ e.getMessage());

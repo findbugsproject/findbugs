@@ -346,7 +346,6 @@ public class ExecutionPlan {
 
     private void buildPassList(ConstraintGraph constraintGraph) throws OrderingConstraintException {
 
-        int passCount = 0;
         while (constraintGraph.getNumVertices() > 0) {
             List<DetectorNode> inDegreeZeroList = new LinkedList<DetectorNode>();
             // Get all of the detectors nodes with in-degree 0.
@@ -382,7 +381,6 @@ public class ExecutionPlan {
             // it doesn't assign them a position in the pass.
             AnalysisPass pass = new AnalysisPass();
             addPass(pass);
-            passCount++;
             for (DetectorNode node : inDegreeZeroList) {
                 assignToPass(node.getFactory(), pass);
             }
