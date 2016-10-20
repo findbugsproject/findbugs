@@ -605,30 +605,21 @@ public abstract class Frame<ValueType> {
      */
     public void copyFrom(Frame<ValueType> other) {
         lastUpdateTimestamp = other.lastUpdateTimestamp;
-        if (true) {
-            int size = slotList.size();
-            if (size == other.slotList.size()) {
-                for (int i = 0; i < size; i++) {
-                    slotList.set(i, other.slotList.get(i));
-                }
-            } else {
-                slotList.clear();
-                for (ValueType v : other.slotList) {
-                    slotList.add(v);
-                }
+        /*
+         * Andrei, 27.02.2008: Avoiding list resizing when size is the same
+         * reduced this method from ~18% overall FB execution time, to only 5%
+         */
+        int size = slotList.size();
+        if (size == other.slotList.size()) {
+            for (int i = 0; i < size; i++) {
+                slotList.set(i, other.slotList.get(i));
             }
         } else {
             slotList.clear();
-            slotList.addAll(other.slotList);
-
+            for (ValueType v : other.slotList) {
+                slotList.add(v);
+            }
         }
-        /*
-         * Andrei, 27.02.2008: "optimized" code below takes ~18% overall FB
-         * execution time, code above only 5% int size = slotList.size(); if
-         * (size == other.slotList.size()) { for (int i = 0; i < size; i++)
-         * slotList.set(i, other.slotList.get(i)); } else { slotList.clear();
-         * for (ValueType v : other.slotList) slotList.add(v); }
-         */
         isTop = other.isTop;
         isBottom = other.isBottom;
     }

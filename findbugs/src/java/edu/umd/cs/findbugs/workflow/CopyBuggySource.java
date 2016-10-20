@@ -214,7 +214,6 @@ public class CopyBuggySource {
             }
 
             File parent = dstFile.getParentFile();
-            OutputStream out = null;
 
             if (!parent.mkdirs() && !parent.isDirectory()) {
                 String path = parent.getPath();
