@@ -314,7 +314,6 @@ public class UpdateChecker {
     }
 
     // package-private for testing
-    @SuppressWarnings({ "unchecked" })
     void parseUpdateXml(URI url, Collection<Plugin> plugins, @WillClose
             InputStream inputStream) {
         try {

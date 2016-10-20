@@ -461,7 +461,6 @@ public class DetectorFactoryCollection implements UpdateCheckCallback {
     }
 
     @Override
-    @SuppressWarnings({"ConstantConditions"})
     public void pluginUpdateCheckComplete(List<UpdateChecker.PluginUpdate> newUpdates, boolean force) {
         this.updates = newUpdates;
         this.updatesForced = force;
