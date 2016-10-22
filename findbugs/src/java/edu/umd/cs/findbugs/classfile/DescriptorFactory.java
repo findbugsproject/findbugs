@@ -33,6 +33,7 @@ import org.apache.bcel.generic.ObjectType;
 
 import edu.umd.cs.findbugs.FieldAnnotation;
 import edu.umd.cs.findbugs.MethodAnnotation;
+import edu.umd.cs.findbugs.SystemProperties;
 import edu.umd.cs.findbugs.classfile.analysis.MethodInfo;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
 import edu.umd.cs.findbugs.internalAnnotations.SlashedClassName;
@@ -46,6 +47,8 @@ import edu.umd.cs.findbugs.util.MapCache;
  * @author David Hovemeyer
  */
 public class DescriptorFactory {
+    private static final boolean USE_STRING_INTERNING = SystemProperties.getBoolean("findbugs.useStringsInterning");
+
     private static ThreadLocal<DescriptorFactory> instanceThreadLocal = new ThreadLocal<DescriptorFactory>() {
         @Override
         protected DescriptorFactory initialValue() {
@@ -71,6 +74,10 @@ public class DescriptorFactory {
     private final MapCache<String, String> stringCache = new MapCache<String, String>(10000);
 
     public static String canonicalizeString(@CheckForNull String s) {
+        if (!USE_STRING_INTERNING) {
+            return s;
+        }
+
         if (s == null) {
             return s;
         }
