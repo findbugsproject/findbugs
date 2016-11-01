@@ -31,8 +31,62 @@ import org.eclipse.core.runtime.jobs.ISchedulingRule;
  */
 public class MutexSchedulingRule implements ISchedulingRule {
 
+    /**
+     * Guesses optimal number of concurrently executing jobs on current system /
+     * JVM. Since analysis jobs are CPU, memory and sometimes IO intensive, we
+     * must take into consideration more than just number of cores.
+     *
+     * @return optimal number of concurrently executing jobs on current system /
+     *         JVM.
+     */
+    private static int guessBestConcurrentJobsLimit() {
+        int cores = Runtime.getRuntime().availableProcessors();
+        if (cores == 1) {
+            /*
+             * Given single processor, it could make sense to run more jobs if
+             * they were just IO bound, but they aren't.
+             */
+            return cores;
+        }
+        if (cores == 2) {
+            /*
+             * Given multi-core, we want to return more than 1, so that
+             * MULTICORE logic stays OK.
+             */
+            return cores;
+        }
+
+        /*
+         * Given more cores, we don't want to eat them all up, just in case user
+         * wants to do something else in the mean time (within Eclipse or not)
+         * and needs CPU for that.
+         *
+         * For small projects under analysis, it would make more sense to just
+         * do the job using all cores, but for those small projects, we will be
+         * done quickly anyway. For bigger projects, analysis will take longer
+         * time, so we mustn't make IDE unusable during that.
+         */
+        int limit = cores - 1;
+
+        /*
+         * Guesstimate amount of memory each analysis consumes. Imposes limit on
+         * concurrently running analysis. Of course, this depends on active
+         * detectors, analysis effort, code under analysis and perhaps other
+         * factors -- but those cannot be taken into consideration here.
+         */
+        final long memoryUsagePerAnalysis = 756 * 1024 * 1024;
+
+        long memoryMax = Runtime.getRuntime().maxMemory();
+        long memoryLimit = memoryMax / memoryUsagePerAnalysis;
+        if (memoryLimit > 0 && memoryLimit < Integer.MAX_VALUE) {
+            limit = Math.min(limit, (int) memoryLimit);
+        }
+
+        return limit;
+    }
+
     // enable multicore
-    public static final int MAX_JOBS = Runtime.getRuntime().availableProcessors();
+    public static final int MAX_JOBS = guessBestConcurrentJobsLimit();
     public static final boolean MULTICORE = MAX_JOBS > 1;
 
     private final IResource resource;
