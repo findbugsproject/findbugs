@@ -64,6 +64,10 @@ public class TypeQualifierResolver {
     // javax.annotations.ParametersAreNonnullByDefault ?
     static final ClassDescriptor eclipseNonNullByDefault = DescriptorFactory.createClassDescriptor("org/eclipse/jdt/annotation/NonNullByDefault");
 
+    static final ClassDescriptor androidNullable = DescriptorFactory.createClassDescriptor("android/support/annotation/Nullable");
+
+    static final ClassDescriptor androidNonNull = DescriptorFactory.createClassDescriptor("android/support/annotation/NonNull");
+
     /**
      * Resolve an AnnotationValue into a list of AnnotationValues representing
      * type qualifier annotations.
@@ -126,11 +130,14 @@ public class TypeQualifierResolver {
             try {
                 if (annotationClass.equals(googleNullable)
                         || annotationClass.equals(eclipseNullable)
+                        || annotationClass.equals(androidNullable)
                         || annotationClass.equals(intellijNullable)) {
                     resolveTypeQualifierNicknames(new AnnotationValue(JSR305NullnessAnnotations.CHECK_FOR_NULL), result, onStack);
                     return;
                 }
-                if (annotationClass.equals(eclipseNonNull) || annotationClass.equals(eclipseNonNullByDefault)
+                if (annotationClass.equals(eclipseNonNull)
+                        || annotationClass.equals(eclipseNonNullByDefault)
+                        || annotationClass.equals(androidNonNull)
                         || annotationClass.equals(intellijNotNull)) {
                     resolveTypeQualifierNicknames(new AnnotationValue(JSR305NullnessAnnotations.NONNULL), result, onStack);
                     return;
