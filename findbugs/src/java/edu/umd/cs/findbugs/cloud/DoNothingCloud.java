@@ -40,7 +40,6 @@ public class DoNothingCloud implements Cloud {
     }
 
     /** Invoked via reflection */
-    @SuppressWarnings({"UnusedDeclaration"})
     public DoNothingCloud(CloudPlugin plugin, BugCollection bc, Properties props) {
         this.plugin = plugin;
         this.bugCollection = bc;
