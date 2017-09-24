@@ -5400,7 +5400,7 @@ closed.</p>
     </Details>
   </BugPattern>
   <BugPattern type="PZLA_PREFER_ZERO_LENGTH_ARRAYS">
-    <ShortDescription>Consider returning a zero length array rather than null</ShortDescription>
+    <ShortDescription>Consider returning a zero length array rather than null or using @CheckForNull annotation</ShortDescription>
     <LongDescription>Should {1} return a zero length array rather than null?</LongDescription>
     <Details>
 <![CDATA[
@@ -5413,7 +5413,8 @@ This way, no explicit check for null is needed by clients of the method.</p>
 "there is no answer to this question" is probably appropriate.
 For example, <code>File.listFiles()</code> returns an empty list
 if given a directory containing no files, and returns null if the file
-is not a directory.</p>
+is not a directory.
+It is generally a good idea to annotate such method with <code>@CheckForNull</code>.</p>
 ]]>
     </Details>
   </BugPattern>

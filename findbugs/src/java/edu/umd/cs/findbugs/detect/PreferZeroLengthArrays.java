@@ -29,6 +29,11 @@ import edu.umd.cs.findbugs.BugReporter;
 import edu.umd.cs.findbugs.BytecodeScanningDetector;
 import edu.umd.cs.findbugs.SourceLineAnnotation;
 import edu.umd.cs.findbugs.StatelessDetector;
+import edu.umd.cs.findbugs.ba.AnalysisContext;
+import edu.umd.cs.findbugs.ba.NullnessAnnotation;
+import edu.umd.cs.findbugs.ba.XFactory;
+import edu.umd.cs.findbugs.ba.XMethod;
+import edu.umd.cs.findbugs.ba.npe.TypeQualifierNullnessAnnotationDatabase;
 
 public class PreferZeroLengthArrays extends BytecodeScanningDetector implements StatelessDetector {
     boolean nullOnTOS = false;
@@ -50,7 +55,7 @@ public class PreferZeroLengthArrays extends BytecodeScanningDetector implements 
             return;
         }
         String returnType = getMethodSig().substring(getMethodSig().indexOf(')') + 1);
-        if (returnType.startsWith("[")) {
+        if (returnType.startsWith("[") && !isCheckForNull()) {
             nullOnTOS = false;
             super.visit(obj);
             if (!found.isEmpty()) {
@@ -62,6 +67,13 @@ public class PreferZeroLengthArrays extends BytecodeScanningDetector implements 
                 found.clear();
             }
         }
+    }
+
+    private boolean isCheckForNull() {
+        XMethod m = XFactory.createXMethod(getClassContext().getJavaClass(), getMethod());
+        TypeQualifierNullnessAnnotationDatabase nullnessDb = AnalysisContext.currentAnalysisContext().getNullnessAnnotationDatabase();
+        NullnessAnnotation nullness = nullnessDb.getResolvedAnnotation(m, false);
+        return NullnessAnnotation.CHECK_FOR_NULL.equals(nullness);
     }
 
     @Override
