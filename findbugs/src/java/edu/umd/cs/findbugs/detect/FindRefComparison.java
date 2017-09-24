@@ -31,6 +31,7 @@ import java.util.StringTokenizer;
 
 import javax.annotation.CheckForNull;
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 
 import org.apache.bcel.Constants;
 import org.apache.bcel.classfile.Field;
@@ -97,11 +98,13 @@ import edu.umd.cs.findbugs.ba.type.TypeDataflow;
 import edu.umd.cs.findbugs.ba.type.TypeFrame;
 import edu.umd.cs.findbugs.ba.type.TypeFrameModelingVisitor;
 import edu.umd.cs.findbugs.ba.type.TypeMerger;
+import edu.umd.cs.findbugs.ba.vbc.ValueBasedClassIdentifier;
 import edu.umd.cs.findbugs.classfile.ClassDescriptor;
 import edu.umd.cs.findbugs.classfile.DescriptorFactory;
 import edu.umd.cs.findbugs.classfile.Global;
 import edu.umd.cs.findbugs.classfile.MethodDescriptor;
 import edu.umd.cs.findbugs.internalAnnotations.DottedClassName;
+import edu.umd.cs.findbugs.internalAnnotations.SlashedClassName;
 import edu.umd.cs.findbugs.internalAnnotations.StaticConstant;
 import edu.umd.cs.findbugs.log.Profiler;
 import edu.umd.cs.findbugs.props.WarningProperty;
@@ -967,16 +970,34 @@ public class FindRefComparison implements Detector, ExtendedTypes {
             if (lhsType.equals(Type.OBJECT) && rhsType.equals(Type.OBJECT)) {
                 return;
             }
-            String lhs = SignatureConverter.convert(lhsType.getSignature());
-            String rhs = SignatureConverter.convert(rhsType.getSignature());
 
-            if ("java.lang.String".equals(lhs) || "java.lang.String".equals(rhs)) {
+            String lhsSignature = lhsType.getSignature();
+            @Nullable
+            @SlashedClassName
+            String lhsSlashed = ClassName.fromFieldSignature(lhsSignature);
+            @DottedClassName
+            String lhsDotted = SignatureConverter.convert(lhsSignature);
+
+            String rhsSignature = rhsType.getSignature();
+            @Nullable
+            @SlashedClassName
+            String rhsSlashed = ClassName.fromFieldSignature(rhsSignature);
+            @DottedClassName
+            String rhsDotted = SignatureConverter.convert(rhsSignature);
+
+            if ("java.lang.String".equals(lhsDotted) || "java.lang.String".equals(rhsDotted)) {
                 handleStringComparison(jclass, method, methodGen, visitor, stringComparisonList, location, lhsType, rhsType);
-            } else if (suspiciousSet.contains(lhs)) {
-                handleSuspiciousRefComparison(jclass, method, methodGen, refComparisonList, location, lhs,
+            } else if (suspiciousSet.contains(lhsDotted)) {
+                handleSuspiciousRefComparison(jclass, method, methodGen, refComparisonList, location, lhsDotted,
                         (ReferenceType) lhsType, (ReferenceType) rhsType);
-            } else if (suspiciousSet.contains(rhs)) {
-                handleSuspiciousRefComparison(jclass, method, methodGen, refComparisonList, location, rhs,
+            } else if (suspiciousSet.contains(rhsDotted)) {
+                handleSuspiciousRefComparison(jclass, method, methodGen, refComparisonList, location, rhsDotted,
+                        (ReferenceType) lhsType, (ReferenceType) rhsType);
+            } else if (ValueBasedClassIdentifier.isValueBasedClass(lhsSlashed)) {
+                handleValueBasedRefComparison(jclass, method, methodGen, refComparisonList, location, lhsSignature,
+                        (ReferenceType) lhsType, (ReferenceType) rhsType);
+            } else if (ValueBasedClassIdentifier.isValueBasedClass(rhsSlashed)) {
+                handleValueBasedRefComparison(jclass, method, methodGen, refComparisonList, location, rhsSignature,
                         (ReferenceType) lhsType, (ReferenceType) rhsType);
             }
         }
@@ -1060,6 +1081,34 @@ public class FindRefComparison implements Detector, ExtendedTypes {
         }
         BugInstance instance = new BugInstance(this, bugPattern, priority).addClassAndMethod(methodGen, sourceFile)
                 .addType("L" + lhs.replace('.', '/') + ";").describe(TypeAnnotation.FOUND_ROLE);
+        if (xf != null) {
+            instance.addField(xf).describe(FieldAnnotation.LOADED_FROM_ROLE);
+        } else {
+            instance.addSomeSourceForTopTwoStackValues(classContext, method, location);
+        }
+        SourceLineAnnotation sourceLineAnnotation = SourceLineAnnotation.fromVisitedInstruction(classContext, methodGen,
+                sourceFile, location.getHandle());
+
+        refComparisonList.add(new WarningWithProperties(instance, new WarningPropertySet<WarningProperty>(),
+                sourceLineAnnotation, location));
+    }
+
+    private void handleValueBasedRefComparison(JavaClass jclass, Method method, MethodGen methodGen,
+            List<WarningWithProperties> refComparisonList, Location location, String signature, ReferenceType lhsType,
+            ReferenceType rhsType) {
+        XField xf = null;
+        if (lhsType instanceof FinalConstant) {
+            xf = ((FinalConstant) lhsType).getXField();
+        } else if (rhsType instanceof FinalConstant) {
+            xf = ((FinalConstant) rhsType).getXField();
+        }
+        String sourceFile = jclass.getSourceFileName();
+        String bugPattern = "VBC_REF_COMPARISON";
+        int priority = Priorities.HIGH_PRIORITY;
+        BugInstance instance = new BugInstance(this, bugPattern, priority)
+                .addClassAndMethod(methodGen, sourceFile)
+                .addType(signature)
+                .describe(TypeAnnotation.FOUND_ROLE);
         if (xf != null) {
             instance.addField(xf).describe(FieldAnnotation.LOADED_FROM_ROLE);
         } else {

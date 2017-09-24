@@ -1651,6 +1651,21 @@ factory pattern to create these objects.</p>
       ]]>
       </Details>
   </Detector>
+  <Detector class="edu.umd.cs.findbugs.detect.MonitoringValueBasedClass">
+    <Details>
+      <![CDATA[
+        <p>Checks for operations on a value-based object's monitor, e.g. calling <code>Object.wait</code>
+        or using it as an argument for a <code>synchronized</code> block.</p>
+      ]]>
+    </Details>
+  </Detector>
+  <Detector class="edu.umd.cs.findbugs.detect.IdentityHashCodeOnValueBasedClass">
+    <Details>
+      <![CDATA[
+        <p>Checks for calls of <code>System.identityHashCode</code> with a value-based object as argument.</p>
+      ]]>
+      </Details>
+  </Detector>
   <!--
   **********************************************************************
   BugPatterns
@@ -8541,7 +8556,83 @@ after the call to initLogging, the logger configuration is lost
         </p>]]>
       </Details>
   </BugPattern>
-  <!--
+
+  <BugPattern type="VBC_MO_LOCK">
+    <ShortDescription>Synchronized block on instance of value-based class</ShortDescription>
+    <LongDescription>{0.givenClass}.{2.nameAndSignature} synchronizes on instance of value-based class</LongDescription>
+    <Details>
+      <![CDATA[<p>
+        A program may produce unpredictable results if it attempts to distinguish two references to equal values of a
+        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/doc-files/ValueBased.html">value-based class</a>,
+        whether directly via reference equality or indirectly via an appeal to synchronization, identity hashing,
+        serialization, or any other identity-sensitive mechanism.
+        Use of such identity-sensitive operations on instances of value-based classes may have unpredictable effects
+        and should be avoided.
+      </p>]]>
+    </Details>
+  </BugPattern>
+
+  <BugPattern type="VBC_MO_WAIT">
+    <ShortDescription>Call to 'Object.wait' on instance of value-based class</ShortDescription>
+    <LongDescription>{0.givenClass}.{2.nameAndSignature} calls 'Object.wait' on instance of value-based class</LongDescription>
+    <Details>
+      <![CDATA[<p>
+        A program may produce unpredictable results if it attempts to distinguish two references to equal values of a
+        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/doc-files/ValueBased.html">value-based class</a>,
+        whether directly via reference equality or indirectly via an appeal to synchronization, identity hashing,
+        serialization, or any other identity-sensitive mechanism.
+        Use of such identity-sensitive operations on instances of value-based classes may have unpredictable effects
+        and should be avoided.
+      </p>]]>
+    </Details>
+  </BugPattern>
+
+  <BugPattern type="VBC_MO_NOTIFY">
+    <ShortDescription>Call to 'Object.notify' or 'Object.notifyAll' on instance of value-based class</ShortDescription>
+    <LongDescription>{0.givenClass}.{2.nameAndSignature} calls 'Object.notify' or 'Object.notifyAll' on instance of value-based class</LongDescription>
+    <Details>
+      <![CDATA[<p>
+        A program may produce unpredictable results if it attempts to distinguish two references to equal values of a
+        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/doc-files/ValueBased.html">value-based class</a>,
+        whether directly via reference equality or indirectly via an appeal to synchronization, identity hashing,
+        serialization, or any other identity-sensitive mechanism.
+        Use of such identity-sensitive operations on instances of value-based classes may have unpredictable effects
+        and should be avoided.
+      </p>]]>
+    </Details>
+  </BugPattern>
+
+  <BugPattern type="VBC_IDENTITY_HASHCODE">
+    <ShortDescription>Call to 'System.identityHashCode' with instance of value-based class</ShortDescription>
+    <LongDescription>{0.givenClass}.{2.nameAndSignature} calls 'System.identityHashCode' with instance of value-based class</LongDescription>
+    <Details>
+      <![CDATA[<p>
+        A program may produce unpredictable results if it attempts to distinguish two references to equal values of a
+        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/doc-files/ValueBased.html">value-based class</a>,
+        whether directly via reference equality or indirectly via an appeal to synchronization, identity hashing,
+        serialization, or any other identity-sensitive mechanism.
+        Use of such identity-sensitive operations on instances of value-based classes may have unpredictable effects
+        and should be avoided.
+      </p>]]>
+    </Details>
+  </BugPattern>
+
+  <BugPattern type="VBC_REF_COMPARISON">
+    <ShortDescription>Identity comparison '==' with instance of value-based class</ShortDescription>
+    <LongDescription>{0.givenClass}.{2.nameAndSignature} compares instance of value-based class for identity</LongDescription>
+    <Details>
+      <![CDATA[<p>
+        A program may produce unpredictable results if it attempts to distinguish two references to equal values of a
+        <a href="https://docs.oracle.com/javase/8/docs/api/java/lang/doc-files/ValueBased.html">value-based class</a>,
+        whether directly via reference equality or indirectly via an appeal to synchronization, identity hashing,
+        serialization, or any other identity-sensitive mechanism.
+        Use of such identity-sensitive operations on instances of value-based classes may have unpredictable effects
+        and should be avoided.
+      </p>]]>
+    </Details>
+  </BugPattern>
+
+    <!--
   **********************************************************************
    BugCodes
   **********************************************************************
@@ -8684,4 +8775,5 @@ after the call to initLogging, the logger configuration is lost
   <BugCode abbrev="OBL">Unsatisfied obligation to clean up stream or resource</BugCode>
   <BugCode abbrev="FB">FindBugs did not produce the expected warnings on a method</BugCode>
   <BugCode abbrev="DL">Unintended contention or possible deadlock due to locking on shared objects</BugCode>
+  <BugCode abbrev="VBC">Value-based classes</BugCode>
 </MessageCollection>
