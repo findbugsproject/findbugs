@@ -813,10 +813,24 @@ public class FindBugsTask extends AbstractFindBugsTask {
             addArg(excludeFile.getPath());
         }
         if (excludePath != null) {
-            String[] result = excludePath.toString().split(java.io.File.pathSeparator);
-            for (int x = 0; x < result.length; x++) {
-                addArg("-exclude");
-                addArg(result[x]);
+            String excludePathValue = excludePath.toString();
+            if (!excludePathValue.isEmpty()) {
+                if (excludePathValue.length() > 100) {
+                    addArg("-parseStdinAsOptions");
+                    String[] result = excludePathValue.split(java.io.File.pathSeparator);
+                    for (int x = 0; x < result.length; x++) {
+                        appendToInputString("-exclude");
+                        appendToInputString('\n');
+                        appendToInputString(result[x]);
+                        appendToInputString('\n');
+                    }
+                } else {
+                    String[] result = excludePathValue.split(java.io.File.pathSeparator);
+                    for (int x = 0; x < result.length; x++) {
+                        addArg("-exclude");
+                        addArg(result[x]);
+                    }
+                }
             }
         }
         if (includeFile != null) {
@@ -824,10 +838,24 @@ public class FindBugsTask extends AbstractFindBugsTask {
             addArg(includeFile.getPath());
         }
         if (includePath != null) {
-            String[] result = includePath.toString().split(java.io.File.pathSeparator);
-            for (int x = 0; x < result.length; x++) {
-                addArg("-include");
-                addArg(result[x]);
+            String includePathValue = includePath.toString();
+            if (!includePathValue.isEmpty()) {
+                if (includePathValue.length() > 100) {
+                    addArg("-parseStdinAsOptions");
+                    String[] result = includePathValue.split(java.io.File.pathSeparator);
+                    for (int x = 0; x < result.length; x++) {
+                        appendToInputString("-include");
+                        appendToInputString('\n');
+                        appendToInputString(result[x]);
+                        appendToInputString('\n');
+                    }
+                } else {
+                    String[] result = includePathValue.split(java.io.File.pathSeparator);
+                    for (int x = 0; x < result.length; x++) {
+                        addArg("-include");
+                        addArg(result[x]);
+                    }
+                }
             }
         }
         if (visitors != null) {
@@ -854,8 +882,12 @@ public class FindBugsTask extends AbstractFindBugsTask {
                 String auxClasspathString = auxClasspath.toString();
                 if (!auxClasspathString.isEmpty()) {
                     if (auxClasspathString.length() > 100) {
-                        addArg("-auxclasspathFromInput");
-                        setInputString(auxClasspathString);
+                        addArg("-parseStdinAsOptions");
+
+                        appendToInputString("-auxclasspath");
+                        appendToInputString('\n');
+                        appendToInputString(auxClasspathString);
+                        appendToInputString('\n');
                     } else {
                         addArg("-auxclasspath");
                         addArg(auxClasspathString);
@@ -866,8 +898,20 @@ public class FindBugsTask extends AbstractFindBugsTask {
             }
         }
         if (sourcePath != null) {
-            addArg("-sourcepath");
-            addArg(sourcePath.toString());
+            String sourcePathValue = sourcePath.toString();
+            if (!sourcePathValue.isEmpty()) {
+                if (sourcePathValue.length() > 100) {
+                    addArg("-parseStdinAsOptions");
+
+                    appendToInputString("-sourcepath");
+                    appendToInputString('\n');
+                    appendToInputString(sourcePathValue);
+                    appendToInputString('\n');
+                } else {
+                    addArg("-sourcepath");
+                    addArg(sourcePathValue);
+                }
+            }
         }
         if (outputFileName != null) {
             addArg("-outputFile");

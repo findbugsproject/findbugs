@@ -308,12 +308,24 @@ public abstract class CommandLine {
     }
 
     private int parse(String argv[], boolean dryRun) throws IOException, HelpRequestedException {
+        // Needed to prevent infinite recursion in the case of -parseStdinAsOptions showing up in stdin
+        boolean parsingStdin = false;
+        return parse(argv, parsingStdin, dryRun);
+    }
+
+    private int parse(String argv[], boolean parsingStdin, boolean dryRun) throws IOException, HelpRequestedException {
         int arg = 0;
+        boolean parseStdinAsOptions = false;
 
         while (arg < argv.length) {
             String option = argv[arg];
             if ("-help".equals(option) || "-h".equals(option)) {
                 throw new HelpRequestedException();
+            }
+            if ("-parseStdinAsOptions".equals(option)) {
+                parseStdinAsOptions = true;
+                ++arg;
+                continue;
             }
             if (!option.startsWith("-")) {
                 break;
@@ -351,7 +363,31 @@ public abstract class CommandLine {
             }
         }
 
+        if (!dryRun && !parsingStdin && parseStdinAsOptions) {
+            String[] stdinArgv = readStdinAsArgv();
+            if (0 != stdinArgv.length) {
+                parse(stdinArgv, true, dryRun);
+            }
+        }
+
         return arg;
+    }
+
+    private String[] readStdinAsArgv() throws IOException {
+        List<String> stdinArgvList = new ArrayList<String>();
+
+        BufferedReader in = UTF8.bufferedReader(System.in);
+        while (true) {
+            String s = in.readLine();
+            if (s == null) {
+                break;
+            }
+            stdinArgvList.add(s);
+        }
+        in.close();
+
+        String[] stdinArgv = stdinArgvList.toArray(new String[stdinArgvList.size()]);
+        return stdinArgv;
     }
 
     /**
