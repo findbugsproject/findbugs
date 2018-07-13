@@ -25,7 +25,17 @@ public class RFE2891944 {
         BigDecimal bd = new BigDecimal(1.0);
         System.out.println(bd);
     }
-    
+
+    @ExpectWarning(value="DMI_BIGDECIMAL_CONSTRUCTED_FROM_DOUBLE", confidence=Confidence.MEDIUM)
+    public static void bug4() {
+        BigDecimal bd = new BigDecimal(getDoubleValue());
+        System.out.println(bd);
+    }
+
+    private static double getDoubleValue() {
+        return 2.5d;
+    }
+
     public static void main(String args[]) {
         bug1();
         bug2();
