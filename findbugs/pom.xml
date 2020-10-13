@@ -172,7 +172,7 @@
 
   <properties>
     <asmVersion>5.0.2</asmVersion>
-    <junitVersion>4.11</junitVersion>
+    <junitVersion>4.13.1</junitVersion>
   </properties>
 
   <dependencies>
