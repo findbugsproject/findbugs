@@ -42,6 +42,12 @@ public abstract class BasicAbstractDataflowAnalysis<Fact> implements DataflowAna
 
     private final IdentityHashMap<BasicBlock, Fact> resultFactMap;
 
+    public BasicBlock tmp_startblock;
+    public Fact tmp_startfact;
+    public BasicBlock tmp_resultblock;
+    public Fact tmp_resultfact;
+    public int flag;
+
     /**
      * Constructor.
      */
@@ -67,12 +73,24 @@ public abstract class BasicAbstractDataflowAnalysis<Fact> implements DataflowAna
 
     @Override
     public/* final */Fact getStartFact(BasicBlock block) {
-        return lookupOrCreateFact(startFactMap, block);
+        if(!(tmp_startblock.equals(block))) {
+            tmp_startblock = block;
+            flag = 0;
+            return lookupOrCreateFact(startFactMap, block, flag);
+        }
+        else
+            return tmp_startfact;
     }
 
     @Override
     public/* final */Fact getResultFact(BasicBlock block) {
-        return lookupOrCreateFact(resultFactMap, block);
+        if(!(tmp_resultblock.equals(block))) {
+            tmp_resultblock = block;
+            flag = 1;
+            return lookupOrCreateFact(resultFactMap, block, flag);
+        }
+        else
+            return tmp_resultfact;
     }
 
     /**
@@ -179,12 +197,16 @@ public abstract class BasicAbstractDataflowAnalysis<Fact> implements DataflowAna
         // Subclasses may override.
     }
 
-    private Fact lookupOrCreateFact(Map<BasicBlock, Fact> map, BasicBlock block) {
+    private Fact lookupOrCreateFact(Map<BasicBlock, Fact> map, BasicBlock block, int flag) {
         Fact fact = map.get(block);
         if (fact == null) {
             fact = createFact();
             map.put(block, fact);
         }
+        if(flag == 0)
+            tmp_startfact = fact;
+        else
+            tmp_resultfact = fact;
         return fact;
     }
 

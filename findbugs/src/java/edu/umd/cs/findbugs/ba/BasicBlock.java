@@ -120,6 +120,33 @@ public class BasicBlock extends AbstractVertex<Edge, BasicBlock> implements Debu
         this.numNonExceptionSuccessors = -1;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if(!(o instanceof BasicBlock)) {
+            return false;
+        }
+        BasicBlock other = (BasicBlock) o;
+        return this.firstInstruction == other.firstInstruction && 
+            this.lastInstruction == other.lastInstruction &&
+            this.exceptionThrower == other.exceptionThrower &&
+            this.exceptionGen == other.exceptionGen &&
+            this.inJSRSubroutine == other.inJSRSubroutine &&
+            this.numNonExceptionSuccessors == other.numNonExceptionSuccessors &&
+            this.hashCode() == other.hashCode();
+    }
+
+    @Override
+    public int hashCode() {
+        int hashCode = 1;
+
+        hashCode = hashCode * 37 + this.firstInstruction.hashCode();
+        hashCode = hashCode * 37 + this.lastInstruction.hashCode();
+        hashCode = hashCode * 37 + this.exceptionThrower.hashCode();
+        hashCode = hashCode * 37 + this.exceptionGen.hashCode();
+
+        return hashCode;
+    }
+
     public boolean isInJSRSubroutine() {
         return inJSRSubroutine;
     }
